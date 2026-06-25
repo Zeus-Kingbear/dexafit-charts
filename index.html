@@ -146,6 +146,13 @@ const T = {
     <circle cx="226" cy="116" r="3" fill="#10151B"/>
     <g fill="#1A9850"><circle cx="223" cy="114" r="4.5"/><circle cx="229" cy="117" r="4.5"/><circle cx="225" cy="120" r="4.5"/><circle cx="230" cy="112" r="4.5"/></g>
   </svg>`,
+  'bone-density':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <rect x="0" y="0" width="300" height="52" fill="#2E9E5B" opacity=".82"/>
+    <rect x="0" y="52" width="300" height="40" fill="#EAC043" opacity=".88"/>
+    <rect x="0" y="92" width="300" height="66" fill="#DC4636" opacity=".82"/>
+    <path d="M24,40 C120,58 210,98 286,124" fill="none" stroke="#10151B" stroke-width="3.5" opacity=".9"/>
+    <rect x="196" y="92" width="20" height="20" fill="#fff" stroke="#10151B" stroke-width="4"/>
+  </svg>`,
   'stddev':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
     <path d="M18,132 C90,132 110,30 150,30 C190,30 210,132 282,132" fill="#1A9850" opacity=".18"/>
     <path d="M18,132 C90,132 110,30 150,30 C190,30 210,132 282,132" fill="none" stroke="#0A6F9E" stroke-width="5"/>
@@ -170,6 +177,9 @@ const LIVE = [
   {id:'almi', file:'almi-percentile.html', cat:'Muscle', sa:true, amin:20, amax:80,
    title:'Lean mass percentiles',
    blurb:'Appendicular lean mass vs. the sarcopenia floor, or total lean mass vs. the natural muscle ceiling.'},
+  {id:'bone-density', file:'bone-density.html', cat:'Bone', sa:true, amin:20, amax:90,
+   title:'Bone density (T-score)',
+   blurb:'The classic DEXA bone chart, made live — total body, spine, hip or femoral neck. Plot a T-score by age; read the category, the Z-score vs. peers, and the trajectory ahead.'},
   {id:'precision', file:'precision-accuracy.html', cat:'Reading results', sa:false,
    title:'Precision vs. accuracy',
    blurb:'Why a DEXA scan detects a real 1–2 point change that a bathroom scale can only guess at.'},
@@ -178,7 +188,6 @@ const LIVE = [
    blurb:'The bell curve behind every percentile — with rarity framing and a bone-density T-score mode.'},
 ];
 const SOON = [
-  {id:'soon', title:'Bone density (T-score)', blurb:'A dedicated bone scan view with osteopenia and osteoporosis zones.'},
   {id:'soon', title:'Ventilatory thresholds (VT1 / VT2)', blurb:'Aerobic base, tempo, and the redline pulled from the VO₂ test.'},
   {id:'soon', title:'Visceral fat', blurb:'The fat wrapped around your organs — and why this measurement is the hard one.'},
 ];

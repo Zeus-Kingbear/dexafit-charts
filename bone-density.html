@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bone Density (T-score) — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E;
+    --normal:#2E9E5B; --pen:#EAC043; --por:#DC4636;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;
+    border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;
+    letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:10px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;flex-wrap:wrap;}
+  .seg button{border:0;background:transparent;font:inherit;font-weight:700;padding:11px 15px;border-radius:10px;
+    color:var(--ink-soft);cursor:pointer;min-height:46px;}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;}
+  .agewrap{display:flex;align-items:center;gap:12px;min-width:210px;}
+  .agewrap input[type=range],.twrap input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;
+    background:linear-gradient(90deg,var(--surface-3),var(--brand));outline:none;}
+  .agewrap input[type=range]::-webkit-slider-thumb,.twrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;
+    background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+  .agewrap input[type=range]::-moz-range-thumb,.twrap input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .ageval{font-family:"Archivo";font-weight:800;font-size:22px;min-width:38px;text-align:center;}
+
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:14px;padding:10px 4px 16px;align-items:center;}
+  .twrap{display:flex;align-items:center;gap:12px;min-width:250px;}
+  .twrap input[type=range]{background:linear-gradient(90deg,var(--por),var(--pen) 36%,var(--normal) 64%);}
+  .tval{font-family:"Archivo";font-weight:800;font-size:22px;min-width:54px;text-align:center;}
+  .chip{display:inline-flex;align-items:center;gap:9px;border:2px solid var(--surface-3);background:var(--surface);
+    border-radius:13px;padding:11px 16px;font:inherit;font-weight:700;color:var(--ink-soft);cursor:pointer;min-height:46px;}
+  .chip .dot{width:14px;height:14px;border-radius:4px;border:2px solid #C2CDD6;}
+  .chip[aria-pressed="true"]{border-color:var(--brand-deep);color:var(--ink);background:#F1F9FD;}
+  .chip[aria-pressed="true"] .dot{background:var(--brand);border-color:var(--brand-deep);}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:82ch;line-height:1.45;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+  @media (max-width:860px){ .topbar{gap:12px;padding:12px 14px;} .agewrap{min-width:160px;} .twrap{min-width:200px;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="gctl">
+      <span class="lbl">Sex</span>
+      <div class="seg" id="sexSeg">
+        <button data-sex="female" aria-pressed="true">Female</button>
+        <button data-sex="male" aria-pressed="false">Male</button>
+      </div>
+    </div>
+    <div class="gctl agewrap">
+      <span class="lbl">Age</span>
+      <input id="ageRange" type="range" min="20" max="90" value="55" step="1">
+      <span class="ageval" id="ageVal">55</span>
+    </div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle" id="cTitle">Your bone density, read two ways</div>
+      <div class="ccontext" id="cContext">Total body · female</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="gctl">
+          <span class="lbl">Site</span>
+          <div class="seg" id="siteSeg">
+            <button data-site="tb" aria-pressed="true">Total body</button>
+            <button data-site="ls" aria-pressed="false">Spine</button>
+            <button data-site="fn" aria-pressed="false">Femoral neck</button>
+            <button data-site="th" aria-pressed="false">Total hip</button>
+          </div>
+        </div>
+        <div class="twrap">
+          <span class="lbl" style="white-space:nowrap">T-score</span>
+          <input id="tRange" type="range" min="-4" max="2" value="-1.2" step="0.1">
+          <span class="tval" id="tVal">−1.2</span>
+        </div>
+        <button class="chip" id="projChip" aria-pressed="false"><span class="dot"></span>Project the trajectory</button>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   REFERENCE DATA  —  SWAPPABLE
+   (1) LUNAR_YA  — young-adult mean & SD (g/cm²) used ONLY to label the BMD axis.
+       Total hip female is pinned from a DexaFit GE Lunar report (0.998 / 0.116).
+       Others are GE-Lunar-scaled from Hologic/NHANES and are APPROXIMATE — read the
+       exact enCORE young-adult mean & SD off a DexaFit printout and replace here for
+       pixel-exact axis alignment. (The plotted T-score does NOT depend on these.)
+   (2) MEANT — population "average for age" curve in T-score units at AGES midpoints.
+       Manufacturer-stable (a ratio). NHANES/Looker (hip) + published spine/total-body
+       decline patterns.
+   ========================================================================== */
+const AGES=[25,35,45,55,65,75,85];
+const LUNAR_YA = {
+  female:{ tb:{mean:1.150,sd:0.095}, ls:{mean:1.085,sd:0.120}, fn:{mean:0.940,sd:0.116}, th:{mean:0.998,sd:0.116} },
+  male:  { tb:{mean:1.255,sd:0.100}, ls:{mean:1.130,sd:0.125}, fn:{mean:1.020,sd:0.130}, th:{mean:1.075,sd:0.137} }
+};
+const MEANT = {
+  female:{
+    tb:[0,-0.05,-0.15,-0.40,-0.65,-0.90,-1.10],
+    ls:[0,-0.10,-0.35,-0.75,-1.05,-1.15,-1.10],
+    fn:[0,-0.06,-0.26,-0.65,-1.11,-1.57,-1.97],
+    th:[0,-0.04,-0.18,-0.53,-0.90,-1.28,-1.63] },
+  male:{
+    tb:[0,-0.04,-0.12,-0.30,-0.50,-0.70,-0.88],
+    ls:[0,-0.05,-0.20,-0.45,-0.65,-0.70,-0.70],
+    fn:[0,-0.10,-0.25,-0.54,-0.83,-1.12,-1.42],
+    th:[0,-0.06,-0.20,-0.40,-0.67,-0.94,-1.21] }
+};
+const SITE = {
+  tb:{label:'Total body', diagnostic:false},
+  ls:{label:'Lumbar spine', diagnostic:true},
+  fn:{label:'Femoral neck', diagnostic:true},
+  th:{label:'Total hip', diagnostic:true}
+};
+
+/* ============================ math ============================ */
+function erf(x){ const s=x<0?-1:1; x=Math.abs(x); const t=1/(1+0.3275911*x);
+  const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);
+  return s*y; }
+const Phi=z=>0.5*(1+erf(z/Math.SQRT2));
+function ord(n){ const s=["th","st","nd","rd"], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
+function interp(arr,age){
+  if(age<=AGES[0]) return arr[0];
+  if(age>=AGES[6]){ const sl=(arr[6]-arr[5])/10; return arr[6]+sl*(age-AGES[6]); }
+  for(let i=0;i<6;i++){ if(age<=AGES[i+1]){ const f=(age-AGES[i])/10; return arr[i]+(arr[i+1]-arr[i])*f; } }
+}
+const ya   = ()=>LUNAR_YA[state.sex][state.site];
+const meanT= age=>interp(MEANT[state.sex][state.site],age);
+function catOf(t,diag){
+  if(diag){ if(t<=-2.5) return ['Osteoporosis range','#C0392B']; if(t<-1) return ['Osteopenia · low bone mass','#B9871B']; return ['Normal bone density','#1F7A45']; }
+  if(t<=-2.5) return ['Notably low for a young adult','#C0392B'];
+  if(t<-1)    return ['Mildly low for a young adult','#B9871B'];
+  return ['Within the young-adult range','#1F7A45'];
+}
+
+/* ============================ state ============================ */
+const state = { sex:'female', site:'tb', age:55, t:-1.2, project:false };
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1040,H=600,m={l:90,r:66,t:54,b:66};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const A0=20,A1=90, T0=2,T1=-5;
+  const X=a=>m.l+(a-A0)/(A1-A0)*iw;
+  const Y=t=>m.t+(T0-t)/(T0-T1)*ih;
+  const r=ya(), diag=SITE[state.site].diagnostic;
+  const bmdAt=t=> r.mean + t*r.sd;
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Bone density T-score by age" style="cursor:pointer">`;
+
+  /* colour zones */
+  svg+=`<rect x="${m.l}" y="${Y(2)}" width="${iw}" height="${Y(-1)-Y(2)}" fill="#2E9E5B" opacity=".82"/>`;
+  svg+=`<rect x="${m.l}" y="${Y(-1)}" width="${iw}" height="${Y(-2.5)-Y(-1)}" fill="#EAC043" opacity=".88"/>`;
+  svg+=`<rect x="${m.l}" y="${Y(-2.5)}" width="${iw}" height="${Y(-5)-Y(-2.5)}" fill="#DC4636" opacity=".82"/>`;
+  const zl = diag ? ['Normal','Osteopenia','Osteoporosis']
+                  : ['Within young-adult range','Mildly low','Notably low'];
+  svg+=`<text x="${m.l+14}" y="${Y(2)+30}" style="font:800 ${diag?20:17}px Archivo" fill="#fff">${zl[0]}</text>`;
+  svg+=`<text x="${m.l+14}" y="${Y(-1)+27}" style="font:800 ${diag?20:17}px Archivo" fill="#7A5B05">${zl[1]}</text>`;
+  svg+=`<text x="${m.l+14}" y="${Y(-2.5)+29}" style="font:800 ${diag?20:17}px Archivo" fill="#fff">${zl[2]}</text>`;
+  if(!diag) svg+=`<text x="${m.l+iw-14}" y="${Y(2)+26}" text-anchor="end" style="font:700 13px Inter" fill="#eafff1">not a diagnostic site — see note</text>`;
+
+  /* diagonal age-matched reference curves (Z = +1, 0, −1, −2) */
+  const ages=[]; for(let a=A0;a<=A1;a++) ages.push(a);
+  const curve=(zoff,w,op)=>`<path d="M${ages.map(a=>X(a).toFixed(1)+','+Y(meanT(a)+zoff).toFixed(1)).join(' L')}" fill="none" stroke="#10151B" stroke-width="${w}" opacity="${op}" stroke-linecap="round"/>`;
+  svg+=curve( 1,1.5,.40); svg+=curve(-1,1.5,.40); svg+=curve(-2,1.5,.40);
+  svg+=curve( 0,3.2,.92);
+  const la=A1-2; svg+=`<text x="${X(la)}" y="${Y(meanT(la))-9}" text-anchor="end" style="font:800 13px Inter" fill="#10151B">average for age</text>`;
+
+  /* projection */
+  if(state.project){
+    const z=state.t-meanT(state.age);
+    const proj=[]; for(let a=state.age;a<=A1;a++) proj.push(X(a).toFixed(1)+','+Y(meanT(a)+z).toFixed(1));
+    svg+=`<path d="M${proj.join(' L')}" fill="none" stroke="#10151B" stroke-width="3" stroke-dasharray="3 7" stroke-linecap="round"/>`;
+    if(diag && state.t>-2.5){
+      let cross=null; for(let a=state.age;a<=A1;a+=0.25){ if(meanT(a)+z<=-2.5){ cross=a; break; } }
+      if(cross){ svg+=`<circle cx="${X(cross)}" cy="${Y(-2.5)}" r="6" fill="#10151B"/>`+
+        `<text x="${X(cross)}" y="${Y(-2.5)-12}" text-anchor="middle" style="font:800 14px Archivo" fill="#10151B">~age ${Math.round(cross)}</text>`; }
+    }
+  }
+
+  /* axes */
+  for(let t=2;t>=-5;t--) svg+=`<text x="${m.l+iw+12}" y="${Y(t)+5}" style="font:700 15px Inter" fill="#10151B">${t>0?'+':''}${t}</text>`;
+  svg+=`<text x="${m.l+iw+50}" y="${m.t-22}" text-anchor="middle" style="font:800 13px Inter" fill="#3A4753">T-score</text>`;
+  for(let t=2;t>=-5;t--) svg+=`<text x="${m.l-12}" y="${Y(t)+5}" text-anchor="end" style="font:600 13px Inter" fill="#3A4753">${bmdAt(t).toFixed(3)}</text>`;
+  svg+=`<text x="${m.l-32}" y="${m.t-34}" text-anchor="middle" style="font:800 13px Inter" fill="#3A4753">BMD g/cm²</text>`;
+  svg+=`<text x="${m.l-32}" y="${m.t-18}" text-anchor="middle" style="font:600 11px Inter" fill="#7A8893">GE Lunar</text>`;
+  for(let a=20;a<=90;a+=10){
+    svg+=`<line x1="${X(a)}" y1="${m.t}" x2="${X(a)}" y2="${m.t+ih}" stroke="#10151B" stroke-width="1" opacity=".10"/>`;
+    svg+=`<text x="${X(a)}" y="${m.t+ih+26}" text-anchor="middle" style="font:700 15px Inter" fill="#10151B">${a}</text>`;
+  }
+  svg+=`<text x="${m.l+iw/2}" y="${m.t+ih+50}" text-anchor="middle" style="font:800 13px Inter" fill="#3A4753">Age (years)</text>`;
+  svg+=`<rect x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" fill="none" stroke="#10151B" stroke-width="1.5"/>`;
+
+  /* client marker */
+  const mx=X(state.age), my=Y(state.t), s=9;
+  svg+=`<line x1="${mx}" y1="${m.t}" x2="${mx}" y2="${m.t+ih}" stroke="#10151B" stroke-width="1" opacity=".35" stroke-dasharray="4 5"/>`;
+  svg+=`<rect x="${mx-s}" y="${my-s}" width="${2*s}" height="${2*s}" fill="#fff" stroke="#10151B" stroke-width="4"/>`;
+  svg+=`<rect x="${mx-2}" y="${my-2}" width="4" height="4" fill="#10151B"/>`;
+
+  /* readout */
+  const z=state.t-meanT(state.age), pct=Phi(z)*100;
+  const co=catOf(state.t,diag), cat=co[0], catCol=co[1], bmd=bmdAt(state.t);
+  const boxW=274, boxH=diag?176:196;
+  const boxX = mx>m.l+iw*0.52 ? mx-boxW-22 : mx+22;
+  const boxY = Math.max(m.t+8, Math.min(my-boxH/2, m.t+ih-boxH-8));
+  svg+=`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${boxH}" rx="13" fill="#10151B"/>`;
+  let yy=boxY+34;
+  svg+=`<text x="${boxX+18}" y="${yy}" fill="#fff" style="font:900 25px Archivo">T-score ${state.t>=0?'+':'−'}${Math.abs(state.t).toFixed(1)}</text>`;
+  yy+=30;
+  svg+=`<rect x="${boxX+14}" y="${yy-18}" width="${boxW-28}" height="32" rx="8" fill="${catCol}"/>`;
+  svg+=`<text x="${boxX+boxW/2}" y="${yy+4}" text-anchor="middle" fill="#fff" style="font:800 ${cat.length>26?13:15}px Archivo">${cat}</text>`;
+  yy+=40;
+  svg+=`<text x="${boxX+18}" y="${yy}" fill="#cfd8df" style="font:600 14px Inter">Bone density ≈ ${bmd.toFixed(3)} g/cm²</text>`;
+  yy+=26;
+  const zTxt=(z>=0?'+':'−')+Math.abs(z).toFixed(1), pTxt=pct<1?'<1st':pct>99?'>99th':ord(Math.round(pct));
+  svg+=`<text x="${boxX+18}" y="${yy}" fill="#fff" style="font:800 15px Archivo">vs. age: Z ${zTxt}<tspan dx="8" fill="#8da0ad" style="font:600 13px Inter">${pTxt} pct for age</tspan></text>`;
+  if(!diag){ yy+=24; svg+=`<text x="${boxX+18}" y="${yy}" fill="#f0b9b1" style="font:700 12.5px Inter">Informational — not an osteoporosis</text>`;
+             yy+=16; svg+=`<text x="${boxX+18}" y="${yy}" fill="#f0b9b1" style="font:700 12.5px Inter">diagnosis (that's spine &amp; hip)</text>`; }
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+
+  host.querySelector('svg').addEventListener('click',ev=>{
+    const rect=host.querySelector('svg').getBoundingClientRect();
+    const px=(ev.clientX-rect.left)/rect.width*W, py=(ev.clientY-rect.top)/rect.height*H;
+    if(px<m.l||px>m.l+iw||py<m.t||py>m.t+ih) return;
+    state.age=Math.round(A0+(px-m.l)/iw*(A1-A0));
+    state.t=Math.max(-4,Math.min(2, Math.round((T0-(py-m.t)/ih*(T0-T1))*10)/10));
+    syncInputs(); render();
+  });
+}
+
+/* ============================ controls ============================ */
+function fmtT(t){ return (t>=0?'+':'−')+Math.abs(t).toFixed(1); }
+function setContext(){ document.getElementById('cContext').textContent = SITE[state.site].label+' · '+state.sex; }
+function setNote(){
+  const n=document.getElementById('note');
+  if(state.site==='tb'){
+    n.innerHTML='<strong>Total-body (whole-skeleton) BMD</strong> is the number most DexaFit clients receive, and it\u2019s an excellent overall index to <strong>track over time</strong>. Note: total body is <strong>not</strong> a WHO/ISCD site for diagnosing osteoporosis \u2014 that\u2019s done at the spine, hip, or femoral neck. Read it for your overall trend and your <strong>Z-score vs. peers</strong>. The coloured bands read across (T-score vs. a young adult); the diagonal line is the average for your age.';
+  } else if(state.site==='ls'){
+    n.innerHTML='The <strong>coloured bands read across</strong> \u2014 T-score vs. a young adult \u2014 and give the diagnosis; the <strong>diagonal line is the average for your age</strong> (your distance from it is the Z-score). Spine caveat: in older adults, lumbar BMD can be <strong>falsely raised</strong> by arthritis, bone spurs, or aortic calcification, so a normal-looking spine doesn\u2019t rule out low bone density at the hip.';
+  } else {
+    n.innerHTML='The <strong>coloured bands read across</strong> \u2014 T-score vs. a healthy young adult \u2014 and give the diagnosis. The <strong>diagonal line is the average for your age</strong>: how far you sit from it is your Z-score. Enter the client\u2019s T-score and age to drop their marker. T-score is diagnostic for postmenopausal women and men 50+; younger adults are read by Z-score (vs. same-age peers).';
+  }
+}
+function syncInputs(){
+  document.getElementById('ageRange').value=state.age; document.getElementById('ageVal').textContent=state.age;
+  document.getElementById('tRange').value=state.t; document.getElementById('tVal').textContent=fmtT(state.t);
+}
+function refresh(){ setContext(); setNote(); render(); }
+
+document.getElementById('sexSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return; state.sex=b.dataset.sex;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b)); refresh();
+});
+document.getElementById('siteSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return; state.site=b.dataset.site;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b)); refresh();
+});
+const ageR=document.getElementById('ageRange');
+ageR.addEventListener('input',()=>{ state.age=+ageR.value; document.getElementById('ageVal').textContent=ageR.value; render(); });
+const tR=document.getElementById('tRange');
+tR.addEventListener('input',()=>{ state.t=+tR.value; document.getElementById('tVal').textContent=fmtT(state.t); render(); });
+document.getElementById('projChip').addEventListener('click',e=>{
+  state.project=!state.project; e.currentTarget.setAttribute('aria-pressed',state.project); render();
+});
+window.addEventListener('resize', render);
+
+/* gallery embed (sex + age driven by shell) */
+(function(){
+  const q=new URLSearchParams(location.search); if(!q.get('embed')) return;
+  document.body.classList.add('embed');
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  function applySA(sx,ag){
+    if(sx){ state.sex=sx; document.querySelectorAll('#sexSeg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.sex===sx)); }
+    if(ag!=null&&ag!==''){ state.age=clamp(+ag,20,90); }
+    syncInputs(); refresh();
+  }
+  applySA(q.get('sex'), q.get('age'));
+  window.addEventListener('message',e=>{ const d=e.data||{}; if(d.type==='sa') applySA(d.sex,d.age); });
+})();
+
+syncInputs(); refresh();
+</script>
+</body>
+</html>

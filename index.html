@@ -9,488 +9,239 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#10151B;
-    --ink-soft:#3A4753;
-    --surface:#FFFFFF;
-    --surface-2:#EEF3F7;
-    --surface-3:#E2EAF0;
-    --brand:#0E9BD6;        /* DexaFit blue — strength */
-    --brand-deep:#0A6F9E;
-    --power:#E8633A;        /* hot accent — power, the hill to defend */
-    --mass:#56656F;         /* muted — mass, slowest to go */
-    --zone:#E8633A;
-    --line:#CDD8E0;
-    --good:#1FA67A;
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --good:#1A9850; --risk:#D64530;
     font-synthesis:none;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;height:100%;}
-  body{
-    font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    color:var(--ink);background:var(--surface);
-    -webkit-font-smoothing:antialiased;overflow:hidden;
-  }
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
   .app{display:flex;flex-direction:column;height:100dvh;}
 
-  /* ---------- top bar: brand + global controls ---------- */
-  .topbar{
-    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
-    padding:14px 22px;border-bottom:1px solid var(--surface-3);
-    background:var(--surface);
-  }
-  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;
-    font-size:22px;letter-spacing:-.02em;cursor:pointer;user-select:none;}
-  .brand .x{color:var(--brand);} 
-  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--ink-soft);margin-left:8px;align-self:center;}
+  /* ---------- top bar ---------- */
+  .topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:13px 22px;
+    border-bottom:1px solid var(--surface-3);background:var(--surface);position:relative;z-index:5;}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;
+    letter-spacing:-.02em;user-select:none;cursor:pointer;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .navback{border:0;background:var(--surface-2);font:inherit;font-weight:700;padding:11px 16px;border-radius:12px;
+    cursor:pointer;min-height:46px;display:flex;align-items:center;gap:8px;color:var(--ink);}
+  .navback:hover{background:var(--surface-3);}
   .spacer{flex:1 1 auto;}
-
   .gctl{display:flex;align-items:center;gap:10px;}
   .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
   .seg{display:inline-flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;}
-  .seg button{
-    border:0;background:transparent;font:inherit;font-weight:700;
-    padding:12px 18px;border-radius:10px;color:var(--ink-soft);cursor:pointer;min-height:48px;
-  }
+  .seg button{border:0;background:transparent;font:inherit;font-weight:700;padding:11px 16px;border-radius:10px;
+    color:var(--ink-soft);cursor:pointer;min-height:46px;}
   .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;}
-  .agewrap{display:flex;align-items:center;gap:14px;min-width:260px;}
+  .agewrap{display:flex;align-items:center;gap:12px;min-width:230px;}
   .agewrap input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;
-    background:linear-gradient(90deg,var(--brand),var(--surface-3));outline:none;}
-  .agewrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(90deg,var(--surface-3),var(--brand));outline:none;}
+  .agewrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;
     background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
-  .agewrap input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
-  .ageval{font-family:"Archivo";font-weight:800;font-size:24px;min-width:42px;text-align:center;}
+  .agewrap input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .ageval{font-family:"Archivo";font-weight:800;font-size:22px;min-width:38px;text-align:center;}
+  [hidden]{display:none !important;}
 
-  /* ---------- gallery ---------- */
-  .gallery{flex:1;overflow:auto;padding:30px 26px 60px;}
-  .gallery h1{font-family:"Archivo";font-weight:900;font-size:clamp(28px,3.4vw,44px);
-    letter-spacing:-.025em;margin:6px 0 4px;}
-  .gallery .sub{color:var(--ink-soft);font-size:16px;max-width:60ch;margin:0 0 26px;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;}
-  .card{
-    text-align:left;border:1px solid var(--surface-3);background:var(--surface);
-    border-radius:18px;padding:0;overflow:hidden;cursor:pointer;font:inherit;color:inherit;
-    transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;display:flex;flex-direction:column;
-  }
-  .card:hover,.card:focus-visible{transform:translateY(-3px);box-shadow:0 12px 30px rgba(16,21,27,.10);border-color:var(--brand);outline:none;}
-  .card[disabled]{opacity:.5;cursor:default;}
+  /* ---------- home / gallery ---------- */
+  .home{flex:1;overflow:auto;padding:34px 30px 64px;}
+  .home h1{font-family:"Archivo";font-weight:900;font-size:clamp(28px,3.6vw,46px);
+    letter-spacing:-.025em;margin:4px 0 8px;max-width:18ch;line-height:1.04;}
+  .home .sub{color:var(--ink-soft);font-size:16px;max-width:64ch;margin:0 0 30px;line-height:1.5;}
+  .seclbl{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
+    margin:34px 0 14px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;}
+  .card{text-align:left;border:1px solid var(--surface-3);background:var(--surface);border-radius:18px;padding:0;
+    overflow:hidden;cursor:pointer;font:inherit;color:inherit;display:flex;flex-direction:column;
+    transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;}
+  .card:hover,.card:focus-visible{transform:translateY(-3px);box-shadow:0 14px 34px rgba(16,21,27,.11);
+    border-color:var(--brand);outline:none;}
+  .card[disabled]{opacity:.55;cursor:default;}
   .card[disabled]:hover{transform:none;box-shadow:none;border-color:var(--surface-3);}
-  .thumb{height:150px;background:var(--surface-2);position:relative;border-bottom:1px solid var(--surface-3);}
+  .thumb{height:158px;background:var(--surface-2);border-bottom:1px solid var(--surface-3);position:relative;}
   .thumb svg{position:absolute;inset:0;width:100%;height:100%;}
-  .card .meta{padding:16px 18px 18px;}
-  .card .meta h3{font-family:"Archivo";font-weight:800;font-size:19px;margin:0 0 5px;letter-spacing:-.01em;}
-  .card .meta p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.45;}
-  .tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--brand-deep);background:var(--surface-2);padding:5px 9px;border-radius:999px;margin-top:12px;}
+  .meta{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1;}
+  .meta h3{font-family:"Archivo";font-weight:800;font-size:19px;margin:0 0 6px;letter-spacing:-.01em;}
+  .meta p{margin:0 0 14px;font-size:13.5px;color:var(--ink-soft);line-height:1.45;flex:1;}
+  .tag{align-self:flex-start;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--brand-deep);background:var(--surface-2);padding:6px 10px;border-radius:999px;}
+  .card:hover .tag{background:#E6F4FB;}
   .tag.soon{color:var(--ink-soft);}
 
-  /* ---------- chart view ---------- */
-  .chart{flex:1;display:none;flex-direction:column;min-height:0;}
-  .chart.active{display:flex;}
-  .gallery.hidden{display:none;}
-  .chead{display:flex;align-items:center;gap:16px;padding:14px 22px 6px;}
-  .back{border:0;background:var(--surface-2);font:inherit;font-weight:700;padding:12px 18px;border-radius:12px;
-    cursor:pointer;min-height:48px;display:flex;align-items:center;gap:8px;}
-  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.6vw,30px);letter-spacing:-.02em;}
-  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
-  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
-  .plot{flex:1;min-height:0;}
-  .plot svg{width:100%;height:100%;display:block;}
-  .controls{display:flex;flex-wrap:wrap;gap:10px;padding:12px 4px 18px;align-items:center;}
-  .chip{
-    border:2px solid var(--surface-3);background:var(--surface);font:inherit;font-weight:700;
-    padding:13px 18px;border-radius:14px;cursor:pointer;min-height:52px;display:flex;align-items:center;gap:10px;color:var(--ink-soft);
-  }
-  .chip .dot{width:14px;height:14px;border-radius:4px;background:var(--surface-3);}
-  .chip[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);background:#fff;}
-  .chip[data-k="power"][aria-pressed="true"] .dot{background:var(--power);}
-  .chip[data-k="strength"][aria-pressed="true"] .dot{background:var(--brand);}
-  .chip[data-k="mass"][aria-pressed="true"] .dot{background:var(--mass);}
-  .chip[data-k="zone"][aria-pressed="true"] .dot{background:var(--zone);}
-  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:48ch;line-height:1.4;margin-left:auto;}
-  .seg.small button{padding:13px 16px;min-height:52px;}
-
-  /* svg text helpers */
-  .ax{font:600 14px Inter;fill:var(--ink-soft);}
-  .axbold{font:800 16px Archivo;fill:var(--ink);}
-  .lblcurve{font:800 17px Archivo;}
-  .zonelbl{font:800 13px Archivo;fill:#B23A18;letter-spacing:.02em;}
-  .bandttl{font:900 22px Archivo;letter-spacing:.01em;}
-  .bandsub{font:700 14.5px Inter;}
-  .lblcurve{font:800 19px Archivo;}
-  .callout{font:700 14px Inter;}
-  @media (max-width:720px){
-    .ctl-note{display:none;}
-    .topbar{gap:12px;padding:12px 14px;}
-    .agewrap{min-width:180px;}
-  }
+  /* ---------- viewer ---------- */
+  .viewer{flex:1;min-height:0;}
+  .viewer iframe{width:100%;height:100%;border:0;display:block;}
 </style>
 </head>
 <body>
 <div class="app">
-
-  <!-- TOP BAR -->
   <div class="topbar">
-    <div class="brand" onclick="go('gallery')"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <button class="navback" id="navback" hidden>‹ All charts</button>
+    <div class="brand" id="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
     <div class="spacer"></div>
-    <div class="gctl">
+    <div class="gctl" id="sexCtl" hidden>
       <span class="lbl">Sex</span>
-      <div class="seg" id="sexSeg">
+      <div class="seg" id="shellSex">
         <button data-sex="male" aria-pressed="true">Male</button>
         <button data-sex="female" aria-pressed="false">Female</button>
       </div>
     </div>
-    <div class="gctl agewrap">
+    <div class="gctl agewrap" id="ageCtl" hidden>
       <span class="lbl">Age</span>
-      <input id="ageRange" type="range" min="30" max="90" value="52" step="1">
-      <span class="ageval" id="ageVal">52</span>
+      <input id="shellAge" type="range" min="20" max="90" value="50" step="1">
+      <span class="ageval" id="shellAgeVal">50</span>
     </div>
   </div>
 
-  <!-- GALLERY -->
-  <div class="gallery" id="gallery">
+  <div class="home" id="home">
     <h1>Explain it on the screen, not the whiteboard.</h1>
-    <p class="sub">Interactive charts for client consultations. Set sex and age up top — it carries into every chart. Tap a chart to open the full interactive version.</p>
-    <div class="grid" id="grid"></div>
+    <p class="sub">Interactive charts for client and staff consultations. Set sex and age once — it carries into every chart. Tap a chart to open the full interactive version on the screen.</p>
+    <div class="seclbl">Charts</div>
+    <div class="grid" id="gridLive"></div>
+    <div class="seclbl">In the works</div>
+    <div class="grid" id="gridSoon"></div>
   </div>
 
-  <!-- CHART VIEW (muscle decline) -->
-  <div class="chart" id="chart">
-    <div class="chead">
-      <button class="back" onclick="go('gallery')">‹ All charts</button>
-      <div>
-        <div class="ctitle">The three components of muscle — and how they fade</div>
-        <div class="ccontext" id="chartContext">Male · age 52</div>
-      </div>
-    </div>
-    <div class="stage">
-      <div class="plot" id="plot"></div>
-      <div class="controls" id="controls">
-        <button class="chip" data-k="power"    aria-pressed="true"><span class="dot"></span>Power</button>
-        <button class="chip" data-k="strength" aria-pressed="true"><span class="dot"></span>Strength</button>
-        <button class="chip" data-k="mass"     aria-pressed="true"><span class="dot"></span>Mass</button>
-        <button class="chip" data-k="zone"     aria-pressed="true"><span class="dot"></span>Risk zones</button>
-        <div class="seg small" id="trainSeg" style="margin-left:6px">
-          <button data-train="untrained" aria-pressed="true">Untrained</button>
-          <button data-train="trained"   aria-pressed="false">Trained</button>
-        </div>
-        <span class="ctl-note">For the average untrained adult, POWER drops below the functional floor (mobility limitation) at about 80 — men ~79, women ~80. Strength reaches it years later; mass effectively never. Show one component on its own to reveal the spread across people: the bottom 10% reach the floor in their early 70s, the top 10% hold into their late 80s. Where you land is the case for measuring, not assuming.</span>
-      </div>
-    </div>
+  <div class="viewer" id="viewer" hidden>
+    <iframe id="frame" title="chart" allow="fullscreen"></iframe>
   </div>
-
 </div>
 
 <script>
-/* ============================ state ============================ */
-const state = {
-  sex:'male', age:52, view:'gallery',
-  show:{power:true,strength:true,mass:true,zone:true},
-  train:'untrained'
+/* ===================== thumbnails ===================== */
+const T = {
+  'muscle-decline':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <line x1="20" y1="128" x2="280" y2="128" stroke="#CDD8E0" stroke-width="2"/>
+    <path d="M20,44 C90,46 150,62 280,118" fill="none" stroke="#E8862E" stroke-width="6" stroke-linecap="round"/>
+    <path d="M20,58 C90,60 160,72 280,104" fill="none" stroke="#0E9BD6" stroke-width="6" stroke-linecap="round"/>
+    <path d="M20,72 C100,74 180,82 280,94" fill="none" stroke="#9AA8B2" stroke-width="6" stroke-linecap="round"/>
+    <line x1="20" y1="112" x2="280" y2="112" stroke="#D64530" stroke-width="2" stroke-dasharray="6 5"/>
+  </svg>`,
+  'vo2':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <rect x="18" y="22" width="264" height="20" fill="#1A9850" opacity=".75"/>
+    <rect x="18" y="44" width="264" height="20" fill="#7FBF4D" opacity=".7"/>
+    <rect x="18" y="66" width="264" height="20" fill="#F2C14E" opacity=".75"/>
+    <rect x="18" y="88" width="264" height="20" fill="#E8862E" opacity=".7"/>
+    <rect x="18" y="110" width="264" height="20" fill="#D64530" opacity=".7"/>
+    <path d="M28,120 C110,108 200,70 276,40" fill="none" stroke="#10151B" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 8"/>
+    <circle cx="276" cy="40" r="6" fill="#fff" stroke="#10151B" stroke-width="4"/>
+  </svg>`,
+  'almi':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <path d="M18,30 L282,26 L282,40 L18,46 Z" fill="#1A9850" opacity=".5"/>
+    <path d="M18,46 L282,40 L282,96 L18,104 Z" fill="#0E9BD6" opacity=".22"/>
+    <path d="M18,66 L282,60 L282,80 L18,86 Z" fill="#0E9BD6" opacity=".3"/>
+    <path d="M18,76 L282,70" fill="none" stroke="#0A6F9E" stroke-width="5"/>
+    <line x1="18" y1="118" x2="282" y2="118" stroke="#D64530" stroke-width="4" stroke-dasharray="7 5"/>
+  </svg>`,
+  'precision':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <line x1="150" y1="14" x2="150" y2="144" stroke="#CDD8E0" stroke-width="2"/>
+    <line x1="20" y1="79" x2="280" y2="79" stroke="#CDD8E0" stroke-width="2"/>
+    <g fill="#9AA8B2"><circle cx="60" cy="34" r="5"/><circle cx="92" cy="52" r="5"/><circle cx="70" cy="60" r="5"/><circle cx="100" cy="30" r="5"/></g>
+    <g fill="#0E9BD6"><circle cx="222" cy="40" r="5"/><circle cx="234" cy="48" r="5"/><circle cx="226" cy="52" r="5"/></g>
+    <circle cx="226" cy="116" r="20" fill="none" stroke="#1A9850" stroke-width="3"/>
+    <circle cx="226" cy="116" r="3" fill="#10151B"/>
+    <g fill="#1A9850"><circle cx="223" cy="114" r="4.5"/><circle cx="229" cy="117" r="4.5"/><circle cx="225" cy="120" r="4.5"/><circle cx="230" cy="112" r="4.5"/></g>
+  </svg>`,
+  'stddev':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <path d="M18,132 C90,132 110,30 150,30 C190,30 210,132 282,132" fill="#1A9850" opacity=".18"/>
+    <path d="M18,132 C90,132 110,30 150,30 C190,30 210,132 282,132" fill="none" stroke="#0A6F9E" stroke-width="5"/>
+    <line x1="150" y1="30" x2="150" y2="132" stroke="#CDD8E0" stroke-width="2"/>
+    <line x1="194" y1="60" x2="194" y2="132" stroke="#10151B" stroke-width="4"/>
+    <circle cx="194" cy="60" r="6" fill="#fff" stroke="#10151B" stroke-width="4"/>
+  </svg>`,
+  'soon':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <line x1="20" y1="120" x2="280" y2="120" stroke="#CDD8E0" stroke-width="2"/>
+    <path d="M30,108 C120,96 190,60 270,44" fill="none" stroke="#C2CDD6" stroke-width="6" stroke-linecap="round" stroke-dasharray="3 10"/>
+  </svg>`
 };
 
-/* ============================ chart catalog (roadmap) ============================ */
-const CHARTS = [
-  {id:'muscle-decline', live:true,  title:'Muscle decline with age',
-   desc:'Mass, strength and power over a lifetime, and the age power crosses the functional floor. Toggle trained vs untrained.'},
-  {id:'muscle-gain',    live:false, title:'Muscle-building potential by age',
-   desc:'Trained / medium / untrained, responders vs non-responders.'},
-  {id:'almi-ffmi',      live:false, title:'ALMI & FFMI bands',
-   desc:'Where a client sits relative to sarcopenia thresholds and optimal ranges.'},
-  {id:'vo2-percentile', live:false, title:'VO₂ max percentiles',
-   desc:'By age and sex against Superior / Excellent / Good / Fair / Poor.'},
-  {id:'vo2-thresholds', live:false, title:'VT1, VT2 & redline ratio',
-   desc:'How much of the engine you can actually sustain.'},
-  {id:'sport-vo2',      live:false, title:'Sport-specific VO₂ max',
-   desc:'Reference ranges by sport, level and position.'},
-  {id:'bone-density',   live:false, title:'Bone density over time',
-   desc:'The lifespan curve, the menopause cliff, and optimal targets.'},
-  {id:'std-dev',        live:false, title:'Standard deviations explained',
-   desc:'What a T-score or Z-score actually means, visually.'},
-  {id:'resting-hr',     live:false, title:'Resting heart rate',
-   desc:'Where a resting heart rate sits by fitness level.'},
-  {id:'precision',      live:false, title:'Precision vs. accuracy',
-   desc:'The 2×2 that explains why a real test beats a wearable estimate.'},
-  {id:'visceral-fat',   live:false, title:'Visceral fat',
-   desc:'What visceral fat is and why it drives metabolic risk.'}
+/* ===================== catalog ===================== */
+const LIVE = [
+  {id:'muscle-decline', file:'muscle-decline.html', cat:'Muscle', sa:true, amin:30, amax:90,
+   title:'Muscle decline with age',
+   blurb:'Mass, strength and power across a lifetime — and the age power crosses the functional floor. Trained vs. untrained.'},
+  {id:'vo2', file:'vo2-percentile.html', cat:'Cardiorespiratory', sa:true, amin:20, amax:80,
+   title:'VO₂ max percentiles',
+   blurb:'Where a cardio number ranks by age and sex, and how simply holding it climbs you up the field over time.'},
+  {id:'almi', file:'almi-percentile.html', cat:'Muscle', sa:true, amin:20, amax:80,
+   title:'Lean mass percentiles',
+   blurb:'Appendicular lean mass vs. the sarcopenia floor, or total lean mass vs. the natural muscle ceiling.'},
+  {id:'precision', file:'precision-accuracy.html', cat:'Reading results', sa:false,
+   title:'Precision vs. accuracy',
+   blurb:'Why a DEXA scan detects a real 1–2 point change that a bathroom scale can only guess at.'},
+  {id:'stddev', file:'standard-deviations.html', cat:'Reading results', sa:false,
+   title:'Standard deviations & T-scores',
+   blurb:'The bell curve behind every percentile — with rarity framing and a bone-density T-score mode.'},
+];
+const SOON = [
+  {id:'soon', title:'Bone density (T-score)', blurb:'A dedicated bone scan view with osteopenia and osteoporosis zones.'},
+  {id:'soon', title:'Ventilatory thresholds (VT1 / VT2)', blurb:'Aerobic base, tempo, and the redline pulled from the VO₂ test.'},
+  {id:'soon', title:'Visceral fat', blurb:'The fat wrapped around your organs — and why this measurement is the hard one.'},
 ];
 
-/* ============================ muscle decline model ============================ */
-/* % of peak capacity vs age. TWO-PHASE ("changepoint") model: a gentle decline
-   from the ~35 plateau, then a steeper phase after a breakpoint (~60 untrained,
-   pushed later when trained). Rates are annual %-loss, compounded. Ordering holds
-   in BOTH phases — power > strength > mass — which is the whole teaching point.
+/* ===================== state ===================== */
+const state = { sex:'male', age:50, chart:null };
+const $ = id => document.getElementById(id);
+const frame=$('frame'), home=$('home'), viewer=$('viewer'), navback=$('navback');
+const sexCtl=$('sexCtl'), ageCtl=$('ageCtl'), shellAge=$('shellAge'), shellAgeVal=$('shellAgeVal');
 
-   Annual rates (%/yr) and sourcing:
-   - Power    1.3% pre / 3.8% post — declines earliest & fastest (Skelton 1994;
-              segmented 1.1–1.4%→2.2–2.4%, Van Roie/field-test 2025; 10-yr
-              longitudinal 1–2%/yr, J Cachexia Sarcopenia Muscle 2023; steeper
-              still in the oldest-old).
-   - Strength 1.0% pre / 3.0% post — sarcopenia reviews cite 1.5%→3%; segmented
-              data 0.7–1.0%→1.1–1.3%. We sit between the two, keeping it under power.
-   - Mass     0.5% pre / 1.5% post — slowest (Mitchell 2012 ~0.47%/yr; clinical
-              reviews 1–2%/yr after 60). ~40–50% of peak gone by the 80s.
-   Trained: ~half the rate and a later breakpoint — masters-athlete data shows
-   strongly attenuated, sometimes negligible, age-related decline (Wroblewski 2011). */
-const PEAK_AGE = 35;
-const MODEL = {
-  untrained:{ bp:60,
-    power:   {pre:0.013, post:0.038},
-    strength:{pre:0.010, post:0.030},
-    mass:    {pre:0.005, post:0.015} },
-  trained:{ bp:65,
-    power:   {pre:0.007, post:0.020},
-    strength:{pre:0.005, post:0.015},
-    mass:    {pre:0.003, post:0.008} }
-};
-function pct(measure, age, train){
-  if(age<=PEAK_AGE) return 100;
-  const cfg=MODEL[train], m=cfg[measure];
-  const pre =Math.min(age,cfg.bp)-PEAK_AGE;
-  const post=Math.max(0,age-cfg.bp);
-  return 100*Math.pow(1-m.pre,pre)*Math.pow(1-m.post,post);
+/* ===================== home ===================== */
+function cardHTML(c, soon){
+  const thumb = T[c.id] || T.soon;
+  const tag = soon ? `<span class="tag soon">Soon</span>` : `<span class="tag">${c.cat}</span>`;
+  const attr = soon ? 'disabled' : `onclick="openChart('${c.id}')"`;
+  return `<button class="card" ${attr}><div class="thumb">${thumb}</div>
+    <div class="meta"><h3>${c.title}</h3><p>${c.blurb}</p>${tag}</div></button>`;
 }
-const COLORS = {power:'#E8633A', strength:'#0E9BD6', mass:'#56656F'};
-const NAMES  = {power:'POWER', strength:'STRENGTH', mass:'MASS'};
+$('gridLive').innerHTML = LIVE.map(c=>cardHTML(c,false)).join('');
+$('gridSoon').innerHTML = SOON.map(c=>cardHTML(c,true)).join('');
 
-/* ============================ render: gallery ============================ */
-function miniThumb(){
-  /* tiny decorative curve for live card */
-  let pts=[]; for(let a=35;a<=90;a+=2){ pts.push([a, pct('power',a,'untrained')]); }
-  const W=300,H=150, x=a=>((a-35)/55)*W, y=v=>H-(v/100)*(H-12)-6;
-  let d='M'+pts.map(p=>x(p[0]).toFixed(1)+','+y(p[1]).toFixed(1)).join(' L');
-  let pts2=[]; for(let a=35;a<=90;a+=2){ pts2.push([a, pct('strength',a,'untrained')]); }
-  let d2='M'+pts2.map(p=>x(p[0]).toFixed(1)+','+y(p[1]).toFixed(1)).join(' L');
-  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
-    <rect x="0" y="${y(30)}" width="${W}" height="${H-y(30)}" fill="#E8633A" opacity=".10"/>
-    <path d="${d2}" fill="none" stroke="#0E9BD6" stroke-width="4"/>
-    <path d="${d}" fill="none" stroke="#E8633A" stroke-width="4"/>
-  </svg>`;
-}
-function renderGallery(){
-  const grid=document.getElementById('grid');
-  grid.innerHTML = CHARTS.map(c=>`
-    <button class="card" ${c.live?'':'disabled'} ${c.live?`onclick="openChart('${c.id}')"`:''}>
-      <div class="thumb">${c.live?miniThumb():''}</div>
-      <div class="meta">
-        <h3>${c.title}</h3>
-        <p>${c.desc}</p>
-        <span class="tag ${c.live?'':'soon'}">${c.live?'Open':'Coming soon'}</span>
-      </div>
-    </button>`).join('');
-}
-
-/* ============================ render: muscle decline plot ============================ */
-function renderPlot(){
-  const host=document.getElementById('plot');
-  const W=1000, H=560;                 // viewBox; scales to fill
-  const m={l:64,r:40,t:30,b:64};
-  const iw=W-m.l-m.r, ih=H-m.t-m.b;
-  const A0=30, A1=90;
-  // when exactly one component is shown, switch to percentile (population-spread) mode
-  const order=['mass','strength','power'];           // draw power last (on top)
-  const active=order.filter(k=>state.show[k]);
-  const pctMode=active.length===1;
-  const YMAX=100;                                      // hard ceiling: nothing exceeds personal peak
-  const X=a=>m.l+((a-A0)/(A1-A0))*iw;
-  const Y=v=>m.t+(1-v/YMAX)*ih;
-
-  // Functional floors as % of peak power, derived from Alcazar 2021 (JCSM): the
-  // validated low-power thresholds (2.1 W/kg women, 2.6 W/kg men) ≈ 35% of peak;
-  // the average untrained person's POWER crosses this at ~80 (men ~79, women ~80).
-  // Frank disability sits lower (~25% of peak), reached in the mid-to-late 80s.
-  const ZB_TOP=35, ZB_MID=25;          // %-of-peak functional floors (power-anchored)
-  // Population spread as a cone from the shared peak: ~zero width at 35 (everyone is
-  // at 100% of their OWN peak), widening to the Alcazar 2021 spread by old age
-  // (P90/P50≈1.40, P50/P10≈1.41). This keeps every line at or below 100% of peak.
-  // Caveat: a shared-peak cone shows trajectory spread, not full population spread
-  // (it can't encode that a given person's peak itself was high or low).
-  // Power's width is data-grounded; the same width approximates strength/mass.
-  const spreadG=age=>1.0+0.42*Math.min(Math.max((age-35)/45,0),1);
-  const band=(meas,age)=>{ const p50=pct(meas,age,state.train), g=spreadG(age);
-    return {p50, p90:Math.min(p50*g,100), p10:p50/g}; };
-  // first age a given percentile line drops below a %-of-peak threshold (null if never by 90)
-  const crossAge=(meas,thr,which='p50')=>{ for(let a=A0;a<=A1;a++){ if(band(meas,a)[which]<thr) return a; } return null; };
-  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Muscle decline by age">`;
-
-  // gridlines + y labels
-  for(let v=0; v<=YMAX; v+=20){
-    svg+=`<line x1="${m.l}" y1="${Y(v)}" x2="${W-m.r}" y2="${Y(v)}" stroke="#E6EDF2" stroke-width="1.5"/>`;
-    svg+=`<text class="ax" x="${m.l-12}" y="${Y(v)+5}" text-anchor="end">${v}%</text>`;
+/* ===================== navigation ===================== */
+function pushSA(){
+  if(state.chart && state.chart.sa && frame.contentWindow){
+    frame.contentWindow.postMessage({type:'sa', sex:state.sex, age:state.age}, '*');
   }
-  // x labels (decades)
-  for(let a=30;a<=90;a+=10){
-    svg+=`<text class="ax" x="${X(a)}" y="${H-m.b+28}" text-anchor="middle">${a}</text>`;
-  }
-  svg+=`<text class="axbold" x="${m.l+iw/2}" y="${H-6}" text-anchor="middle">Age</text>`;
-  svg+=`<text class="axbold" transform="translate(18,${m.t+ih/2}) rotate(-90)" text-anchor="middle">% of peak capacity</text>`;
-
-  // inflection annotation (~60: decline accelerates) — short guide near the curve bend
-  const infX=X(60);
-  svg+=`<line x1="${infX}" y1="${Y(86)}" x2="${infX}" y2="${Y(62)}" stroke="#9AA7B2" stroke-width="1.5" stroke-dasharray="2 6"/>`;
-  svg+=`<text x="${infX}" y="${Y(88)}" text-anchor="middle" style="font:700 12px Inter" fill="#7C8A96">decline accelerates ≈60</text>`;
-
-  // risk zones — two clinically-labelled bands (teaching thresholds, not dx cutoffs)
-  if(state.show.zone){
-    const xL=m.l, wB=iw;
-    // lower band: frailty / loss of independence (0–45%)
-    svg+=`<rect x="${xL}" y="${Y(ZB_MID)}" width="${wB}" height="${Y(0)-Y(ZB_MID)}" fill="#C0341A" opacity=".13"/>`;
-    // upper band: sarcopenia / dynapenia — function impaired (45–65%)
-    svg+=`<rect x="${xL}" y="${Y(ZB_TOP)}" width="${wB}" height="${Y(ZB_MID)-Y(ZB_TOP)}" fill="#E8633A" opacity=".10"/>`;
-    // boundary lines
-    svg+=`<line x1="${xL}" y1="${Y(ZB_TOP)}" x2="${W-m.r}" y2="${Y(ZB_TOP)}" stroke="#E8633A" stroke-width="2" stroke-dasharray="8 7" opacity=".65"/>`;
-    svg+=`<line x1="${xL}" y1="${Y(ZB_MID)}" x2="${W-m.r}" y2="${Y(ZB_MID)}" stroke="#C0341A" stroke-width="2" stroke-dasharray="8 7" opacity=".7"/>`;
-    // labels parked in the empty lower-left (curves only reach here at advanced age)
-    const lx=xL+18;
-    const yU=Y(ZB_TOP)+(Y(ZB_MID)-Y(ZB_TOP))/2;
-    const yL=Y(ZB_MID)+(Y(0)-Y(ZB_MID))/2;
-    svg+=`<text class="bandttl" x="${lx}" y="${yU-3}" fill="#B23A18">FUNCTION IMPAIRED</text>`;
-    svg+=`<text class="bandsub" x="${lx}" y="${yU+18}" fill="#B23A18">Mobility limited — can't reliably rise from a chair or recover a stumble</text>`;
-    svg+=`<text class="bandttl" x="${lx}" y="${yL-12}" fill="#8E2410">LOSS OF INDEPENDENCE</text>`;
-    svg+=`<text class="bandsub" x="${lx}" y="${yL+9}" fill="#8E2410">Frailty · disability — daily help needed</text>`;
-  }
-
-  // curves
-  if(pctMode){
-    // single component → show population spread: Bottom 10% / Average / Top 10%
-    const meas=active[0], col=COLORS[meas];
-    const poly=which=>{ let p=[]; for(let a=A0;a<=A1;a+=1){ p.push([X(a),Y(band(meas,a)[which])]); } return p; };
-    const d=p=>'M'+p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' L');
-    const P90=poly('p90'), P50=poly('p50'), P10=poly('p10');
-    // shaded band between P10 and P90
-    const fill=d(P90)+' L'+P10.slice().reverse().map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' L')+' Z';
-    svg+=`<path d="${fill}" fill="${col}" opacity=".13"/>`;
-    svg+=`<path d="${d(P90)}" fill="none" stroke="${col}" stroke-width="3" stroke-dasharray="10 7" opacity=".85"/>`;
-    svg+=`<path d="${d(P10)}" fill="none" stroke="${col}" stroke-width="3" stroke-dasharray="10 7" opacity=".85"/>`;
-    svg+=`<path d="${d(P50)}" fill="none" stroke="${col}" stroke-width="6.5" stroke-linecap="round"/>`;
-    // end labels
-    const eY=w=>Y(band(meas,A1)[w]);
-    svg+=`<text x="${X(A1)+8}" y="${eY('p90')+5}" fill="${col}" opacity=".9" style="font:800 15px Archivo">Top 10%</text>`;
-    svg+=`<text class="lblcurve" x="${X(A1)+8}" y="${eY('p50')+5}" fill="${col}">${NAMES[meas]} · avg</text>`;
-    svg+=`<text x="${X(A1)+8}" y="${eY('p10')+5}" fill="${col}" opacity=".9" style="font:800 15px Archivo">Bottom 10%</text>`;
-  } else {
-    order.forEach(meas=>{
-      if(!state.show[meas]) return;
-      let pts=[]; for(let a=A0;a<=A1;a+=1){ pts.push([X(a),Y(pct(meas,a,state.train))]); }
-      const dd='M'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L');
-      svg+=`<path d="${dd}" fill="none" stroke="${COLORS[meas]}" stroke-width="6" stroke-linecap="round"
-              opacity="${meas==='power'?1:.95}"/>`;
-      const ly=Y(pct(meas,A1,state.train));
-      svg+=`<text class="lblcurve" x="${X(A1)+8}" y="${ly+5}" fill="${COLORS[meas]}">${NAMES[meas]}</text>`;
-    });
-  }
-
-  // POWER crossing of the functional floor — the headline, data-anchored teaching point
-  if(state.show.power && state.show.zone){
-    const fy=Y(ZB_TOP);
-    if(pctMode && active[0]==='power'){
-      // three crossings: when the bottom 10% / average / top 10% reach the floor
-      const c10=crossAge('power',ZB_TOP,'p10'), c50=crossAge('power',ZB_TOP,'p50'), c90=crossAge('power',ZB_TOP,'p90');
-      if(c10!==null && c90!==null)
-        svg+=`<line x1="${X(c10)}" y1="${fy}" x2="${X(c90)}" y2="${fy}" stroke="${COLORS.power}" stroke-width="3" opacity=".45"/>`;
-      const tick=(a,big,desc)=>{ if(a===null) return '';
-        const x=X(a); let s=`<circle cx="${x}" cy="${fy}" r="${big?11:7.5}" fill="#fff" stroke="${COLORS.power}" stroke-width="${big?5:4}"/>`;
-        s+=`<text x="${x}" y="${fy-15}" text-anchor="middle" fill="${COLORS.power}" style="font:900 ${big?22:16}px Archivo">~${a}</text>`;
-        s+=`<text x="${x}" y="${fy+26}" text-anchor="middle" fill="${COLORS.power}" style="font:700 12px Inter">${desc}</text>`;
-        return s; };
-      svg+=tick(c10,false,'bottom 10%')+tick(c90,false,'top 10%')+tick(c50,true,'average');
-      if(c90===null)
-        svg+=`<text x="${X(A1)-6}" y="${fy-16}" text-anchor="end" fill="${COLORS.power}" style="font:800 15px Archivo">top 10%: past 90 ↑</text>`;
-    } else {
-      const ca=crossAge('power',ZB_TOP);
-      if(ca!==null){
-        const cx=X(ca);
-        svg+=`<line x1="${cx}" y1="${fy}" x2="${cx}" y2="${m.t+ih}" stroke="${COLORS.power}" stroke-width="2.5" stroke-dasharray="4 5" opacity=".85"/>`;
-        svg+=`<circle cx="${cx}" cy="${fy}" r="11" fill="#fff" stroke="${COLORS.power}" stroke-width="5"/>`;
-        svg+=`<g transform="translate(${cx},${fy})">
-          <rect x="-104" y="12" width="100" height="46" rx="10" fill="${COLORS.power}"/>
-          <text x="-54" y="35" text-anchor="middle" fill="#fff" style="font:900 19px Archivo">age ~${ca}</text>
-          <text x="-54" y="51" text-anchor="middle" fill="#fff" style="font:700 11px Inter" opacity=".92">average · ${state.train}</text></g>`;
-      } else {
-        svg+=`<text x="${X(A1)-6}" y="${fy-12}" text-anchor="end" style="font:800 16px Archivo" fill="${COLORS.power}">trained: stays above the floor past 90 ↑</text>`;
-      }
-    }
-  }
-
-  // age marker
-  const ageX=X(state.age);
-  svg+=`<line x1="${ageX}" y1="${m.t}" x2="${ageX}" y2="${m.t+ih}" stroke="#10151B" stroke-width="2.5" stroke-dasharray="3 5" opacity=".55"/>`;
-  // callout box
-  const boxX = ageX > m.l+iw*0.6 ? ageX-238 : ageX+16;
-  const boxY = m.t+14;
-  let rows;
-  if(pctMode){
-    const meas=active[0], b=band(meas,state.age);
-    rows=[{lbl:'Top 10%',v:b.p90,c:COLORS[meas]},{lbl:'Average',v:b.p50,c:COLORS[meas]},{lbl:'Bottom 10%',v:b.p10,c:COLORS[meas]}];
-  } else {
-    rows=active.map(meas=>({lbl:meas[0].toUpperCase()+meas.slice(1), v:pct(meas,state.age,state.train), c:COLORS[meas]}));
-  }
-  const bh = 34 + rows.length*30;
-  const title = pctMode ? `${NAMES[active[0]]} at age ${state.age}` : `At age ${state.age}`;
-  svg+=`<rect x="${boxX}" y="${boxY}" width="222" height="${bh}" rx="12" fill="#10151B"/>`;
-  svg+=`<text x="${boxX+16}" y="${boxY+24}" fill="#fff" style="font:800 15px Archivo">${title}</text>`;
-  rows.forEach((r,i)=>{
-    const yy=boxY+34+ i*30 +14;
-    svg+=`<circle cx="${boxX+22}" cy="${yy-4}" r="6" fill="${r.c}"/>`;
-    svg+=`<text x="${boxX+38}" y="${yy}" fill="#cfd8df" style="font:600 13px Inter">${r.lbl}</text>`;
-    svg+=`<text x="${boxX+206}" y="${yy}" text-anchor="end" fill="#fff" style="font:800 15px Archivo">${Math.round(r.v)}%</text>`;
-  });
-  // dots on curve(s) at the current age
-  if(pctMode){
-    const meas=active[0], b=band(meas,state.age);
-    ['p90','p50','p10'].forEach(w=>{ svg+=`<circle cx="${ageX}" cy="${Y(b[w])}" r="${w==='p50'?8:6}" fill="#fff" stroke="${COLORS[meas]}" stroke-width="${w==='p50'?4:3}"/>`; });
-  } else {
-    active.forEach(meas=>{ svg+=`<circle cx="${ageX}" cy="${Y(pct(meas,state.age,state.train))}" r="8" fill="#fff" stroke="${COLORS[meas]}" stroke-width="4"/>`; });
-  }
-
-  svg+=`</svg>`;
-  host.innerHTML=svg;
-}
-
-/* ============================ navigation + controls ============================ */
-function go(view){
-  state.view=view;
-  document.getElementById('gallery').classList.toggle('hidden', view!=='gallery');
-  document.getElementById('chart').classList.toggle('active', view==='chart');
 }
 function openChart(id){
-  if(id!=='muscle-decline') return;
-  go('chart'); renderPlot(); updateContext();
+  const c = LIVE.find(x=>x.id===id); if(!c) return;
+  state.chart = c;
+  // global controls visibility + age range
+  sexCtl.hidden = !c.sa; ageCtl.hidden = !c.sa;
+  if(c.sa){
+    shellAge.min=c.amin; shellAge.max=c.amax;
+    state.age = Math.max(c.amin, Math.min(c.amax, state.age));
+    shellAge.value=state.age; shellAgeVal.textContent=state.age;
+  }
+  // build src with first-paint params
+  let src = c.file + '?embed=1';
+  if(c.sa) src += '&sex='+state.sex+'&age='+state.age;
+  frame.src = src;
+  frame.onload = pushSA;            // re-sync once loaded
+  home.hidden = true; viewer.hidden = false; navback.hidden = false;
 }
-function updateContext(){
-  const t = state.sex.charAt(0).toUpperCase()+state.sex.slice(1)+' · age '+state.age;
-  document.getElementById('chartContext').textContent=t;
+function goHome(){
+  state.chart = null;
+  frame.onload = null; frame.src = 'about:blank';
+  viewer.hidden = true; home.hidden = false; navback.hidden = true;
+  sexCtl.hidden = true; ageCtl.hidden = true;
 }
+navback.addEventListener('click', goHome);
+$('brand').addEventListener('click', ()=>{ if(state.chart) goHome(); });
 
-/* global controls */
-document.getElementById('sexSeg').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b)return;
+/* ===================== global sex / age ===================== */
+$('shellSex').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b) return;
   state.sex=b.dataset.sex;
   [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
-  updateContext();
+  pushSA();
 });
-const ageR=document.getElementById('ageRange'), ageV=document.getElementById('ageVal');
-ageR.addEventListener('input',()=>{
-  state.age=+ageR.value; ageV.textContent=ageR.value;
-  if(state.view==='chart'){ renderPlot(); updateContext(); }
+shellAge.addEventListener('input', ()=>{
+  state.age=+shellAge.value; shellAgeVal.textContent=shellAge.value; pushSA();
 });
-
-/* chart toggles */
-document.getElementById('controls').addEventListener('click',e=>{
-  const chip=e.target.closest('.chip');
-  if(chip){ const k=chip.dataset.k; state.show[k]=!state.show[k];
-    chip.setAttribute('aria-pressed',state.show[k]); renderPlot(); return; }
-  const tb=e.target.closest('#trainSeg button');
-  if(tb){ state.train=tb.dataset.train;
-    [...tb.parentElement.children].forEach(x=>x.setAttribute('aria-pressed',x===tb));
-    renderPlot(); }
-});
-
-window.addEventListener('resize',()=>{ if(state.view==='chart') renderPlot(); });
-
-/* init */
-renderGallery();
-go('gallery');
 </script>
 </body>
 </html>

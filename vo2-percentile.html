@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VO₂ Max Percentiles — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E;
+    --line:#CDD8E0;
+    /* fitness category ramp: green (best) → red (worst) */
+    --sup:#1A9850; --exc:#86CB66; --good:#F4D24C; --fair:#F0A24A; --poor:#E05942;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+
+  /* top bar */
+  .topbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:14px 22px;
+    border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;
+    letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:10px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;}
+  .seg button{border:0;background:transparent;font:inherit;font-weight:700;padding:12px 18px;border-radius:10px;
+    color:var(--ink-soft);cursor:pointer;min-height:48px;}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;}
+  .agewrap{display:flex;align-items:center;gap:14px;min-width:260px;}
+  .agewrap input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;
+    background:linear-gradient(90deg,var(--brand),var(--surface-3));outline:none;}
+  .agewrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;
+    background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+  .agewrap input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .ageval{font-family:"Archivo";font-weight:800;font-size:24px;min-width:42px;text-align:center;}
+
+  /* chart shell */
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:14px 22px 4px;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.6vw,30px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;padding:12px 4px 18px;align-items:center;}
+  .chip{border:2px solid var(--surface-3);background:var(--surface);font:inherit;font-weight:700;padding:13px 18px;
+    border-radius:14px;cursor:pointer;min-height:52px;display:flex;align-items:center;gap:10px;color:var(--ink-soft);}
+  .chip .dot{width:14px;height:14px;border-radius:4px;background:var(--surface-3);}
+  .chip[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);background:#fff;}
+  .chip[data-k="hold"][aria-pressed="true"] .dot{background:var(--ink);}
+  .chip[data-k="optimal"][aria-pressed="true"] .dot{background:#117A8B;}
+  .seg.small button{padding:13px 16px;min-height:52px;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:52ch;line-height:1.4;margin-left:auto;}
+
+  /* values table */
+  .tablewrap{flex:1;min-height:0;overflow:auto;padding:4px 2px 8px;}
+  table.vo2{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;}
+  table.vo2 caption{text-align:left;font-family:"Archivo";font-weight:800;font-size:18px;margin-bottom:10px;}
+  table.vo2 th,table.vo2 td{padding:12px 10px;text-align:center;font-size:clamp(14px,1.5vw,18px);}
+  table.vo2 thead th{font-family:"Archivo";font-weight:800;color:#fff;border-radius:8px 8px 0 0;}
+  table.vo2 th.agecol,table.vo2 td.agecol{text-align:left;font-weight:800;font-family:"Archivo";color:var(--ink);
+    background:var(--surface-2);}
+  table.vo2 tbody tr:nth-child(even) td{background:#F7FAFC;}
+  table.vo2 tbody td{font-weight:700;color:var(--ink);border-bottom:1px solid var(--surface-3);}
+  table.vo2 tr[aria-current="true"] td{outline:3px solid var(--ink);outline-offset:-3px;}
+  .tnote{margin:16px 2px 0;font-size:13.5px;color:var(--ink-soft);line-height:1.5;max-width:88ch;}
+  .tnote strong{color:var(--ink);}
+
+  .ax{font:600 14px Inter;fill:var(--ink-soft);}
+  .axbold{font:800 16px Archivo;fill:var(--ink);}
+  @media (max-width:720px){ .ctl-note{display:none;} .topbar{gap:12px;padding:12px 14px;} .agewrap{min-width:180px;} }
+  body.embed .topbar{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="gctl">
+      <span class="lbl">Sex</span>
+      <div class="seg" id="sexSeg">
+        <button data-sex="male" aria-pressed="true">Male</button>
+        <button data-sex="female" aria-pressed="false">Female</button>
+      </div>
+    </div>
+    <div class="gctl agewrap">
+      <span class="lbl">Age</span>
+      <input id="ageRange" type="range" min="20" max="80" value="50" step="1">
+      <span class="ageval" id="ageVal">50</span>
+    </div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">Where your VO₂ max ranks — by age and sex</div>
+      <div class="ccontext" id="ctx">Male · age 50</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="tablewrap" id="tablewrap" hidden></div>
+      <div class="controls" id="controls">
+        <div class="seg small" id="viewSeg" style="margin-right:4px">
+          <button data-view="chart" aria-pressed="true">Chart</button>
+          <button data-view="table" aria-pressed="false">Table</button>
+        </div>
+        <button class="chip" data-k="hold" aria-pressed="false"><span class="dot"></span>Hold your VO₂</button>
+        <button class="chip" data-k="optimal" aria-pressed="false"><span class="dot"></span>Optimal range</button>
+        <span class="ctl-note">Each band is a fitness category for your age and sex (FRIEND registry, measured CPET). The bands slide down with age — so holding the same VO₂ moves you <em>up</em> the rankings while peers decline. Turn on <strong>Optimal range</strong> to see the elite-athlete ceiling above Superior, and why a higher score keeps paying off.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================== state ===================== */
+const state = { sex:'male', age:50, hold:false, view:'chart', optimal:false };
+
+/* ===================== data: FRIEND treadmill VO2max percentiles (mL/kg/min) =====================
+   Kaminsky, Arena & Myers, Mayo Clin Proc 2015 (n=7783), Table 3. Decade midpoints 25..75.
+   Categories map percentiles to ACSM-style labels:
+   Superior ≥P90 · Excellent P75–P90 · Good P50–P75 · Fair P25–P50 · Poor <P25            */
+const AGES=[25,35,45,55,65,75];
+const VO2 = {
+  male:{
+    p25:[40.1,35.9,31.9,27.1,23.7,20.4],
+    p50:[48.0,42.4,37.8,32.6,28.2,24.4],
+    p75:[55.2,49.2,45.0,39.7,34.5,30.4],
+    p90:[61.8,56.5,52.1,45.6,40.3,36.6]
+  },
+  female:{
+    p25:[30.5,25.3,22.1,19.9,17.2,15.6],
+    p50:[37.6,30.2,26.7,23.4,20.0,18.3],
+    p75:[44.7,36.1,32.4,27.6,23.8,20.8],
+    p90:[51.3,41.4,38.4,32.0,27.0,23.1]
+  }
+};
+/* linear interpolation across decade midpoints; linear extrapolation past the ends */
+function interp(arr, age){
+  const n=AGES.length;
+  if(age<=AGES[0]){ const s=(arr[1]-arr[0])/(AGES[1]-AGES[0]); return arr[0]+s*(age-AGES[0]); }
+  if(age>=AGES[n-1]){ const s=(arr[n-1]-arr[n-2])/(AGES[n-1]-AGES[n-2]); return arr[n-1]+s*(age-AGES[n-1]); }
+  for(let i=0;i<n-1;i++){ if(age>=AGES[i]&&age<=AGES[i+1]){
+    const t=(age-AGES[i])/(AGES[i+1]-AGES[i]); return arr[i]+t*(arr[i+1]-arr[i]); } }
+}
+function val(p, age){ return interp(VO2[state.sex][p], age); }
+
+/* category bands, top → bottom */
+const BANDS=[
+  {name:'SUPERIOR',  top:'max', bot:'p90', fill:'#1A9850', ink:'#FFFFFF', sub:'top 10%'},
+  {name:'EXCELLENT', top:'p90', bot:'p75', fill:'#86CB66', ink:'#13351E', sub:'75th–90th'},
+  {name:'GOOD',      top:'p75', bot:'p50', fill:'#F4D24C', ink:'#4E3F0E', sub:'50th–75th'},
+  {name:'FAIR',      top:'p50', bot:'p25', fill:'#F0A24A', ink:'#4E300F', sub:'25th–50th'},
+  {name:'POOR',      top:'p25', bot:'min', fill:'#E05942', ink:'#FFFFFF', sub:'bottom 25%'}
+];
+
+/* ===================== render ===================== */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1000, H=560, m={l:64,r:120,t:30,b:64};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const A0=20, A1=80, YMIN=10, YMAX=state.optimal?92:70;
+  const X=a=>m.l+((a-A0)/(A1-A0))*iw;
+  const Y=v=>m.t+(1-(v-YMIN)/(YMAX-YMIN))*ih;
+  // elite endurance reference — a clearly-labelled reference (not a FRIEND percentile),
+  // shaped on the P90 trajectory so it declines with age as masters athletes do
+  const eliteLine=age=>Math.min(val('p90',age)*1.2, 90);
+  const lineAt=(p,age)=> p==='max'?YMAX : p==='min'?YMIN : p==='elite'?eliteLine(age) : val(p,age);
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="VO2 max percentiles by age and sex">`;
+
+  // category bands (filled polygons across the age range). In Optimal view, the
+  // Superior band is capped at the elite line and a lighter ELITE reference band sits above.
+  const drawBands = state.optimal
+    ? [ {name:'ELITE ATHLETE', top:'max', bot:'elite', fill:'#117A8B', ink:'#0A4651', sub:'≈70–85 M · 60–75 W', ref:true},
+        {name:'SUPERIOR', top:'elite', bot:'p90', fill:'#1A9850', ink:'#fff', sub:'top 10%'},
+        BANDS[1], BANDS[2], BANDS[3], BANDS[4] ]
+    : BANDS;
+  drawBands.forEach(b=>{
+    let topPts=[], botPts=[];
+    for(let a=A0;a<=A1;a+=1){ topPts.push([X(a),Y(lineAt(b.top,a))]); botPts.push([X(a),Y(lineAt(b.bot,a))]); }
+    const d='M'+topPts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L')
+          +' L'+botPts.reverse().map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L')+' Z';
+    svg+=`<path d="${d}" fill="${b.fill}" opacity="${b.ref?'.40':'.9'}"/>`;
+    if(b.ref){ // dashed floor marks the elite reference line
+      let fl=[]; for(let a=A0;a<=A1;a+=1){ fl.push([X(a),Y(eliteLine(a))]); }
+      svg+=`<path d="M${fl.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L')}" fill="none" stroke="#0E6273" stroke-width="2.5" stroke-dasharray="9 7"/>`;
+    }
+  });
+
+  // y gridlines + labels (drawn over bands, subtle)
+  for(let v=YMIN; v<=YMAX; v+=10){
+    svg+=`<line x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}" stroke="#FFFFFF" stroke-width="1" opacity=".35"/>`;
+    svg+=`<text class="ax" x="${m.l-12}" y="${Y(v)+5}" text-anchor="end">${v}</text>`;
+  }
+  // x labels
+  for(let a=20;a<=80;a+=10){ svg+=`<text class="ax" x="${X(a)}" y="${H-m.b+28}" text-anchor="middle">${a}</text>`; }
+  svg+=`<text class="axbold" x="${m.l+iw/2}" y="${H-6}" text-anchor="middle">Age</text>`;
+  svg+=`<text class="axbold" transform="translate(16,${m.t+ih/2}) rotate(-90)" text-anchor="middle">VO₂ max (mL/kg/min)</text>`;
+
+  // band labels (parked at the left, vertically centred in each band) + percentile boundary tags at right
+  const aL=22;
+  drawBands.forEach(b=>{
+    const yc=(Y(lineAt(b.top,aL))+Y(lineAt(b.bot,aL)))/2;
+    svg+=`<text x="${X(aL)}" y="${yc-2}" fill="${b.ink}" style="font:900 21px Archivo">${b.name}</text>`;
+    svg+=`<text x="${X(aL)}" y="${yc+17}" fill="${b.ink}" opacity=".85" style="font:700 12px Inter">${b.sub}</text>`;
+  });
+  if(state.optimal){
+    svg+=`<text x="${m.l+iw/2}" y="18" text-anchor="middle" fill="#0A4651" style="font:800 13px Inter">Higher keeps paying off — fitness lowers mortality with no observed ceiling (Mandsager 2018, 122k adults)</text>`;
+  }
+  // right-edge percentile boundary labels
+  [['p90','90th'],['p75','75th'],['p50','50th'],['p25','25th']].forEach(([p,lbl])=>{
+    const y=Y(val(p,A1));
+    svg+=`<line x1="${m.l+iw}" y1="${y}" x2="${m.l+iw+8}" y2="${y}" stroke="#fff" stroke-width="2"/>`;
+    svg+=`<text x="${m.l+iw+12}" y="${y+5}" fill="#3A4753" style="font:700 13px Inter">${lbl}</text>`;
+  });
+
+  // "hold your VO2" — maintain today's median and watch the ranking climb
+  if(state.hold){
+    const hv=val('p50',state.age);
+    const x0=X(state.age), x1=X(A1), y=Y(hv);
+    svg+=`<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="#10151B" stroke-width="3.5" stroke-dasharray="2 7" stroke-linecap="round"/>`;
+    // category this held value lands in at age 80
+    const endCat = categoryAt(hv, A1);
+    svg+=`<g transform="translate(${x1},${y})">
+      <circle cx="0" cy="0" r="7" fill="#10151B"/>
+      <rect x="-232" y="-46" width="150" height="38" rx="9" fill="#10151B"/>
+      <text x="-157" y="-28" text-anchor="middle" fill="#fff" style="font:800 13px Inter">hold ${hv.toFixed(0)} mL/kg/min</text>
+      <text x="-157" y="-13" text-anchor="middle" fill="#fff" style="font:900 13px Archivo">→ ${endCat} at 80</text></g>`;
+  }
+
+  // age marker + dots where it crosses each boundary
+  const ax=X(state.age);
+  svg+=`<line x1="${ax}" y1="${m.t}" x2="${ax}" y2="${m.t+ih}" stroke="#10151B" stroke-width="2.5" stroke-dasharray="3 5" opacity=".6"/>`;
+  ['p90','p75','p50','p25'].forEach(p=>{ svg+=`<circle cx="${ax}" cy="${Y(val(p,state.age))}" r="5.5" fill="#fff" stroke="#10151B" stroke-width="2.5"/>`; });
+  if(state.optimal) svg+=`<circle cx="${ax}" cy="${Y(eliteLine(state.age))}" r="5.5" fill="#fff" stroke="#10151B" stroke-width="2.5"/>`;
+
+  // callout: category thresholds at the current age
+  const boxW=250, boxX = ax>m.l+iw*0.55 ? ax-boxW-16 : ax+16, boxY=m.t+12;
+  const t=[];
+  if(state.optimal){
+    t.push(['ELITE',    `≥ ${eliteLine(state.age).toFixed(0)}`, '#117A8B']);
+    t.push(['SUPERIOR', `${val('p90',state.age).toFixed(0)}–${eliteLine(state.age).toFixed(0)}`, '#1A9850']);
+  } else {
+    t.push(['SUPERIOR', `≥ ${val('p90',state.age).toFixed(0)}`, '#1A9850']);
+  }
+  t.push(['EXCELLENT',`${val('p75',state.age).toFixed(0)}–${val('p90',state.age).toFixed(0)}`, '#86CB66']);
+  t.push(['GOOD',     `${val('p50',state.age).toFixed(0)}–${val('p75',state.age).toFixed(0)}`, '#F4D24C']);
+  t.push(['FAIR',     `${val('p25',state.age).toFixed(0)}–${val('p50',state.age).toFixed(0)}`, '#F0A24A']);
+  t.push(['POOR',     `< ${val('p25',state.age).toFixed(0)}`, '#E05942']);
+  const bh=36+t.length*28;
+  svg+=`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${bh}" rx="12" fill="#10151B"/>`;
+  svg+=`<text x="${boxX+16}" y="${boxY+25}" fill="#fff" style="font:800 15px Archivo">${state.sex==='male'?'Male':'Female'} · age ${state.age}</text>`;
+  t.forEach((r,i)=>{ const yy=boxY+36+i*28+14;
+    svg+=`<rect x="${boxX+16}" y="${yy-13}" width="12" height="12" rx="3" fill="${r[2]}"/>`;
+    svg+=`<text x="${boxX+36}" y="${yy}" fill="#cfd8df" style="font:600 13px Inter">${r[0]}</text>`;
+    svg+=`<text x="${boxX+boxW-14}" y="${yy}" text-anchor="end" fill="#fff" style="font:800 14px Archivo">${r[1]}</text>`;
+  });
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+/* which category an absolute VO2 falls into at a given age */
+function categoryAt(v, age){
+  if(v>=val('p90',age)) return 'SUPERIOR';
+  if(v>=val('p75',age)) return 'EXCELLENT';
+  if(v>=val('p50',age)) return 'GOOD';
+  if(v>=val('p25',age)) return 'FAIR';
+  return 'POOR';
+}
+
+/* ===================== table view ===================== */
+function renderTable(){
+  const host=document.getElementById('tablewrap');
+  const d=VO2[state.sex];
+  const decades=['20–29','30–39','40–49','50–59','60–69','70–79'];
+  const curIdx=Math.min(Math.max(Math.floor((state.age-20)/10),0),5);
+  const heads=[['POOR','#E05942'],['FAIR','#F0A24A'],['GOOD','#F4D24C'],['EXCELLENT','#86CB66'],['SUPERIOR','#1A9850'],['ELITE','#117A8B']];
+  const lightHead=['#F0A24A','#F4D24C','#86CB66'];
+  let h=`<table class="vo2"><caption>${state.sex==='male'?'Male':'Female'} — VO₂ max by fitness category (mL/kg/min)</caption><thead><tr>`;
+  h+=`<th class="agecol">Age</th>`;
+  heads.forEach(([t,c])=>{ h+=`<th style="background:${c};${lightHead.includes(c)?'color:#2A2410':''}">${t}</th>`; });
+  h+=`</tr></thead><tbody>`;
+  for(let i=0;i<6;i++){
+    const elite=Math.round(d.p90[i]*1.2);
+    h+=`<tr ${i===curIdx?'aria-current="true"':''}><td class="agecol">${decades[i]}</td>`
+      +`<td>&lt; ${d.p25[i]}</td><td>${d.p25[i]}–${d.p50[i]}</td><td>${d.p50[i]}–${d.p75[i]}</td>`
+      +`<td>${d.p75[i]}–${d.p90[i]}</td><td>${d.p90[i]}–${elite}</td><td>≥ ${elite}</td></tr>`;
+  }
+  h+=`</tbody></table>`;
+  h+=`<p class="tnote"><strong>Categories</strong> use ACSM percentile ranking on FRIEND registry data (Kaminsky, Arena &amp; Myers, Mayo Clin Proc 2015; n=7,783 measured treadmill CPET): Poor &lt;25th · Fair 25–50th · Good 50–75th · Excellent 75–90th · Superior ≥90th. The highlighted row matches the selected age.<br>
+  <strong>Elite</strong> is an athlete reference (≈ 90th percentile × 1.2), <em>not</em> a population percentile — elite endurance athletes typically run <strong>70–85 (men) / 60–75 (women)</strong>, with world-class values up to ~90+.<br>
+  <strong>Why chase a number past Superior?</strong> Cardiorespiratory fitness lowers mortality with <strong>no observed ceiling</strong> — even “elite” beats “high” fitness by ~23% (adjusted HR 0.77), and low fitness carries mortality risk comparable to or worse than smoking, diabetes, or coronary disease (Mandsager 2018, JAMA Netw Open, 122,007 adults).</p>`;
+  host.innerHTML=h;
+}
+
+/* show the active view and (re)draw it */
+function update(){
+  const chart = state.view==='chart';
+  document.getElementById('plot').hidden = !chart;
+  document.getElementById('tablewrap').hidden = chart;
+  if(chart) render(); else renderTable();
+  ctx();
+}
+
+/* ===================== controls ===================== */
+function ctx(){ document.getElementById('ctx').textContent =
+  (state.sex==='male'?'Male':'Female')+' · age '+state.age; }
+
+document.getElementById('sexSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.sex=b.dataset.sex;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+  update();
+});
+document.getElementById('viewSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.view=b.dataset.view;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+  update();
+});
+const ageR=document.getElementById('ageRange'), ageV=document.getElementById('ageVal');
+ageR.addEventListener('input',()=>{ state.age=+ageR.value; ageV.textContent=ageR.value; update(); });
+document.getElementById('controls').addEventListener('click',e=>{
+  const chip=e.target.closest('.chip'); if(!chip) return;
+  const k=chip.dataset.k; state[k]=!state[k]; chip.setAttribute('aria-pressed',state[k]); update();
+});
+window.addEventListener('resize',()=>{ if(state.view==='chart') render(); });
+
+update();
+
+/* ---- gallery embed ---- */
+(function(){
+  const q=new URLSearchParams(location.search); if(!q.get('embed')) return;
+  document.body.classList.add('embed');
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const sexBtns=document.querySelectorAll('#sexSeg button');
+  const aR=document.getElementById('ageRange'), aV=document.getElementById('ageVal');
+  function applySA(sx,ag){
+    if(sx){ state.sex=sx; sexBtns.forEach(x=>x.setAttribute('aria-pressed',x.dataset.sex===sx)); }
+    if(ag!=null&&ag!==''){ state.age=clamp(+ag,20,80); aR.value=state.age; aV.textContent=state.age; }
+    if(state.view==='chart') render(); else renderTable();
+  }
+  applySA(q.get('sex'), q.get('age'));
+  window.addEventListener('message',e=>{ const d=e.data||{}; if(d.type==='sa') applySA(d.sex,d.age); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Muscle Mass Percentiles — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --good:#1A9850; --risk:#D64530;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 22px;
+    border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;
+    letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:10px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;}
+  .seg button{border:0;background:transparent;font:inherit;font-weight:700;padding:12px 16px;border-radius:10px;
+    color:var(--ink-soft);cursor:pointer;min-height:48px;}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;}
+  .agewrap{display:flex;align-items:center;gap:14px;min-width:240px;}
+  .agewrap input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;
+    background:linear-gradient(90deg,var(--brand),var(--surface-3));outline:none;}
+  .agewrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;
+    background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+  .agewrap input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .ageval{font-family:"Archivo";font-weight:800;font-size:24px;min-width:42px;text-align:center;}
+
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:14px 22px 4px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.6vw,30px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;padding:12px 4px 18px;align-items:center;}
+  .chip{border:2px solid var(--surface-3);background:var(--surface);font:inherit;font-weight:700;padding:13px 18px;
+    border-radius:14px;cursor:pointer;min-height:52px;display:flex;align-items:center;gap:10px;color:var(--ink-soft);}
+  .chip .dot{width:14px;height:14px;border-radius:4px;background:var(--surface-3);}
+  .chip[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);}
+  .chip[aria-pressed="true"] .dot{background:var(--good);}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:60ch;line-height:1.45;margin-left:auto;}
+  .ctl-note strong{color:var(--ink);}
+
+  .ax{font:600 14px Inter;fill:var(--ink-soft);}
+  .axbold{font:800 16px Archivo;fill:var(--ink);}
+  @media (max-width:760px){ .ctl-note{display:none;} .topbar{gap:12px;padding:12px 14px;} .agewrap{min-width:170px;} }
+  body.embed .topbar{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="gctl">
+      <span class="lbl">Metric</span>
+      <div class="seg" id="metricSeg">
+        <button data-metric="almi" aria-pressed="true">Appendicular (ALMI)</button>
+        <button data-metric="lmi" aria-pressed="false">Total muscle (LMI)</button>
+      </div>
+    </div>
+    <div class="gctl">
+      <span class="lbl">Sex</span>
+      <div class="seg" id="sexSeg">
+        <button data-sex="male" aria-pressed="true">Male</button>
+        <button data-sex="female" aria-pressed="false">Female</button>
+      </div>
+    </div>
+    <div class="gctl agewrap">
+      <span class="lbl">Age</span>
+      <input id="ageRange" type="range" min="20" max="80" value="50" step="1">
+      <span class="ageval" id="ageVal">50</span>
+    </div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle" id="ctitle">Your muscle mass vs. the danger line — by age and sex</div>
+      <div class="ccontext" id="ctx">Male · age 50</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls" id="controls">
+        <button class="chip" data-k="buffer" aria-pressed="false"><span class="dot"></span><span id="chipLbl">Show muscle buffer</span></button>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================== state ===================== */
+const state = { sex:'male', age:50, metric:'almi', buffer:false };
+
+/* ===================== data: GE-Lunar DXA percentiles (kg/m²) =====================
+   Imboden, Swartz, Finch, Harber & Kaminsky, PLOS ONE 2017 (n=3,327).
+   ALMI = Table 5 (appendicular: arms+legs / ht²). LMI = Table 3 (total lean / ht²).
+   p25/p75 interpolated from the published 20/30 & 70/80 columns. Decade midpoints 25..75. */
+const AGES=[25,35,45,55,65,75];
+const ALMI = {
+  male:{ p10:[7.9,7.7,7.3,7.4,7.4,7.1], p25:[8.45,8.35,8.15,7.95,7.85,7.5],
+         p50:[9.3,9.1,8.7,8.6,8.5,8.0], p75:[10.55,9.8,9.5,9.35,9.15,8.45], p90:[12.1,10.6,10.5,10.1,9.7,9.1] },
+  female:{ p10:[5.8,5.7,5.7,5.5,5.6,5.3], p25:[6.25,6.25,6.0,5.95,6.0,5.8],
+           p50:[6.9,6.8,6.7,6.6,6.5,6.3], p75:[7.6,7.6,7.4,7.25,7.25,6.9], p90:[8.3,8.4,8.2,8.0,8.1,7.5] }
+};
+const LMI = {
+  male:{ p10:[16.9,16.8,16.7,16.3,16.8,16.2], p25:[18.05,17.8,17.65,17.5,17.55,16.95],
+         p50:[19.5,19.3,19.2,18.8,18.9,17.7], p75:[21.85,20.7,20.65,20.45,20.1,18.7], p90:[23.8,22.2,22.1,21.6,21.3,19.9] },
+  female:{ p10:[13.4,13.3,13.2,13.2,13.3,13.2], p25:[14.25,14.35,14.1,14.15,14.15,14.0],
+           p50:[15.3,15.4,15.3,15.5,15.3,14.9], p75:[16.6,17.15,16.9,16.95,16.7,16.25], p90:[18.0,18.8,19.0,18.7,18.2,17.7] }
+};
+
+const METRICS = {
+  almi:{ data:ALMI, unit:'ALMI · arms+legs (kg/m²)',
+    yr:{male:[6.5,13], female:[4.5,9]},
+    ref:{kind:'floor', male:7.0, female:5.5},   // sarcopenia threshold
+    title:'Your muscle mass vs. the danger line — by age and sex',
+    chip:'Show muscle buffer',
+    note:'<strong>Appendicular</strong> lean mass (arms + legs) ÷ height² — straight off your DEXA scan. The blue band is the normal range for your age and sex; the red line is the <strong>sarcopenia threshold</strong> (clinically low muscle). Men lose appendicular muscle steadily with age while women stay flatter — which is why a baseline scan plus re-tests catch a downward drift years before it becomes a problem.' },
+  lmi:{ data:LMI, unit:'Total muscle · LMI (kg/m²)',
+    yr:{male:[15,26], female:[12,22]},
+    ref:{kind:'ceiling', male:24, female:21},   // FFMI≈25/22 placed at matching LMI (FFMI≈LMI+1 for bone)
+    title:'Total muscle vs. the natural ceiling — by age and sex',
+    chip:'Show headroom to ceiling',
+    note:'<strong>Total</strong> lean mass ÷ height² — your whole-body muscle from the same scan. The green line is the <strong>natural-muscle ceiling</strong>: drug-free trained men top out near FFMI ≈ 25 (Kouri 1995); women lower (≈ 22, less established). FFMI counts bone, so FFMI ≈ LMI + ~1 — the line is drawn at the matching LMI. Most people sit well below it, with real room to build.' }
+};
+
+function interp(arr, age){
+  const n=AGES.length;
+  if(age<=AGES[0]){ const s=(arr[1]-arr[0])/(AGES[1]-AGES[0]); return arr[0]+s*(age-AGES[0]); }
+  if(age>=AGES[n-1]){ const s=(arr[n-1]-arr[n-2])/(AGES[n-1]-AGES[n-2]); return arr[n-1]+s*(age-AGES[n-1]); }
+  for(let i=0;i<n-1;i++){ if(age>=AGES[i]&&age<=AGES[i+1]){
+    const t=(age-AGES[i])/(AGES[i+1]-AGES[i]); return arr[i]+t*(arr[i+1]-arr[i]); } }
+}
+const val=(p,age)=>interp(METRICS[state.metric].data[state.sex][p],age);
+
+/* ===================== render ===================== */
+function render(){
+  const host=document.getElementById('plot');
+  const M=METRICS[state.metric];
+  const W=1000,H=560,m={l:74,r:124,t:30,b:64};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const A0=20,A1=80, [YMIN,YMAX]=M.yr[state.sex];
+  const X=a=>m.l+((a-A0)/(A1-A0))*iw;
+  const Y=v=>m.t+(1-(v-YMIN)/(YMAX-YMIN))*ih;
+  const refVal=M.ref[state.sex], isFloor=M.ref.kind==='floor';
+
+  const band=(loP,hiP,fill,op)=>{
+    let top=[],bot=[];
+    for(let a=A0;a<=A1;a+=1){ top.push([X(a),Y(typeof hiP==='number'?hiP:val(hiP,a))]); bot.push([X(a),Y(typeof loP==='number'?loP:val(loP,a))]); }
+    return `<path d="M${top.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L')} L${bot.reverse().map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L')} Z" fill="${fill}" opacity="${op}"/>`;
+  };
+  const line=(p,stroke,w,dash)=>{
+    let pts=[]; for(let a=A0;a<=A1;a+=1){ pts.push([X(a),Y(typeof p==='number'?p:val(p,a))]); }
+    return `<path d="M${pts.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' L')}" fill="none" stroke="${stroke}" stroke-width="${w}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
+  };
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Lean mass index by age and sex">`;
+
+  // zones
+  svg+=band('p90',YMAX,'#1A9850',.14);    // athletic
+  svg+=band('p10','p90','#0E9BD6',.12);    // normal range
+  svg+=band('p25','p75','#0E9BD6',.20);    // middle 50%
+  if(isFloor) svg+=band(YMIN,refVal,'#D64530',.16);  // sarcopenia zone (ALMI only)
+
+  // gridlines + y labels
+  for(let v=Math.ceil(YMIN);v<=Math.floor(YMAX);v++){
+    svg+=`<line x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}" stroke="#FFFFFF" stroke-width="1" opacity=".5"/>`;
+    svg+=`<text class="ax" x="${m.l-12}" y="${Y(v)+5}" text-anchor="end">${v}</text>`;
+  }
+  for(let a=20;a<=80;a+=10){ svg+=`<text class="ax" x="${X(a)}" y="${H-m.b+28}" text-anchor="middle">${a}</text>`; }
+  svg+=`<text class="axbold" x="${m.l+iw/2}" y="${H-6}" text-anchor="middle">Age</text>`;
+  svg+=`<text class="axbold" transform="translate(18,${m.t+ih/2}) rotate(-90)" text-anchor="middle">${M.unit}</text>`;
+
+  // boundary + reference lines
+  svg+=line('p90','#0E9BD6',2);
+  svg+=line('p10','#0E9BD6',2);
+  svg+=line('p50','#0A6F9E',4);                                   // median
+  svg+=line(refVal, isFloor?'#D64530':'#1A7F45', 3.5, isFloor?'8 6':'10 0');
+
+  // zone labels (left) + right boundary tags
+  svg+=`<text x="${X(22)}" y="${Y((val('p90',22)+YMAX)/2)+5}" fill="#14361F" style="font:900 18px Archivo">ATHLETIC</text>`;
+  svg+=`<text x="${X(22)}" y="${Y((val('p25',22)+val('p75',22))/2)+6}" fill="#0A4A66" style="font:900 18px Archivo">NORMAL RANGE</text>`;
+  if(isFloor){
+    svg+=`<text x="${X(22)}" y="${Y((YMIN+refVal)/2)+5}" fill="#9A2E20" style="font:900 16px Archivo">LOW MUSCLE</text>`;
+  } else {
+    svg+=`<text x="${X(22)}" y="${Y(refVal)-10}" fill="#14361F" style="font:800 13.5px Inter">NATURAL CEILING · FFMI ≈ ${refVal+1}</text>`;
+  }
+  [['p90','90th'],['p50','median'],['p10','10th']].forEach(([p,lbl])=>{
+    const y=Y(val(p,A1)); svg+=`<text x="${m.l+iw+10}" y="${y+5}" fill="#3A4753" style="font:700 13px Inter">${lbl}</text>`; });
+  svg+=`<text x="${m.l+iw+10}" y="${Y(refVal)+5}" fill="${isFloor?'#9A2E20':'#14361F'}" style="font:800 13px Inter">${isFloor?'sarcopenia':'ceiling'}</text>`;
+
+  // age marker + dots
+  const ax=X(state.age);
+  svg+=`<line x1="${ax}" y1="${m.t}" x2="${ax}" y2="${m.t+ih}" stroke="#10151B" stroke-width="2.5" stroke-dasharray="3 5" opacity=".6"/>`;
+  ['p90','p50','p10'].forEach(p=>{ svg+=`<circle cx="${ax}" cy="${Y(val(p,state.age))}" r="5.5" fill="#fff" stroke="#0A6F9E" stroke-width="2.5"/>`; });
+
+  // buffer / headroom: gap between median and the reference line at current age
+  if(state.buffer){
+    const yMed=Y(val('p50',state.age)), yRef=Y(refVal), gap=Math.abs(val('p50',state.age)-refVal);
+    svg+=`<line x1="${ax}" y1="${yMed}" x2="${ax}" y2="${yRef}" stroke="#1A9850" stroke-width="9" opacity=".35" stroke-linecap="round"/>`;
+    svg+=`<g transform="translate(${ax+14},${(yMed+yRef)/2})">
+      <rect x="0" y="-17" width="172" height="34" rx="9" fill="#1A7F45"/>
+      <text x="86" y="-2" text-anchor="middle" fill="#fff" style="font:800 12px Inter">${isFloor?'buffer to sarcopenia':'headroom to ceiling'}</text>
+      <text x="86" y="13" text-anchor="middle" fill="#fff" style="font:900 13px Archivo">${gap.toFixed(1)} kg/m²</text></g>`;
+  }
+
+  // callout
+  const boxW=252, boxX = ax>m.l+iw*0.55 ? ax-boxW-16 : ax+16, boxY=m.t+12;
+  const t=[];
+  if(!isFloor) t.push(['CEILING', `≈ ${refVal.toFixed(0)} (FFMI ${refVal+1})`, '#1A9850']);
+  t.push(['ATHLETIC', `≥ ${val('p90',state.age).toFixed(1)}`, '#1A9850']);
+  t.push(['MEDIAN',   `${val('p50',state.age).toFixed(1)}`,    '#0A6F9E']);
+  t.push(['NORMAL',   `${val('p10',state.age).toFixed(1)}–${val('p90',state.age).toFixed(1)}`, '#0E9BD6']);
+  if(isFloor) t.push(['SARCOPENIA', `< ${refVal.toFixed(1)}`, '#D64530']);
+  const bh=36+t.length*28;
+  svg+=`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${bh}" rx="12" fill="#10151B"/>`;
+  svg+=`<text x="${boxX+16}" y="${boxY+25}" fill="#fff" style="font:800 15px Archivo">${state.sex==='male'?'Male':'Female'} · age ${state.age}</text>`;
+  t.forEach((r,i)=>{ const yy=boxY+36+i*28+14;
+    svg+=`<rect x="${boxX+16}" y="${yy-13}" width="12" height="12" rx="3" fill="${r[2]}"/>`;
+    svg+=`<text x="${boxX+36}" y="${yy}" fill="#cfd8df" style="font:600 13px Inter">${r[0]}</text>`;
+    svg+=`<text x="${boxX+boxW-14}" y="${yy}" text-anchor="end" fill="#fff" style="font:800 14px Archivo">${r[1]}</text>`;
+  });
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+/* ===================== controls ===================== */
+function setMeta(){
+  const M=METRICS[state.metric];
+  document.getElementById('ctitle').textContent=M.title;
+  document.getElementById('note').innerHTML=M.note;
+  document.getElementById('chipLbl').textContent=M.chip;
+  document.getElementById('ctx').textContent=(state.sex==='male'?'Male':'Female')+' · age '+state.age;
+}
+
+document.getElementById('metricSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.metric=b.dataset.metric;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+  setMeta(); render();
+});
+document.getElementById('sexSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.sex=b.dataset.sex;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+  setMeta(); render();
+});
+const ageR=document.getElementById('ageRange'), ageV=document.getElementById('ageVal');
+ageR.addEventListener('input',()=>{ state.age=+ageR.value; ageV.textContent=ageR.value; setMeta(); render(); });
+document.getElementById('controls').addEventListener('click',e=>{
+  const chip=e.target.closest('.chip'); if(!chip) return;
+  state.buffer=!state.buffer; chip.setAttribute('aria-pressed',state.buffer); render();
+});
+window.addEventListener('resize', render);
+
+setMeta(); render();
+
+/* ---- gallery embed ---- */
+(function(){
+  const q=new URLSearchParams(location.search); if(!q.get('embed')) return;
+  document.body.classList.add('embed');
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const sexBtns=document.querySelectorAll('#sexSeg button');
+  const aR=document.getElementById('ageRange'), aV=document.getElementById('ageVal');
+  function applySA(sx,ag){
+    if(sx){ state.sex=sx; sexBtns.forEach(x=>x.setAttribute('aria-pressed',x.dataset.sex===sx)); }
+    if(ag!=null&&ag!==''){ state.age=clamp(+ag,20,80); aR.value=state.age; aV.textContent=state.age; }
+    setMeta(); render();
+  }
+  applySA(q.get('sex'), q.get('age'));
+  window.addEventListener('message',e=>{ const d=e.data||{}; if(d.type==='sa') applySA(d.sex,d.age); });
+})();
+</script>
+</body>
+</html>

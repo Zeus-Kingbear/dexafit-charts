@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Standard Deviations — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --good:#1A9850;
+    --pen:#E8A23A; --por:#D64530;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 22px;
+    border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;
+    letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:10px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;}
+  .seg button{border:0;background:transparent;font:inherit;font-weight:700;padding:12px 16px;border-radius:10px;
+    color:var(--ink-soft);cursor:pointer;min-height:48px;}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;}
+  .seg.dim{opacity:.4;pointer-events:none;}
+  .sdwrap{display:flex;align-items:center;gap:14px;min-width:300px;}
+  .sdwrap input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;
+    background:linear-gradient(90deg,var(--surface-3),var(--brand));outline:none;}
+  .sdwrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;
+    background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+  .sdwrap input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .sdval{font-family:"Archivo";font-weight:800;font-size:22px;min-width:62px;text-align:center;}
+
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:14px 22px 4px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.6vw,30px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:12px;padding:10px 4px 18px;align-items:center;}
+  .chip{display:inline-flex;align-items:center;gap:9px;border:2px solid var(--surface-3);background:var(--surface);
+    border-radius:13px;padding:11px 16px;font:inherit;font-weight:700;color:var(--ink-soft);cursor:pointer;min-height:48px;}
+  .chip .dot{width:14px;height:14px;border-radius:4px;border:2px solid #C2CDD6;}
+  .chip[aria-pressed="true"]{border-color:var(--brand-deep);color:var(--ink);background:#F1F9FD;}
+  .chip[aria-pressed="true"] .dot{background:var(--brand);border-color:var(--brand-deep);}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:78ch;line-height:1.45;}
+  .ctl-note strong{color:var(--ink);}
+  @media (max-width:760px){ .topbar{gap:12px;padding:12px 14px;} .sdwrap{min-width:210px;} }
+  body.embed .brand{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="gctl" id="dirGroup">
+      <span class="lbl">For this measure</span>
+      <div class="seg" id="dirSeg">
+        <button data-dir="high" aria-pressed="true">Higher is better</button>
+        <button data-dir="low" aria-pressed="false">Lower is better</button>
+      </div>
+    </div>
+    <div class="gctl sdwrap">
+      <span class="lbl" id="scoreLbl">Score</span>
+      <input id="sdRange" type="range" min="-6" max="6" value="1" step="0.1">
+      <span class="sdval" id="sdVal">+1.0</span>
+    </div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle" id="cTitle">What a standard deviation means</div>
+      <div class="ccontext" id="cContext">Every score on your report is a spot on this curve</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <button class="chip" id="boneChip" aria-pressed="false"><span class="dot"></span>Bone density (T-score)</button>
+        <span class="ctl-note" id="note">Most people cluster near the middle; few sit at the edges. One <strong>standard deviation (SD)</strong> is one step from average. Your <strong>T-score</strong> and <strong>Z-score</strong> are SD scores — how many steps you are from the mean. Drag the score, or tap the curve, to see the percentile and how rare it is.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================== state ===================== */
+const state = { z:1.0, dir:'high', bone:false };
+
+/* ---- normal-distribution math ---- */
+function erf(x){
+  const s=x<0?-1:1; x=Math.abs(x);
+  const t=1/(1+0.3275911*x);
+  const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);
+  return s*y;
+}
+const erfPhi=z=>0.5*(1+erf(z/Math.SQRT2));
+const SQRT2PI=Math.sqrt(2*Math.PI);
+const phi=z=>Math.exp(-z*z/2)/SQRT2PI;        // density
+/* upper-tail P(Z>z) for z>0: erf for the body, asymptotic series in the far tail (accurate past |z|>3) */
+function tailQ(z){
+  if(z<=3) return 1-erfPhi(z);
+  return phi(z)/z*(1 - 1/(z*z) + 3/Math.pow(z,4) - 15/Math.pow(z,6));
+}
+const Phi=z=> z>=0 ? 1-tailQ(z) : tailQ(-z);   // accurate CDF across the whole range
+const pdf=z=>Math.exp(-z*z/2);                  // bell height, peak 1 at z=0
+function ord(n){ const s=["th","st","nd","rd"], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
+
+/* ---- formatting ---- */
+function fmtN(N){ N=Math.max(N,1);
+  if(N>=1e9){ const b=N/1e9; return (b>=10?Math.round(b):+b.toFixed(1))+' billion'; }
+  if(N>=1e6){ const m=N/1e6; return (m>=10?Math.round(m):+m.toFixed(1))+' million'; }
+  if(N>=100){ const d=Math.pow(10,Math.floor(Math.log10(N))-1); return (Math.round(N/d)*d).toLocaleString('en-US'); }
+  return String(Math.round(N));
+}
+function pctLabel(z){ const p=Phi(z)*100;
+  if(p>99.9) return '99.9th+'; if(p<0.1) return '<0.1th'; return ord(Math.round(p)); }
+function betterPct(z,high){ const b=(high?Phi(z):1-Phi(z))*100;
+  if(b>99.9) return '99.9%+'; if(b<0.1) return '<0.1%'; return Math.round(b)+'%'; }
+function rarityLabel(z){ const tail=Math.min(Phi(z),1-Phi(z)); return fmtN(1/tail); }
+function boneCat(z){
+  if(z<=-2.5) return ['Osteoporosis range','#D64530'];
+  if(z<-1.0)  return ['Osteopenia · low bone mass','#E8A23A'];
+  return ['Normal bone density','#1A9850'];
+}
+
+/* ===================== render ===================== */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1000,H=560,m={l:60,r:60,t:96,b:96};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const Z0=-4.4,Z1=4.4;
+  const X=z=>m.l+((z-Z0)/(Z1-Z0))*iw;
+  const base=m.t+ih, curveY=z=>base-pdf(z)*ih;
+  const curvePts=(za,zb)=>{ let p=[]; for(let z=za;z<=zb+1e-9;z+=0.04) p.push([X(z).toFixed(1),curveY(z).toFixed(1)]); return p; };
+  const areaPath=(za,zb)=>{ const c=curvePts(za,zb);
+    return `M${X(za).toFixed(1)},${base} L`+c.map(p=>p[0]+','+p[1]).join(' L')+` L${X(zb).toFixed(1)},${base} Z`; };
+
+  const z=state.z, high=state.dir==='high', bone=state.bone;
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Normal distribution" style="cursor:pointer">`;
+
+  if(bone){
+    /* clinical zone columns (full height) */
+    svg+=`<rect x="${X(Z0)}" y="${m.t-66}" width="${X(-2.5)-X(Z0)}" height="${base-(m.t-66)}" fill="#D64530" opacity=".10"/>`;
+    svg+=`<rect x="${X(-2.5)}" y="${m.t-66}" width="${X(-1)-X(-2.5)}" height="${base-(m.t-66)}" fill="#E8A23A" opacity=".13"/>`;
+    svg+=`<rect x="${X(-1)}" y="${m.t-66}" width="${X(Z1)-X(-1)}" height="${base-(m.t-66)}" fill="#1A9850" opacity=".06"/>`;
+  } else {
+    /* alternating SD bands */
+    for(let i=-4;i<4;i++){ const f=(i%2===0)?'#F4F8FB':'#EAF1F6';
+      svg+=`<path d="${areaPath(i,i+1)}" fill="${f}"/>`; }
+    /* "beaten" (green) vs other region */
+    const beatenA=high?[Z0,z]:[z,Z1], otherA=high?[z,Z1]:[Z0,z];
+    const cl=v=>Math.max(Z0,Math.min(Z1,v));
+    svg+=`<path d="${areaPath(cl(otherA[0]),cl(otherA[1]))}" fill="#0E9BD6" opacity=".10"/>`;
+    svg+=`<path d="${areaPath(cl(beatenA[0]),cl(beatenA[1]))}" fill="#1A9850" opacity=".26"/>`;
+  }
+
+  /* bell outline + baseline */
+  svg+=`<path d="M${curvePts(Z0,Z1).map(p=>p[0]+','+p[1]).join(' L')}" fill="none" stroke="#0A6F9E" stroke-width="3"/>`;
+  svg+=`<line x1="${m.l}" y1="${base}" x2="${m.l+iw}" y2="${base}" stroke="#CDD8E0" stroke-width="1.5"/>`;
+
+  /* SD gridlines + axis labels */
+  for(let i=-4;i<=4;i++){
+    svg+=`<line x1="${X(i)}" y1="${Math.min(curveY(i),base-1)}" x2="${X(i)}" y2="${base}" stroke="#CDD8E0" stroke-width="1" opacity=".7"/>`;
+    svg+=`<text x="${X(i)}" y="${base+26}" text-anchor="middle" style="font:800 15px Archivo" fill="#10151B">${i>0?'+':''}${i} SD</text>`;
+    const pp=Phi(i)*100, lbl = pp<1?'<1st':pp>99?'>99th':ord(Math.round(pp));
+    svg+=`<text x="${X(i)}" y="${base+45}" text-anchor="middle" style="font:600 12px Inter" fill="#3A4753">${lbl} pct</text>`;
+  }
+
+  if(bone){
+    /* threshold lines + zone labels */
+    const vline=(zz,col,txt)=>{ svg+=`<line x1="${X(zz)}" y1="${m.t-66}" x2="${X(zz)}" y2="${base}" stroke="${col}" stroke-width="2.5" stroke-dasharray="7 5"/>`+
+      `<text x="${X(zz)}" y="${m.t-72}" text-anchor="middle" style="font:800 15px Archivo" fill="${col}">${txt}</text>`; };
+    vline(-1,'#C98212','−1.0');
+    vline(-2.5,'#B23A2C','−2.5');
+    const zlab=(zc,txt,col)=>svg+=`<text x="${X(zc)}" y="${base-14}" text-anchor="middle" style="font:800 15px Archivo;letter-spacing:.04em" fill="${col}">${txt}</text>`;
+    zlab((-4.4-2.5)/2,'OSTEOPOROSIS','#B23A2C');
+    zlab((-2.5-1)/2,'OSTEOPENIA','#C98212');
+    zlab(1.6,'NORMAL','#1A7F45');
+  } else {
+    /* segment percentages + 68/95 brackets */
+    const segs=[[-3,-2],[-2,-1],[-1,0],[0,1],[1,2],[2,3]];
+    segs.forEach(([a,b])=>{ const area=(Phi(b)-Phi(a))*100; const lab=area<1?area.toFixed(1):area.toFixed(area<5?1:0);
+      svg+=`<text x="${X((a+b)/2)}" y="${base-10}" text-anchor="middle" style="font:700 13px Inter" fill="#5A6B77">${lab}%</text>`; });
+    const brk=(za,zb,y,txt)=>{ svg+=`<path d="M${X(za)},${y+8} L${X(za)},${y} L${X(zb)},${y} L${X(zb)},${y+8}" fill="none" stroke="#9AA8B2" stroke-width="1.5"/>`+
+      `<text x="${X((za+zb)/2)}" y="${y-6}" text-anchor="middle" style="font:700 13px Inter" fill="#3A4753">${txt}</text>`; };
+    brk(-1,1,m.t-22,'68% within ±1 SD');
+    brk(-2,2,m.t-54,'95% within ±2 SD');
+  }
+
+  /* marker (clamped into the drawn range; arrow if it runs off the curve) */
+  const vz=Math.max(-4.2,Math.min(4.2,z)), mx=X(vz);
+  svg+=`<line x1="${mx}" y1="${curveY(vz)}" x2="${mx}" y2="${base}" stroke="#10151B" stroke-width="3"/>`;
+  svg+=`<circle cx="${mx}" cy="${curveY(vz)}" r="8" fill="#fff" stroke="#10151B" stroke-width="3"/>`;
+  svg+=`<polygon points="${mx-7},${base+4} ${mx+7},${base+4} ${mx},${base+13}" fill="#10151B"/>`;
+  if(Math.abs(z)>4.3){ const d=z>0?1:-1;
+    svg+=`<text x="${mx+d*22}" y="${base-2}" text-anchor="middle" style="font:900 26px Archivo" fill="#10151B">${d>0?'»':'«'}</text>`; }
+
+  /* ---- readout box ---- */
+  const rar = Math.abs(z)>=2;
+  let rows=[];
+  if(bone){
+    const [cat,col]=boneCat(z);
+    rows.push({k:'big',t:`T-score ${z>=0?'+':''}${z.toFixed(1)}`});
+    rows.push({k:'pill',t:cat,c:col});
+    rows.push({k:'sub',t:`${pctLabel(z)} percentile`});
+  } else {
+    rows.push({k:'big',t:`${z>=0?'+':''}${z.toFixed(1)} SD`});
+    rows.push({k:'sub',t:`${pctLabel(z)} percentile`});
+    rows.push({k:'pill',t:`Better than ${betterPct(z,high)}`,c:'#1A7F45'});
+  }
+  if(rar) rows.push({k:'rar',t:`≈ 1 in ${rarityLabel(z)}`});
+
+  const boxW=262;
+  let hh=14; rows.forEach(r=>hh+= r.k==='big'?38 : r.k==='pill'?44 : r.k==='rar'?38 : 26); hh+=6;
+  const boxX = mx>m.l+iw*0.5 ? mx-boxW-20 : mx+20, boxY=m.t+4;
+  svg+=`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${hh}" rx="12" fill="#10151B"/>`;
+  let yy=boxY+14;
+  rows.forEach(r=>{
+    if(r.k==='big'){ yy+=24; svg+=`<text x="${boxX+18}" y="${yy}" fill="#fff" style="font:900 25px Archivo">${r.t}</text>`; yy+=14; }
+    else if(r.k==='sub'){ yy+=18; svg+=`<text x="${boxX+18}" y="${yy}" fill="#cfd8df" style="font:600 14px Inter">${r.t}</text>`; yy+=8; }
+    else if(r.k==='pill'){ svg+=`<rect x="${boxX+14}" y="${yy}" width="${boxW-28}" height="34" rx="8" fill="${r.c}"/>`+
+        `<text x="${boxX+boxW/2}" y="${yy+22}" text-anchor="middle" fill="#fff" style="font:800 15px Archivo">${r.t}</text>`; yy+=44; }
+    else { yy+=20; svg+=`<text x="${boxX+18}" y="${yy}" fill="#fff" style="font:800 16px Archivo">${r.t}<tspan dx="6" fill="#8da0ad" style="font:600 12px Inter">on a bell curve</tspan></text>`; yy+=12; }
+  });
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+
+  /* tap the curve to set the score */
+  host.querySelector('svg').addEventListener('click',ev=>{
+    const r=host.querySelector('svg').getBoundingClientRect();
+    const xv=Z0+((ev.clientX-r.left)/r.width)*(Z1-Z0);
+    state.z=Math.max(-6,Math.min(6, Math.round(xv*10)/10));
+    syncSlider(); render();
+  });
+}
+
+/* ===================== controls ===================== */
+function fmtSD(z){ return (z>=0?'+':'')+z.toFixed(1); }
+function syncSlider(){ document.getElementById('sdRange').value=state.z; document.getElementById('sdVal').textContent=fmtSD(state.z); }
+
+document.getElementById('dirSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.dir=b.dataset.dir;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+  render();
+});
+document.getElementById('boneChip').addEventListener('click',e=>{
+  state.bone=!state.bone;
+  e.currentTarget.setAttribute('aria-pressed', state.bone);
+  document.getElementById('dirGroup').querySelector('.seg').classList.toggle('dim', state.bone);
+  document.getElementById('scoreLbl').textContent = state.bone ? 'T-score' : 'Score';
+  document.getElementById('cTitle').textContent = state.bone ? 'Reading a bone-density T-score' : 'What a standard deviation means';
+  document.getElementById('cContext').textContent = state.bone ? 'Standard deviations from a healthy young adult' : 'Every score on your report is a spot on this curve';
+  document.getElementById('note').innerHTML = state.bone
+    ? 'On a bone scan this curve is your <strong>T-score</strong> — standard deviations from a healthy young adult. <strong>Normal ≥ −1.0</strong>, <strong>osteopenia</strong> (low bone mass) −1.0 to −2.5, <strong>osteoporosis ≤ −2.5</strong> (WHO/ISCD). The T-score is diagnostic for postmenopausal women and men 50+; younger adults use the <strong>Z-score</strong> (vs. same-age peers). Very high scores mean dense bones — rare, and occasionally inflated by arthritis or degenerative changes.'
+    : 'Most people cluster near the middle; few sit at the edges. One <strong>standard deviation (SD)</strong> is one step from average. Your <strong>T-score</strong> and <strong>Z-score</strong> are SD scores — how many steps you are from the mean. Drag the score, or tap the curve, to see the percentile and how rare it is.';
+  render();
+});
+const sdR=document.getElementById('sdRange');
+sdR.addEventListener('input',()=>{ state.z=+sdR.value; document.getElementById('sdVal').textContent=fmtSD(state.z); render(); });
+window.addEventListener('resize', render);
+
+syncSlider(); render();
+
+(function(){ if(new URLSearchParams(location.search).get('embed')) document.body.classList.add('embed'); })();
+</script>
+</body>
+</html>

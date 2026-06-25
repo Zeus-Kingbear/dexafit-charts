@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Precision vs. Accuracy — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --good:#1A9850;
+    --line:#CBD8E1;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+
+  .topbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:14px 22px;
+    border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;
+    letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);}
+
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:14px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.6vw,30px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+
+  .controls{display:flex;flex-wrap:wrap;gap:10px;padding:12px 4px 18px;align-items:center;}
+  .btn{border:0;background:var(--ink);color:#fff;font:inherit;font-weight:800;padding:14px 22px;border-radius:14px;
+    cursor:pointer;min-height:54px;display:flex;align-items:center;gap:10px;}
+  .btn:active{transform:translateY(1px);}
+  .btn svg{width:18px;height:18px;}
+  .chip{border:2px solid var(--surface-3);background:var(--surface);font:inherit;font-weight:700;padding:13px 18px;
+    border-radius:14px;cursor:pointer;min-height:54px;display:flex;align-items:center;gap:10px;color:var(--ink-soft);}
+  .chip .dot{width:14px;height:14px;border-radius:4px;background:var(--surface-3);}
+  .chip[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);}
+  .chip[aria-pressed="true"] .dot{background:var(--brand);}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:60ch;line-height:1.45;margin-left:auto;}
+  .ctl-note strong{color:var(--ink);}
+
+  /* re-test animation: dots glide to their new positions */
+  .meas{transition:cx .7s cubic-bezier(.4,0,.2,1), cy .7s cubic-bezier(.4,0,.2,1);}
+  @media (prefers-reduced-motion: reduce){ .meas{transition:none;} }
+  .method{opacity:0;transition:opacity .25s;}
+  .method.on{opacity:1;}
+  @media (max-width:720px){ .ctl-note{display:none;} }
+  body.embed .topbar{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="tag">Measurement quality</div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">Precision vs. accuracy — why the method matters</div>
+      <div class="ccontext">Each dot = one repeat scan of the same person</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <button class="btn" id="retest" aria-label="Re-test">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/></svg>
+          Re-test (throw again)
+        </button>
+        <button class="chip" id="methods" aria-pressed="false"><span class="dot"></span>Map to real methods</button>
+        <span class="ctl-note" id="note"><strong>Accuracy</strong> is how close you land to the truth (the bullseye = your real body fat). <strong>Precision</strong> is how tightly repeat measurements agree. Tap <strong>Re-test</strong> — reliable methods barely move; noisy ones scatter.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================== model ===================== */
+const QUADS=[
+  {r:0,c:0,concept:'Not accurate · not precise', method:'Smart scale / handheld BIA', err:'off & swings ±4–10%', bias:[-0.48,-0.42], spread:0.36, good:false},
+  {r:0,c:1,concept:'Accurate · not precise',     method:'Skinfold calipers',          err:'right on average, ±3.5–5% by tester', bias:[0.02,-0.02], spread:0.36, good:false},
+  {r:1,c:0,concept:'Precise · not accurate',     method:'Clinical BIA (InBody)',      err:'repeatable, but biased ~3%', bias:[0.46,0.40], spread:0.12, good:false},
+  {r:1,c:1,concept:'Accurate · precise',         method:'DEXA — your DexaFit scan',   err:'reference-grade · fat CV ~1.6%', bias:[0,0], spread:0.115, good:true}
+];
+const NDOTS=8;
+
+/* layout */
+const W=1000,H=600,m={l:150,r:40,t:70,b:70};
+const iw=W-m.l-m.r, ih=H-m.t-m.b;
+const CX=c=>m.l+iw*(c===0?0.25:0.75);
+const CY=r=>m.t+ih*(r===0?0.25:0.75);
+const R=82;
+
+/* gaussian (Box–Muller) */
+function gauss(){ let u=0,v=0; while(!u)u=Math.random(); while(!v)v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+function place(q){
+  const cX=CX(q.c), cY=CY(q.r);
+  let x=cX+q.bias[0]*R+gauss()*q.spread*R;
+  let y=cY+q.bias[1]*R+gauss()*q.spread*R;
+  const dx=x-cX, dy=y-cY, d=Math.hypot(dx,dy)||1, mx=0.9*R;
+  if(d>mx){ x=cX+dx/d*mx; y=cY+dy/d*mx; }
+  return [x.toFixed(1),y.toFixed(1)];
+}
+
+/* ===================== build (once) ===================== */
+function build(){
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Precision versus accuracy quadrants">`;
+
+  // quadrant dividers
+  svg+=`<line x1="${m.l+iw/2}" y1="${m.t-6}" x2="${m.l+iw/2}" y2="${m.t+ih+6}" stroke="${'#D7E1E9'}" stroke-width="2"/>`;
+  svg+=`<line x1="${m.l-6}" y1="${m.t+ih/2}" x2="${m.l+iw+6}" y2="${m.t+ih/2}" stroke="#D7E1E9" stroke-width="2"/>`;
+
+  // axis labels
+  svg+=`<text x="${CX(0)}" y="42" text-anchor="middle" style="font:800 16px Archivo" fill="#3A4753">LESS ACCURATE</text>`;
+  svg+=`<text x="${CX(1)}" y="42" text-anchor="middle" style="font:800 16px Archivo" fill="#3A4753">MORE ACCURATE</text>`;
+  svg+=`<text transform="translate(34,${CY(0)}) rotate(-90)" text-anchor="middle" style="font:800 16px Archivo" fill="#3A4753">LESS PRECISE</text>`;
+  svg+=`<text transform="translate(34,${CY(1)}) rotate(-90)" text-anchor="middle" style="font:800 16px Archivo" fill="#3A4753">MORE PRECISE</text>`;
+
+  QUADS.forEach((q,qi)=>{
+    const cX=CX(q.c), cY=CY(q.r);
+    // target rings
+    const rings=[1,0.74,0.5,0.26], fills=['#E8F0F6','#F4F9FC','#E2ECF3','#FFFFFF'];
+    rings.forEach((rr,i)=>{ svg+=`<circle cx="${cX}" cy="${cY}" r="${(rr*R).toFixed(1)}" fill="${fills[i]}" stroke="#CBD8E1" stroke-width="1.5"/>`; });
+    // bullseye = true value
+    svg+=`<circle cx="${cX}" cy="${cY}" r="5" fill="#0E9BD6"/>`;
+    svg+=`<line x1="${cX-12}" y1="${cY}" x2="${cX+12}" y2="${cY}" stroke="#0E9BD6" stroke-width="1.5"/>`;
+    svg+=`<line x1="${cX}" y1="${cY-12}" x2="${cX}" y2="${cY+12}" stroke="#0E9BD6" stroke-width="1.5"/>`;
+    // good target highlight
+    if(q.good){ svg+=`<circle cx="${cX}" cy="${cY}" r="${(R+9).toFixed(1)}" fill="none" stroke="#1A9850" stroke-width="4"/>`; }
+
+    // measurement dots
+    for(let i=0;i<NDOTS;i++){ const [x,y]=place(q);
+      svg+=`<circle class="meas" id="d-${qi}-${i}" cx="${x}" cy="${y}" r="6.5" fill="#10151B" fill-opacity=".82" stroke="#fff" stroke-width="1.5"/>`; }
+
+    // labels above the target: concept (always) + method (toggle)
+    svg+=`<text x="${cX}" y="${cY-R-30}" text-anchor="middle" style="font:900 18px Archivo" fill="#10151B">${q.concept}</text>`;
+    svg+=`<text class="method" id="mth-${qi}" x="${cX}" y="${cY-R-12}" text-anchor="middle" style="font:700 13.5px Inter" fill="${q.good?'#1A7F45':'#3A4753'}">${q.method} — ${q.err}</text>`;
+
+    // DEXA badge below its target
+    if(q.good){ const by=cY+R+18;
+      svg+=`<rect x="${cX-92}" y="${by-16}" width="184" height="26" rx="13" fill="#1A9850"/>`;
+      svg+=`<text x="${cX}" y="${by+2}" text-anchor="middle" style="font:800 13px Archivo" fill="#fff">★ YOUR DEXAFIT SCAN</text>`; }
+  });
+
+  svg+=`<text class="method" id="disc" x="${m.l+iw/2}" y="${H-40}" text-anchor="middle" style="font:600 12px Inter" fill="#7C8A96">Method placement is typical and illustrative — real-world results vary by device, protocol, and operator. Bullseye = your true body composition.</text>`;
+  svg+=`</svg>`;
+  document.getElementById('plot').innerHTML=svg;
+}
+
+/* ===================== interactions ===================== */
+function reseed(){
+  QUADS.forEach((q,qi)=>{ for(let i=0;i<NDOTS;i++){ const [x,y]=place(q);
+    const el=document.getElementById(`d-${qi}-${i}`); if(el){ el.setAttribute('cx',x); el.setAttribute('cy',y); } } });
+}
+let methodsOn=false;
+function setMethods(on){
+  methodsOn=on;
+  document.querySelectorAll('.method').forEach(t=>t.classList.toggle('on',on));
+  document.getElementById('note').innerHTML = on
+    ? '<strong>DEXA</strong> sits in the accurate-and-precise corner (fat-mass CV ~1.6%), so a <strong>~1–2 point</strong> change in body fat — or about a pound of fat — is real. A smart scale can move several points on hydration alone (±4–10%), so its day-to-day “progress” is often just water.'
+    : '<strong>Accuracy</strong> is how close you land to the truth (the bullseye = your real body fat). <strong>Precision</strong> is how tightly repeat measurements agree. Tap <strong>Re-test</strong> — reliable methods barely move; noisy ones scatter.';
+}
+
+build();
+document.getElementById('retest').addEventListener('click', reseed);
+document.getElementById('methods').addEventListener('click', e=>{
+  const on=!methodsOn; e.currentTarget.setAttribute('aria-pressed', on); setMethods(on);
+});
+window.addEventListener('resize', ()=>{ build(); document.querySelectorAll('.method').forEach(t=>t.classList.toggle('on',methodsOn)); });
+
+(function(){ if(new URLSearchParams(location.search).get('embed')) document.body.classList.add('embed'); })();
+</script>
+</body>
+</html>

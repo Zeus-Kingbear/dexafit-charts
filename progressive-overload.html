@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Progressive Overload — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --flat:#8C9AA6;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;
+    border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:10px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;}
+  .seg button{border:0;background:transparent;font:inherit;font-weight:700;padding:11px 16px;border-radius:10px;color:var(--ink-soft);cursor:pointer;min-height:46px;}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;}
+  .incwrap{display:flex;align-items:center;gap:12px;min-width:250px;}
+  .incwrap input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--surface-3),var(--brand));outline:none;}
+  .incwrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+  .incwrap input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .incval{font-family:"Archivo";font-weight:800;font-size:22px;min-width:78px;text-align:center;}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:14px;padding:10px 4px 16px;align-items:center;}
+  .chip{display:inline-flex;align-items:center;gap:9px;border:2px solid var(--surface-3);background:var(--surface);border-radius:13px;padding:11px 16px;font:inherit;font-weight:700;color:var(--ink-soft);cursor:pointer;min-height:46px;}
+  .chip .dot{width:14px;height:14px;border-radius:4px;border:2px solid #C2CDD6;}
+  .chip[aria-pressed="true"]{border-color:var(--brand-deep);color:var(--ink);background:#F1F9FD;}
+  .chip[aria-pressed="true"] .dot{background:var(--brand);border-color:var(--brand-deep);}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:78ch;line-height:1.45;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+  @media (max-width:860px){ .topbar{gap:12px;padding:12px 14px;} .incwrap{min-width:190px;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="gctl">
+      <span class="lbl">Training age</span>
+      <div class="seg" id="lvlSeg">
+        <button data-lvl="novice" aria-pressed="true">New</button>
+        <button data-lvl="experienced" aria-pressed="false">Experienced</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">Why the same workout stops working</div>
+      <div class="ccontext" id="cContext">16 weeks · same schedule, same effort</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="gctl incwrap">
+          <span class="lbl" style="white-space:nowrap">Add per week</span>
+          <input id="incRange" type="range" min="0" max="5" value="3" step="0.5">
+          <span class="incval" id="incVal">+3%/wk</span>
+        </div>
+        <button class="chip" id="whyChip" aria-pressed="false"><span class="dot"></span>Show why</button>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   MODEL  (phenomenological, tuned to realistic ranges — a teaching model, not a
+   physiology engine). Adaptation has two parts:
+     • newbie(w): adaptation to the INITIAL workout — same for both paths, and it
+       PLATEAUS (an exponential approach). Once you've adapted to a fixed workout,
+       the stimulus no longer exceeds your capacity, so it stops driving change.
+     • prog(w): extra gain from progressively adding load. Accumulates toward a
+       ceiling; its speed is set by how much you add each week.
+   At 0%/week the two paths are identical — "progressive overload" with no
+   progression is just the same workout.
+   Targets: New lifter, +3%/wk → fixed ≈ +10%, progressive ≈ +31% over 16 wk.
+   ========================================================================== */
+const WEEKS=16;
+const P   = { novice:0.10, experienced:0.05 };   // fixed-workout plateau (fraction)
+const TAU = { novice:3.5,  experienced:2.6  };   // weeks to plateau
+const SPAN= { novice:0.55, experienced:0.30 };   // ceiling of extra progression gain
+const PRATE=0.55;
+
+function curve(mode,inc,lvl){
+  const p=P[lvl],tau=TAU[lvl],span=SPAN[lvl];
+  const pts=[]; let prog=0;
+  for(let w=0;w<=WEEKS;w++){
+    const newbie=p*(1-Math.exp(-w/tau));
+    if(mode==='prog'&&w>0) prog+=inc*PRATE*(1-prog/span);
+    pts.push(1+newbie+(mode==='prog'?prog:0));
+  }
+  return pts;
+}
+
+const state = { lvl:'novice', inc:3, why:false };
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1040,H=600,m={l:84,r:168,t:50,b:66};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const Y0=92,Y1=156;
+  const X=w=>m.l+(w/WEEKS)*iw;
+  const Y=v=>m.t+(Y1-v*100)/(Y1-Y0)*ih;
+  const inc=state.inc/100;
+  const same=curve('same',inc,state.lvl), prog=curve('prog',inc,state.lvl);
+  const poly=a=>'M'+a.map((v,w)=>X(w).toFixed(1)+','+Y(v).toFixed(1)).join(' L');
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Progressive overload vs repeating the same workout">`;
+
+  /* grid */
+  for(let g=100;g<=150;g+=10){
+    svg+=`<line x1="${m.l}" y1="${Y(g/100)}" x2="${m.l+iw}" y2="${Y(g/100)}" stroke="#10151B" stroke-width="1" opacity="${g===100?.22:.07}" ${g===100?'stroke-dasharray="5 5"':''}/>`;
+    svg+=`<text x="${m.l-12}" y="${Y(g/100)+5}" text-anchor="end" style="font:600 13px Inter" fill="#3A4753">${g===100?'start':'+'+(g-100)+'%'}</text>`;
+  }
+  for(let w=0;w<=WEEKS;w+=4){
+    svg+=`<text x="${X(w)}" y="${m.t+ih+26}" text-anchor="middle" style="font:700 14px Inter" fill="#10151B">${w}</text>`;
+  }
+  svg+=`<text x="${m.l+iw/2}" y="${m.t+ih+50}" text-anchor="middle" style="font:800 13px Inter" fill="#3A4753">Weeks of training</text>`;
+  svg+=`<text x="${m.l-58}" y="${m.t-24}" style="font:800 13px Inter" fill="#3A4753">Strength (% of start)</text>`;
+
+  /* mechanism layer */
+  if(state.why){
+    // fixed workout demand line (flat) — capacity rises to it then stalls
+    const demand=1+P[state.lvl];
+    svg+=`<line x1="${m.l}" y1="${Y(demand)}" x2="${m.l+iw}" y2="${Y(demand)}" stroke="#8C9AA6" stroke-width="2" stroke-dasharray="7 5"/>`;
+    svg+=`<text x="${m.l+10}" y="${Y(demand)-8}" style="font:700 12px Inter" fill="#6B7884">fixed workout demand</text>`;
+    // progressive: the load you lift — a rising staircase above capacity
+    if(inc>0){
+      let d=`M${X(0)},${Y(prog[0]*(1+inc))}`;
+      for(let w=1;w<=WEEKS;w++){ d+=` L${X(w)},${Y(prog[w-1]*(1+inc))} L${X(w)},${Y(prog[w]*(1+inc))}`; }
+      svg+=`<path d="${d}" fill="none" stroke="#0E9BD6" stroke-width="1.6" opacity=".5" stroke-dasharray="2 3"/>`;
+      // maintained gap shading (stimulus always above capacity)
+      let gap=`M${X(0)},${Y(prog[0])}`;
+      for(let w=1;w<=WEEKS;w++) gap+=` L${X(w)},${Y(prog[w])}`;
+      for(let w=WEEKS;w>=1;w--) gap+=` L${X(w)},${Y(prog[w]*(1+inc))} L${X(w)},${Y(prog[w-1]*(1+inc))}`;
+      gap+=` L${X(0)},${Y(prog[0]*(1+inc))} Z`;
+      svg+=`<path d="${gap}" fill="#0E9BD6" opacity=".08"/>`;
+      svg+=`<text x="${X(WEEKS)-6}" y="${Y(prog[WEEKS]*(1+inc))-8}" text-anchor="end" style="font:700 12px Inter" fill="#0A6F9E">load you lift — keeps rising</text>`;
+    }
+    // plateau annotation on the same-workout curve
+    let pw=WEEKS; for(let w=1;w<=WEEKS;w++){ if(same[w]>=demand-0.004){ pw=w; break; } }
+    const ax=X(pw), ay=Y(same[pw]);
+    svg+=`<circle cx="${ax}" cy="${ay}" r="5.5" fill="#6B7884"/>`;
+    svg+=`<text x="${ax+10}" y="${ay+34}" style="font:700 12.5px Inter" fill="#5A6772">workout no longer challenges you —</text>`;
+    svg+=`<text x="${ax+10}" y="${ay+50}" style="font:700 12.5px Inter" fill="#5A6772">nothing new to adapt to → plateau</text>`;
+  }
+
+  /* the two capacity curves */
+  svg+=`<path d="${poly(same)}" fill="none" stroke="#8C9AA6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+  svg+=`<path d="${poly(prog)}" fill="none" stroke="#0E9BD6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+  /* end labels */
+  const sg=Math.round((same[WEEKS]-1)*100), pg=Math.round((prog[WEEKS]-1)*100);
+  const identical=Math.abs(prog[WEEKS]-same[WEEKS])<0.015;
+  if(identical){
+    svg+=`<text x="${m.l+iw+12}" y="${Y(prog[WEEKS])+5}" style="font:800 16px Archivo" fill="#6B7884">+${pg}%</text>`;
+    svg+=`<text x="${m.l+iw+12}" y="${Y(prog[WEEKS])+24}" style="font:600 12px Inter" fill="#8C9AA6">lines overlap</text>`;
+  } else {
+    svg+=`<text x="${m.l+iw+12}" y="${Y(prog[WEEKS])+4}" style="font:900 19px Archivo" fill="#0A6F9E">+${pg}%</text>`;
+    svg+=`<text x="${m.l+iw+12}" y="${Y(prog[WEEKS])+22}" style="font:700 11.5px Inter" fill="#0E9BD6">still climbing</text>`;
+    svg+=`<text x="${m.l+iw+12}" y="${Y(same[WEEKS])+4}" style="font:900 17px Archivo" fill="#6B7884">+${sg}%</text>`;
+    svg+=`<text x="${m.l+iw+12}" y="${Y(same[WEEKS])+22}" style="font:700 11.5px Inter" fill="#8C9AA6">plateaued</text>`;
+  }
+  /* inline curve tags */
+  svg+=`<text x="${X(11)}" y="${Y(prog[11])-14}" style="font:800 14px Archivo" fill="#0A6F9E">Progressive overload</text>`;
+  svg+=`<text x="${X(12.5)}" y="${Y(same[12])+26}" style="font:800 14px Archivo" fill="#6B7884">Same workout</text>`;
+
+  /* zero-increment callout */
+  if(state.inc===0){
+    svg+=`<rect x="${m.l+iw/2-188}" y="${m.t+8}" width="376" height="40" rx="9" fill="#10151B" opacity=".92"/>`;
+    svg+=`<text x="${m.l+iw/2}" y="${m.t+34}" text-anchor="middle" fill="#fff" style="font:700 14px Inter">0% per week = the same workout. Add nothing, change nothing.</text>`;
+  }
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+/* ============================ controls ============================ */
+function setNote(){
+  document.getElementById('note').innerHTML =
+    `Your body adapts to a <strong>specific</strong> demand. Each session breaks tissue down a little; you recover and rebuild slightly stronger (<strong>supercompensation</strong>). But once you\u2019ve adapted to a fixed workout, that same weight no longer exceeds what you can already do \u2014 there\u2019s nothing new to respond to, so you <strong>plateau</strong>. The fix is small and boring: nudge the load, reps, or sets up a little each week so the bar always sits just above your current capacity. Same schedule, same time in the gym \u2014 the only change is that upward nudge, and it\u2019s the difference between flat and climbing. Real-world sustainable progression is roughly <strong>1\u20133% per week</strong> (faster when you\u2019re new); push too fast and recovery, not motivation, becomes the limit.`;
+}
+function syncInputs(){ document.getElementById('incVal').textContent='+'+state.inc+'%/wk'; document.getElementById('incRange').value=state.inc; }
+function refresh(){ setNote(); render(); }
+document.getElementById('lvlSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return; state.lvl=b.dataset.lvl;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b)); render();
+});
+const incR=document.getElementById('incRange');
+incR.addEventListener('input',()=>{ state.inc=+incR.value; document.getElementById('incVal').textContent='+'+incR.value+'%/wk'; render(); });
+document.getElementById('whyChip').addEventListener('click',e=>{
+  state.why=!state.why; e.currentTarget.setAttribute('aria-pressed',state.why); render();
+});
+window.addEventListener('resize', render);
+
+/* gallery embed */
+(function(){ const q=new URLSearchParams(location.search); if(q.get('embed')) document.body.classList.add('embed'); })();
+
+syncInputs(); refresh();
+</script>
+</body>
+</html>

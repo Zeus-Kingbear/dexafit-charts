@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cardio Fitness Pyramid — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --peak:#E8862E;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;
+    border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:10px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;}
+  .seg button{border:0;background:transparent;font:inherit;font-weight:700;padding:11px 16px;border-radius:10px;color:var(--ink-soft);cursor:pointer;min-height:46px;}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;}
+  .agewrap{display:flex;align-items:center;gap:12px;min-width:210px;}
+  .agewrap input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--surface-3),var(--brand));outline:none;}
+  .agewrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+  .agewrap input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .ageval{font-family:"Archivo";font-weight:800;font-size:22px;min-width:38px;text-align:center;}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:14px;padding:10px 4px 16px;align-items:center;}
+  .bigbtn{display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px;border:2px solid var(--surface-3);background:var(--surface);
+    border-radius:14px;padding:9px 18px;font:inherit;cursor:pointer;min-height:54px;justify-content:center;}
+  .bigbtn b{font-family:"Archivo";font-weight:800;font-size:16px;display:flex;align-items:center;gap:9px;}
+  .bigbtn small{font-size:11.5px;color:var(--ink-soft);font-weight:600;padding-left:23px;}
+  .bigbtn .dot{width:14px;height:14px;border-radius:4px;}
+  .bigbtn.b44{border-color:#F0C9A0;} .bigbtn.b44:hover{background:#FDF4EB;}
+  .bigbtn.bz2{border-color:#AEDCF0;} .bigbtn.bz2:hover{background:#F1F9FD;}
+  .chip{display:inline-flex;align-items:center;gap:9px;border:2px solid var(--surface-3);background:var(--surface);border-radius:13px;padding:11px 16px;font:inherit;font-weight:700;color:var(--ink-soft);cursor:pointer;min-height:46px;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:78ch;line-height:1.45;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+  @media (max-width:860px){ .topbar{gap:12px;padding:12px 14px;} .agewrap{min-width:160px;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="gctl">
+      <span class="lbl">Sex</span>
+      <div class="seg" id="sexSeg">
+        <button data-sex="male" aria-pressed="true">Male</button>
+        <button data-sex="female" aria-pressed="false">Female</button>
+      </div>
+    </div>
+    <div class="gctl agewrap">
+      <span class="lbl">Age</span>
+      <input id="ageRange" type="range" min="20" max="79" value="45" step="1">
+      <span class="ageval" id="ageVal">45</span>
+    </div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">Total cardio fitness is a pyramid</div>
+      <div class="ccontext" id="cContext">Male · starting at average for age</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <button class="bigbtn b44" id="add44"><b><span class="dot" style="background:#E8862E"></span>+ 4×4 interval block</b><small>raises the peak (VO₂max)</small></button>
+        <button class="bigbtn bz2" id="addz2"><b><span class="dot" style="background:#0E9BD6"></span>+ Zone 2 block</b><small>widens the base (endurance)</small></button>
+        <button class="chip" id="reset">Reset</button>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   MODEL  —  research-calibrated, proportions directionally grounded.
+   Height = VO₂max (the ceiling; central / stroke-volume limited).
+   Base width = endurance = fractional utilization, the % of VO₂max you can hold
+     for a long effort (peripheral: mitochondria, capillaries, lactate threshold).
+   Area  ∝ Sustainable VO₂ = VO₂max × fraction = the real endurance-performance
+     determinant (Joyner–Coyle model; economy held constant).
+
+   Per 4-week block, with diminishing returns toward a trainable ceiling:
+     • 4×4 intervals  → big PEAK gain, small base gain
+       Calibrated to Helgerud 2007: ~+7% VO₂max over 8 wk (two blocks); VO₂max
+       gains tracked stroke volume. Same total work at Zone-2/threshold pace
+       barely moved VO₂max — so Zone 2's effect on the peak is small.
+     • Zone 2 (continuous) → big BASE gain, small peak gain.
+   Peak responsiveness ratio 4×4:Zone2 ≈ 6:1 ; base ratio Zone2:4×4 ≈ 4:1.
+   Starting VO₂max = ~population median for sex/age (FRIEND-style). Swap freely.
+   ========================================================================== */
+const AGES=[25,35,45,55,65,75];
+const VO2MED = { male:[43,40,37,33,29,25], female:[36,34,31,28,25,22] };
+function startPeak(sex,age){ const m=VO2MED[sex],a=Math.max(25,Math.min(75,age));
+  if(a<=25)return m[0]; if(a>=75)return m[5]; const i=Math.min(4,Math.floor((a-25)/10)),f=((a-25)-i*10)/10; return m[i]+(m[i+1]-m[i])*f; }
+const FRAC0=55, FRACCEIL=90, CEILMULT=1.45;
+
+function simulate(peak0, n44, nz2){
+  let peak=peak0, frac=FRAC0; const pc=peak0*CEILMULT;
+  for(let i=0;i<n44;i++){ peak+=0.080*(pc-peak); frac+=0.020*(FRACCEIL-frac); }
+  for(let i=0;i<nz2;i++){ frac+=0.085*(FRACCEIL-frac); peak+=0.013*(pc-peak); }
+  return {peak,frac};
+}
+
+const state = { sex:'male', age:45, peak0:0, peak:0, frac:FRAC0, n44:0, nz2:0 };
+function reseed(){ state.peak0=startPeak(state.sex,state.age); state.peak=state.peak0; state.frac=FRAC0; state.n44=0; state.nz2=0; }
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1040,H=600;
+  const CX=372, baseY=512, TOPY=104;
+  const PEAKMAX=78, Hpx=baseY-TOPY;     // peak -> height
+  const FRACMAX=96, Wpx=300;            // frac -> half-width
+  const hOf=p=>(Math.min(p,PEAKMAX)/PEAKMAX)*Hpx;
+  const wOf=f=>(Math.min(f,FRACMAX)/FRACMAX)*Wpx;
+  const tri=(p,f)=>{ const h=hOf(p),w=wOf(f),ay=baseY-h; return `${CX},${ay} ${CX-w},${baseY} ${CX+w},${baseY}`; };
+
+  const sus=state.peak*state.frac/100;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Cardio fitness pyramid">`;
+  svg+=`<defs><linearGradient id="pyr" gradientUnits="userSpaceOnUse" x1="0" y1="${baseY}" x2="0" y2="${TOPY}">
+    <stop offset="0" stop-color="#0E9BD6"/><stop offset="0.5" stop-color="#2C9AC9"/><stop offset="1" stop-color="#E8862E"/></linearGradient></defs>`;
+
+  /* axes hints */
+  svg+=`<line x1="${CX-Wpx-26}" y1="${baseY}" x2="${CX-Wpx-26}" y2="${TOPY}" stroke="#10151B" stroke-width="1.5" opacity=".25"/>`;
+  svg+=`<path d="M${CX-Wpx-26},${TOPY} l-6,11 l12,0 Z" fill="#3A4753" opacity=".5"/>`;
+  svg+=`<text x="${CX-Wpx-34}" y="${(baseY+TOPY)/2}" text-anchor="middle" transform="rotate(-90 ${CX-Wpx-34} ${(baseY+TOPY)/2})" style="font:800 13px Inter" fill="#3A4753">PEAK — VO₂max ceiling</text>`;
+  svg+=`<line x1="${CX-Wpx}" y1="${baseY+30}" x2="${CX+Wpx}" y2="${baseY+30}" stroke="#10151B" stroke-width="1.5" opacity=".25"/>`;
+  svg+=`<path d="M${CX+Wpx},${baseY+30} l-11,-6 l0,12 Z" fill="#3A4753" opacity=".5"/><path d="M${CX-Wpx},${baseY+30} l11,-6 l0,12 Z" fill="#3A4753" opacity=".5"/>`;
+  svg+=`<text x="${CX}" y="${baseY+48}" text-anchor="middle" style="font:800 13px Inter" fill="#3A4753">BASE — endurance you can sustain</text>`;
+
+  /* starting outline (where you began) */
+  svg+=`<polygon points="${tri(state.peak0,FRAC0)}" fill="none" stroke="#10151B" stroke-width="1.5" stroke-dasharray="3 6" opacity=".35"/>`;
+
+  /* balanced same-effort reference (only when the mix is lopsided) */
+  const N=state.n44+state.nz2;
+  if(N>=2 && Math.abs(state.n44-state.nz2)>=2){
+    const a=Math.round(N/2), b=N-a, bal=simulate(state.peak0,a,b);
+    svg+=`<polygon points="${tri(bal.peak,bal.frac)}" fill="none" stroke="#1F7A45" stroke-width="2" stroke-dasharray="7 5" opacity=".8"/>`;
+    const by=baseY-hOf(bal.peak);
+    svg+=`<text x="${CX}" y="${by-10}" text-anchor="middle" style="font:800 12px Inter" fill="#1F7A45">balanced, same effort</text>`;
+  }
+
+  /* the pyramid */
+  svg+=`<polygon points="${tri(state.peak,state.frac)}" fill="url(#pyr)" stroke="#0A6F9E" stroke-width="2.5" opacity=".92"/>`;
+  const ay=baseY-hOf(state.peak);
+  /* peak label */
+  svg+=`<circle cx="${CX}" cy="${ay}" r="5" fill="#10151B"/>`;
+  svg+=`<text x="${CX}" y="${ay-30}" text-anchor="middle" style="font:900 17px Archivo" fill="#B5651B">VO₂max</text>`;
+  svg+=`<text x="${CX}" y="${ay-12}" text-anchor="middle" style="font:900 22px Archivo" fill="#10151B">${state.peak.toFixed(1)}</text>`;
+  /* base label */
+  svg+=`<text x="${CX}" y="${baseY-14}" text-anchor="middle" fill="#fff" style="font:800 16px Archivo">Endurance ${Math.round(state.frac)}%</text>`;
+
+  /* readout card */
+  const cX=720,cY=120,cW=276,cH=300;
+  svg+=`<rect x="${cX}" y="${cY}" width="${cW}" height="${cH}" rx="15" fill="#10151B"/>`;
+  svg+=`<text x="${cX+22}" y="${cY+34}" fill="#8da0ad" style="font:700 12px Inter" letter-spacing="1.5">SUSTAINABLE VO₂</text>`;
+  svg+=`<text x="${cX+22}" y="${cY+78}" fill="#fff" style="font:900 42px Archivo">${sus.toFixed(1)}</text>`;
+  svg+=`<text x="${cX+22+ (sus.toFixed(1).length*25)}" y="${cY+78}" fill="#8da0ad" style="font:600 13px Inter"> ml/kg/min</text>`;
+  svg+=`<text x="${cX+22}" y="${cY+99}" fill="#cfd8df" style="font:600 12.5px Inter">the pace you can actually hold</text>`;
+  svg+=`<line x1="${cX+20}" y1="${cY+118}" x2="${cX+cW-20}" y2="${cY+118}" stroke="#2a3540" stroke-width="1"/>`;
+  svg+=`<text x="${cX+22}" y="${cY+146}" fill="#E8862E" style="font:800 14px Archivo">Peak VO₂max</text>`;
+  svg+=`<text x="${cX+cW-22}" y="${cY+146}" text-anchor="end" fill="#fff" style="font:800 16px Archivo">${state.peak.toFixed(1)}</text>`;
+  svg+=`<text x="${cX+22}" y="${cY+172}" fill="#0E9BD6" style="font:800 14px Archivo">Endurance base</text>`;
+  svg+=`<text x="${cX+cW-22}" y="${cY+172}" text-anchor="end" fill="#fff" style="font:800 16px Archivo">${Math.round(state.frac)}%</text>`;
+  svg+=`<line x1="${cX+20}" y1="${cY+190}" x2="${cX+cW-20}" y2="${cY+190}" stroke="#2a3540" stroke-width="1"/>`;
+  svg+=`<text x="${cX+22}" y="${cY+218}" fill="#cfd8df" style="font:600 13.5px Inter">Training logged</text>`;
+  svg+=`<text x="${cX+22}" y="${cY+244}" fill="#fff" style="font:800 15px Archivo"><tspan fill="#E8862E">${state.n44}</tspan> × 4×4   ·   <tspan fill="#0E9BD6">${state.nz2}</tspan> × Zone 2</text>`;
+  /* balanced hint */
+  if(N>=2 && Math.abs(state.n44-state.nz2)>=2){
+    const a=Math.round(N/2), b=N-a, bal=simulate(state.peak0,a,b); const bs=bal.peak*bal.frac/100;
+    svg+=`<text x="${cX+22}" y="${cY+274}" fill="#7ee0a4" style="font:700 12.5px Inter">Same effort, balanced → ${bs.toFixed(1)}</text>`;
+  } else if(N>=2){
+    svg+=`<text x="${cX+22}" y="${cY+274}" fill="#7ee0a4" style="font:700 12.5px Inter">Balanced mix — maximizing your area ✓</text>`;
+  }
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+/* ============================ controls ============================ */
+function setContext(){ document.getElementById('cContext').textContent=(state.sex==='male'?'Male':'Female')+' · starting at average for age'; }
+function setNote(){
+  document.getElementById('note').innerHTML =
+    `Two engines, one pyramid. <strong>4×4 intervals</strong> push your <strong>VO₂max ceiling</strong> up — the heart\u2019s stroke volume is the limiter, and nothing trains it like 4 min at 90\u201395% max HR (Helgerud: ~+7% in 8 weeks; easy pace barely moved it). <strong>Zone 2</strong> widens the <strong>base</strong> \u2014 mitochondria, capillaries and lactate threshold \u2014 the share of that ceiling you can actually hold. Total fitness is the <strong>area</strong>, and it\u2019s biggest when you train <strong>both</strong> (the ~80/20 polarized model). VO₂max is also one of the strongest predictors of lifespan and falls ~1%/yr after 30, so the peak is worth defending. Proportions here are modeled from the research, not a literal prescription.`;
+}
+function refresh(){ setContext(); setNote(); render(); }
+document.getElementById('sexSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return; state.sex=b.dataset.sex;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b)); reseed(); refresh();
+});
+const ageR=document.getElementById('ageRange');
+ageR.addEventListener('input',()=>{ state.age=+ageR.value; document.getElementById('ageVal').textContent=ageR.value; reseed(); render(); });
+document.getElementById('add44').addEventListener('click',()=>{ const pc=state.peak0*CEILMULT; state.peak+=0.080*(pc-state.peak); state.frac+=0.020*(FRACCEIL-state.frac); state.n44++; render(); });
+document.getElementById('addz2').addEventListener('click',()=>{ const pc=state.peak0*CEILMULT; state.frac+=0.085*(FRACCEIL-state.frac); state.peak+=0.013*(pc-state.peak); state.nz2++; render(); });
+document.getElementById('reset').addEventListener('click',()=>{ reseed(); render(); });
+window.addEventListener('resize', render);
+
+/* gallery embed (sex + age from shell) */
+(function(){
+  const q=new URLSearchParams(location.search); if(!q.get('embed')) return;
+  document.body.classList.add('embed');
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  function applySA(sx,ag){
+    if(sx){ state.sex=sx; document.querySelectorAll('#sexSeg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.sex===sx)); }
+    if(ag!=null&&ag!=='') state.age=clamp(+ag,20,79);
+    document.getElementById('ageRange').value=state.age; document.getElementById('ageVal').textContent=state.age;
+    reseed(); refresh();
+  }
+  applySA(q.get('sex'), q.get('age'));
+  window.addEventListener('message',e=>{ const d=e.data||{}; if(d.type==='sa') applySA(d.sex,d.age); });
+})();
+
+reseed(); refresh();
+</script>
+</body>
+</html>

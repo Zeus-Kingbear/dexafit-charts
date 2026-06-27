@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VT1 / VT2 — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E;
+    --easy:#2E9E5B; --thr:#E8A13A; --sev:#C0392B;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:10px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .fitwrap{display:flex;align-items:center;gap:12px;min-width:320px;}
+  .fitwrap input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;
+    background:linear-gradient(90deg,var(--surface-3),var(--brand));outline:none;}
+  .fitwrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+  .fitwrap input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .fitval{font-family:"Archivo";font-weight:800;font-size:16px;min-width:104px;text-align:left;color:var(--brand-deep);}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;touch-action:none;}
+  .controls{display:flex;flex-wrap:wrap;gap:16px;padding:10px 4px 16px;align-items:center;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:80ch;line-height:1.45;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+  @media (max-width:860px){ .topbar{gap:12px;padding:12px 14px;} .fitwrap{min-width:230px;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="ctl-note" style="max-width:46ch">Drag across the chart to set your effort. Typical values — your test finds your exact thresholds.</div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">The two thresholds inside your VO₂ test</div>
+      <div class="ccontext">VT1 &amp; VT2 · where easy becomes hard becomes unsustainable</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="gctl fitwrap">
+          <span class="lbl" style="white-space:nowrap">Fitness level</span>
+          <input id="fitRange" type="range" min="0" max="100" value="40" step="1">
+          <span class="fitval" id="fitVal">Recreational</span>
+        </div>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   VENTILATORY THRESHOLDS — VT1 (aerobic threshold) and VT2 (respiratory
+   compensation / anaerobic threshold), expressed as % of VO₂max.
+   Ranges synthesized from gas-exchange literature:
+     • VT1 ≈ 52% (untrained) → ~73% (elite endurance) of VO₂max
+       (Maciejczyk/ScienceInsights ~52–58% low-fit men; trained runners ~73%)
+     • VT2 ≈ 70% (untrained) → ~89% (elite) of VO₂max
+       (large cohorts ~79–87%; trained runners RCP ~89–90%)
+   Fitter people hold a HIGHER % of their ceiling before each threshold.
+   Fuel: below VT1 fat contributes most; past VT1 carbohydrate takes over;
+   above VT2 it's almost all carbohydrate + anaerobic. Shapes are typical,
+   not a specific person — the VO₂ test finds an individual's exact thresholds.
+   ========================================================================== */
+function thresholds(t){ return { vt1: 52 + t*(73-52), vt2: 70 + t*(89-70) }; }   // t = fitness 0..1
+function fitnessLabel(t){ return t<0.2?'Untrained':t<0.45?'Recreational':t<0.72?'Trained':'Elite'; }
+
+const state = { fit:0.40, effort:70 };
+
+/* fuel: fraction of energy from FAT vs %VO2max, crossover tied to VT1 */
+function fatFrac(p,vt1,vt2){
+  const pts=[[20,62],[vt1,42],[(vt1+vt2)/2,22],[vt2,12],[100,5]];
+  if(p<=pts[0][0]) return pts[0][1];
+  for(let i=0;i<pts.length-1;i++){ if(p<=pts[i+1][0]){ const [x0,y0]=pts[i],[x1,y1]=pts[i+1]; return y0+(y1-y0)*(p-x0)/(x1-x0);} }
+  return 5;
+}
+function sustain(p,vt1,vt2){
+  if(p < vt1-10) return 'Hours — all-day pace';
+  if(p < vt1)    return '2–3 hours';
+  if(p < (vt1+vt2)/2) return '60–90 minutes';
+  if(p < vt2)    return '40–60 minutes';
+  if(p < 90)     return '8–30 minutes';
+  return '1–5 minutes';
+}
+function zoneOf(p,vt1,vt2){ return p<vt1?0:(p<vt2?1:2); }
+const ZMETA=[
+  {name:'EASY · below VT1', col:'#2E9E5B', feel:'Full conversation', use:'Aerobic base, fat-burning, recovery — the bulk of smart training.'},
+  {name:'THRESHOLD · VT1→VT2', col:'#E8A13A', feel:'Short sentences only', use:'The "gray zone" — feels productive, but costs a lot of fatigue per gain.'},
+  {name:'SEVERE · above VT2', col:'#C0392B', feel:'A few words, then nothing', use:'VO₂max intervals — potent in small, well-spaced doses.'}
+];
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1040,H=600,m={l:64,r:48,t:60,b:118};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const VEMAX=140;
+  const X=p=>m.l+(p/100)*iw;
+  const Y=v=>m.t+(VEMAX-v)/VEMAX*ih;
+  const baseY=m.t+ih;
+  const {vt1,vt2}=thresholds(state.fit);
+  const VEpts=[[0,12],[vt1,45],[vt2,75],[100,130]];
+  const VEat=p=>{ for(let i=0;i<VEpts.length-1;i++){ if(p<=VEpts[i+1][0]){ const [x0,y0]=VEpts[i],[x1,y1]=VEpts[i+1]; return y0+(y1-y0)*(p-x0)/(x1-x0);} } return 130; };
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Ventilatory thresholds VT1 and VT2" style="cursor:crosshair">`;
+
+  /* zone bands */
+  const bands=[[0,vt1,'#2E9E5B'],[vt1,vt2,'#E8A13A'],[vt2,100,'#C0392B']];
+  bands.forEach(([a,b,c])=>{ svg+=`<rect x="${X(a)}" y="${m.t}" width="${X(b)-X(a)}" height="${ih}" fill="${c}" opacity=".12"/>`; });
+
+  /* gridlines + axes */
+  for(let v=0;v<=140;v+=20){ svg+=`<line x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}" stroke="#10151B" stroke-width="1" opacity=".05"/>`;
+    svg+=`<text x="${m.l-10}" y="${Y(v)+4}" text-anchor="end" style="font:600 11px Inter" fill="#7A8893">${v}</text>`; }
+  for(let p=0;p<=100;p+=20){ svg+=`<text x="${X(p)}" y="${baseY+24}" text-anchor="middle" style="font:700 13px Inter" fill="#10151B">${p}%</text>`; }
+  svg+=`<text x="${m.l+iw/2}" y="${baseY+46}" text-anchor="middle" style="font:800 13px Inter" fill="#3A4753">Exercise intensity (% of VO₂max)</text>`;
+  svg+=`<text x="${m.l-40}" y="${m.t-30}" style="font:800 12px Inter" fill="#3A4753">Breathing (VE, L/min)</text>`;
+
+  /* VE curve (kinks at VT1, VT2 = the ventilatory breakpoints) */
+  let d='M'+X(0)+','+Y(12); VEpts.slice(1).forEach(([p,v])=>{ d+=' L'+X(p).toFixed(1)+','+Y(v).toFixed(1); });
+  svg+=`<path d="${d}" fill="none" stroke="#10151B" stroke-width="3.5" stroke-linejoin="round"/>`;
+  svg+=`<text x="${X(8)}" y="${Y(VEat(8))-12}" style="font:700 11.5px Inter" fill="#7A8893">breathing rises\u2026</text>`;
+
+  /* threshold lines + labels */
+  [['VT1',vt1,'#1F7A45','aerobic threshold'],['VT2',vt2,'#9C2A20','respiratory compensation']].forEach(([nm,p,c,sub])=>{
+    svg+=`<line x1="${X(p)}" y1="${m.t-6}" x2="${X(p)}" y2="${baseY}" stroke="${c}" stroke-width="2.5" stroke-dasharray="2 4"/>`;
+    svg+=`<circle cx="${X(p)}" cy="${Y(VEat(p))}" r="6" fill="${c}"/>`;
+    svg+=`<text x="${X(p)}" y="${m.t-26}" text-anchor="middle" style="font:900 17px Archivo" fill="${c}">${nm}</text>`;
+    svg+=`<text x="${X(p)}" y="${m.t-12}" text-anchor="middle" style="font:600 10.5px Inter" fill="${c}">${Math.round(p)}% · ${sub}</text>`;
+  });
+
+  /* fuel strip below axis */
+  const fy=baseY+54, fh=20;
+  svg+=`<defs><linearGradient id="fuel" x1="0" x2="1" y1="0" y2="0">
+    <stop offset="0" stop-color="#E6B450"/><stop offset="${(vt1/100).toFixed(2)}" stop-color="#E1933B"/>
+    <stop offset="${(vt2/100).toFixed(2)}" stop-color="#C8633C"/><stop offset="1" stop-color="#B14438"/></linearGradient></defs>`;
+  svg+=`<rect x="${m.l}" y="${fy}" width="${iw}" height="${fh}" rx="5" fill="url(#fuel)"/>`;
+  svg+=`<text x="${m.l+6}" y="${fy+14}" style="font:800 11px Inter" fill="#5A3B12">FAT fuels more</text>`;
+  svg+=`<text x="${m.l+iw-6}" y="${fy+14}" text-anchor="end" style="font:800 11px Inter" fill="#fff">CARBOHYDRATE only</text>`;
+  svg+=`<text x="${X(vt1)}" y="${fy+fh+15}" text-anchor="middle" style="font:700 10.5px Inter" fill="#7A8893">\u2191 fuel crossover near VT1</text>`;
+
+  /* effort marker */
+  const e=state.effort, ex=X(e), z=zoneOf(e,vt1,vt2), zc=ZMETA[z].col;
+  svg+=`<line x1="${ex}" y1="${m.t-6}" x2="${ex}" y2="${baseY}" stroke="#10151B" stroke-width="2.5"/>`;
+  svg+=`<circle cx="${ex}" cy="${Y(VEat(e))}" r="9" fill="#fff" stroke="#10151B" stroke-width="4"/>`;
+  svg+=`<rect x="${ex-2}" y="${fy}" width="4" height="${fh}" fill="#10151B"/>`;
+
+  /* readout (upper-left empty corner) */
+  const fat=Math.round(fatFrac(e,vt1,vt2)), carb=100-fat;
+  const cX=m.l+14,cY=m.t+12,cW=322,cH=188;
+  svg+=`<rect x="${cX}" y="${cY}" width="${cW}" height="${cH}" rx="14" fill="#10151B"/>`;
+  svg+=`<text x="${cX+20}" y="${cY+32}" fill="#8da0ad" style="font:700 12px Inter" letter-spacing="1.2">YOUR EFFORT</text>`;
+  svg+=`<text x="${cX+20}" y="${cY+72}" fill="#fff" style="font:900 40px Archivo">${Math.round(e)}<tspan dx="4" fill="#8da0ad" style="font:700 16px Archivo">% VO₂max</tspan></text>`;
+  svg+=`<rect x="${cX+20}" y="${cY+88}" width="${cW-40}" height="30" rx="8" fill="${zc}"/>`;
+  svg+=`<text x="${cX+cW/2}" y="${cY+109}" text-anchor="middle" fill="#fff" style="font:800 14px Archivo">${ZMETA[z].name}</text>`;
+  svg+=`<text x="${cX+20}" y="${cY+140}" fill="#cfd8df" style="font:600 13px Inter">Sustainable: <tspan fill="#fff" style="font:800 13px Inter">${sustain(e,vt1,vt2)}</tspan></text>`;
+  svg+=`<text x="${cX+20}" y="${cY+160}" fill="#cfd8df" style="font:600 13px Inter">Fuel: <tspan fill="#E6B450" style="font:800 13px Inter">${fat}% fat</tspan> · <tspan fill="#fff" style="font:800 13px Inter">${carb}% carb</tspan></text>`;
+  svg+=`<text x="${cX+20}" y="${cY+180}" fill="#cfd8df" style="font:600 13px Inter">Talk test: <tspan fill="#fff" style="font:700 13px Inter">${ZMETA[z].feel}</tspan></text>`;
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+
+  /* drag / click to set effort */
+  const el=host.querySelector('svg');
+  const setFromX=cx=>{ const r=el.getBoundingClientRect(); const px=(cx-r.left)/r.width*W;
+    state.effort=Math.max(2,Math.min(100, Math.round((px-m.l)/iw*100))); document.getElementById('note')&&setNote(); render(); };
+  let drag=false;
+  el.addEventListener('pointerdown',ev=>{ drag=true; el.setPointerCapture(ev.pointerId); setFromX(ev.clientX); });
+  el.addEventListener('pointermove',ev=>{ if(drag) setFromX(ev.clientX); });
+  el.addEventListener('pointerup',()=>{ drag=false; });
+}
+
+/* ============================ controls ============================ */
+function setNote(){
+  const {vt1,vt2}=thresholds(state.fit);
+  document.getElementById('note').innerHTML =
+    `Your VO₂ test doesn\u2019t just give a ceiling \u2014 it finds the two <strong>breakpoints in your breathing</strong>. <strong>VT1</strong> is where easy ends: below it you can talk and go for hours on mostly fat. <strong>VT2</strong> is where it becomes unsustainable: above it you\u2019re on borrowed time, running on carbohydrate and lactate. The gap between them is the <strong>\u201cgray zone\u201d</strong> \u2014 it feels like good work but returns little fitness for the fatigue, which is why polarized training puts ~80% of volume <em>below VT1</em> and ~20% <em>above VT2</em>. Here\u2019s the part people miss: <strong>training moves the thresholds, not just the ceiling.</strong> An untrained person hits VT1 near 52% of VO₂max; a well-trained one holds ~70%+ before easy turns hard. Raising your thresholds is how you get faster at the paces you can actually hold.`;
+}
+function refresh(){ setNote(); render(); }
+const fr=document.getElementById('fitRange');
+fr.addEventListener('input',()=>{ state.fit=+fr.value/100; document.getElementById('fitVal').textContent=fitnessLabel(state.fit); refresh(); });
+window.addEventListener('resize', render);
+
+/* gallery embed */
+(function(){ const q=new URLSearchParams(location.search); if(q.get('embed')) document.body.classList.add('embed'); })();
+
+document.getElementById('fitVal').textContent=fitnessLabel(state.fit);
+refresh();
+</script>
+</body>
+</html>

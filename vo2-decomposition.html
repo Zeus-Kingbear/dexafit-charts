@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What moves your VO₂max — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --fat:#E8B84B; --leanlt:#9FC7DD;
+    --good:#1F9D55; --warn:#E8862E; --risk:#C0392B;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .reset{font-family:"Inter";font-weight:700;font-size:12px;color:var(--brand-deep);background:var(--surface-2);border:1px solid var(--surface-3);border-radius:999px;padding:7px 14px;cursor:pointer;}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:14px 26px;padding:10px 6px 16px;align-items:center;}
+  .gctl{display:flex;align-items:center;gap:11px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
+  .gctl input[type=range]{-webkit-appearance:none;appearance:none;width:172px;height:8px;border-radius:999px;outline:none;}
+  #engR{background:linear-gradient(90deg,var(--surface-3),var(--brand-deep));}
+  #fatR{background:linear-gradient(90deg,var(--surface-3),var(--fat));}
+  #leanR{background:linear-gradient(90deg,var(--surface-3),var(--brand));}
+  .gctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:#fff;border:4px solid var(--brand);box-shadow:0 2px 7px rgba(0,0,0,.18);cursor:pointer;}
+  #engR::-webkit-slider-thumb{border-color:var(--brand-deep);} #fatR::-webkit-slider-thumb{border-color:var(--fat);}
+  .gctl input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .gval{font-family:"Archivo";font-weight:800;font-size:15px;min-width:78px;text-align:left;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:82ch;line-height:1.45;flex-basis:100%;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <button class="reset" id="resetBtn">Reset to baseline</button>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">What\u2019s really moving your VO₂max?</div>
+      <div class="ccontext">It\u2019s a ratio — engine ÷ body mass — so two very different things change it</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="gctl"><span class="lbl">Aerobic engine</span><input id="engR" type="range" min="2.0" max="5.0" step="0.05" value="3.43"><span class="gval" id="engV" style="color:var(--brand-deep)"></span></div>
+        <div class="gctl"><span class="lbl">Fat mass</span><input id="fatR" type="range" min="8" max="80" step="1" value="36"><span class="gval" id="fatV" style="color:#B98A18"></span></div>
+        <div class="gctl"><span class="lbl">Muscle / lean</span><input id="leanR" type="range" min="110" max="185" step="1" value="144"><span class="gval" id="leanV" style="color:var(--brand)"></span></div>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   VO₂max (ml/kg/min) = absolute VO₂ (ml/min)  ÷  body mass (kg).
+   It's a RATIO, so the number moves for two unrelated reasons:
+     • the NUMERATOR (engine: cardiac output × muscle O₂ extraction) — true fitness
+     • the DENOMINATOR (body mass) — and fat counts against you just like muscle
+   VO₂max scales ~linearly with LEAN mass (allometric exponent ≈1.05), so dividing
+   by total weight provably penalizes people who are heavier from FAT, not lean
+   (Vanderburgh 1996; Bergh; Maciejczyk 2014: matched-weight men had near-identical
+   VO₂ per kg LEAN mass — 65.3 vs 63.9 — despite different per-total-weight scores).
+   DexaFit pairs the VO₂ test with DEXA to divide the same engine three ways:
+     ÷ total weight (standard)  ·  ÷ lean mass (fat removed)  ·  ÷ leg-lean (the
+     working muscle). Watching VO₂/lean separates a fitness change from a weight change.
+   Baseline: 40-yr man, 180 lb, 20% fat, VO₂ 3.43 L/min → 42 ml/kg/min. Leg-lean ≈ 36% of lean.
+   ========================================================================== */
+const BASE={eng:3.43, fat:36, lean:144};
+const LEG_FRAC=0.36, LB2KG=1/2.20462;
+const state={eng:3.43, fat:36, lean:144};
+
+function calc(s){
+  const absVO2=s.eng*1000;                 // ml/min
+  const wt_lb=s.fat+s.lean, wt_kg=wt_lb*LB2KG;
+  const lean_kg=s.lean*LB2KG;
+  const legLean_lb=s.lean*LEG_FRAC, legLean_kg=legLean_lb*LB2KG;
+  return { absVO2, wt_lb, wt_kg, lean_kg, legLean_lb, legLean_kg,
+    bf: s.fat/wt_lb*100,
+    mlkg: absVO2/wt_kg, mlkgLM: absVO2/lean_kg, mlkgLeg: absVO2/legLean_kg };
+}
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1040,H=600;
+  const c=calc(state), b=calc(BASE);
+  const fmt=n=>n.toLocaleString('en-US',{maximumFractionDigits:0});
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="VO2max as a ratio of engine to body mass">`;
+
+  /* ---------- LEFT: the fraction ---------- */
+  svg+=`<text x="64" y="52" style="font:800 14px Inter" fill="#3A4753" letter-spacing=".5">VO₂max IS A RATIO</text>`;
+  const x0=70, BARW=448, nMax=5200, dMax=125;
+  // numerator (engine)
+  const wN=c.absVO2/nMax*BARW;
+  svg+=`<text x="${x0}" y="84" style="font:700 12.5px Inter" fill="#0A6F9E">ENGINE · O₂ your body uses per minute</text>`;
+  svg+=`<rect x="${x0}" y="92" width="${BARW}" height="34" rx="6" fill="#EEF3F7"/>`;
+  svg+=`<rect x="${x0}" y="92" width="${wN}" height="34" rx="6" fill="#0A6F9E"/>`;
+  svg+=`<text x="${x0+14}" y="114" fill="#fff" style="font:900 17px Archivo">${fmt(c.absVO2)} ml/min</text>`;
+  svg+=`<text x="${x0+BARW+8}" y="114" style="font:600 11px Inter" fill="#9aa7b2">heart × muscle</text>`;
+  // divider
+  svg+=`<line x1="${x0}" y1="146" x2="${x0+BARW}" y2="146" stroke="#10151B" stroke-width="3"/>`;
+  svg+=`<text x="${x0+BARW+8}" y="150" style="font:800 13px Archivo" fill="#10151B">÷</text>`;
+  // denominator (body mass, stacked)
+  svg+=`<text x="${x0}" y="180" style="font:700 12.5px Inter" fill="#3A4753">BODY MASS · what you carry &amp; divide by</text>`;
+  const segs=[['fat',c.fat_kg!==undefined?c.fat_kg:state.fat*LB2KG,'#E8B84B'],
+              ['leanNL',(state.lean-c.legLean_lb)*LB2KG,'#9FC7DD'],
+              ['leg',c.legLean_kg,'#0E9BD6']];
+  let xx=x0;
+  svg+=`<rect x="${x0}" y="188" width="${BARW}" height="34" rx="6" fill="#EEF3F7"/>`;
+  segs.forEach(([k,kg,col],i)=>{ const w=kg/dMax*BARW;
+    svg+=`<rect x="${xx}" y="188" width="${w}" height="34" rx="${i===0?'6':'0'}" fill="${col}"/>`; xx+=w; });
+  // round right edge cap
+  svg+=`<rect x="${xx-6}" y="188" width="6" height="34" fill="#0E9BD6"/>`;
+  // segment labels
+  const fatLb=state.fat, legLb=Math.round(c.legLean_lb), leanNLlb=Math.round(state.lean-c.legLean_lb);
+  svg+=`<text x="${x0}" y="240" style="font:700 12px Inter" fill="#B98A18">\u25A0 Fat ${fatLb} lb</text>`;
+  svg+=`<text x="${x0+150}" y="240" style="font:700 12px Inter" fill="#5E94B4">\u25A0 Lean ${leanNLlb} lb</text>`;
+  svg+=`<text x="${x0+300}" y="240" style="font:700 12px Inter" fill="#0A6F9E">\u25A0 Legs ${legLb} lb</text>`;
+  svg+=`<text x="${x0}" y="262" style="font:600 12px Inter" fill="#7A8893">Total ${fmt(c.wt_lb)} lb (${c.wt_kg.toFixed(1)} kg) · ${c.bf.toFixed(0)}% body fat</text>`;
+
+  /* verdict (left lower) */
+  vbox(svg2=>svg+=svg2, 64, 290, 470, 226, c, b);
+
+  /* ---------- RIGHT: divide the same engine 3 ways ---------- */
+  const rx=566, rw=424;
+  svg+=`<text x="${rx}" y="52" style="font:800 14px Inter" fill="#3A4753" letter-spacing=".4">DIVIDE THE SAME ENGINE BY…</text>`;
+  const cards=[
+    ['÷ TOTAL WEIGHT', c.wt_kg, c.mlkg, '#10151B', 'Standard score — but body fat counts against you.'],
+    ['÷ LEAN MASS', c.lean_kg, c.mlkgLM, '#0E9BD6', 'Engine per unit of living tissue — fat removed.'],
+    ['÷ LEG-LEAN (working muscle)', c.legLean_kg, c.mlkgLeg, '#0A6F9E', 'Oxygen use by the muscle doing the work.']
+  ];
+  let cy=66;
+  cards.forEach(([lab,den,val,col,desc],i)=>{
+    svg+=`<rect x="${rx}" y="${cy}" width="${rw}" height="92" rx="13" fill="${i===0?'#10151B':'#F4F8FB'}" stroke="${i===0?'#10151B':'#DCE7EE'}" stroke-width="1.5"/>`;
+    const tc=i===0?'#fff':'#10151B', sc=i===0?'#8da0ad':'#5E94B4';
+    svg+=`<text x="${rx+20}" y="${cy+28}" style="font:800 12.5px Inter" fill="${sc}">${lab} · ${den.toFixed(1)} kg</text>`;
+    svg+=`<text x="${rx+20}" y="${cy+66}" style="font:900 34px Archivo" fill="${i===0?'#fff':col}">${val.toFixed(1)}<tspan dx="6" fill="${sc}" style="font:700 13px Inter">ml/kg/min</tspan></text>`;
+    svg+=`<text x="${rx+20}" y="${cy+85}" style="font:600 11.5px Inter" fill="${i===0?'#aebcc6':'#5a6b78'}">${desc}</text>`;
+    cy+=104;
+  });
+  svg+=`<text x="${rx}" y="${cy+8}" style="font:700 12px Inter" fill="#7A8893">Same engine on top — only the denominator changed.</text>`;
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+/* verdict box: decomposes the change in ml/kg into engine vs weight, keyed on VO₂/lean */
+function vbox(push, X, Y, Wb, Hb, c, b){
+  const N0=b.absVO2, D0=b.wt_kg, R0=b.mlkg, N1=c.absVO2, D1=c.wt_kg, R1=c.mlkg;
+  const net=R1-R0, engC=(N1-N0)/D1, wtC=N0*(1/D1-1/D0);
+  const LN0=b.mlkgLM, LN1=c.mlkgLM, dLN=LN1-LN0;
+  const dLean=state.lean-BASE.lean, dEng=c.absVO2-b.absVO2;
+  const near=v=>Math.abs(v)<1.0;
+  let head,sub,col;
+  if(near(net)&&near(dLN)){ head='Right where you started'; sub='Move a slider to see what changes the number — and what it means.'; col='#3A4753'; }
+  else if(dLN>1){ head='Real aerobic gain'; sub=`Engine per lean mass rose ${LN0.toFixed(0)} \u2192 ${LN1.toFixed(0)} ml/kgLM — the machinery itself got better.`; col='#1F9D55'; }
+  else if(dLN<-1){
+    if(dLean>2 && dEng>=-60){ head='More muscle, same engine'; sub=`ml/kg dips and per-lean falls ${LN0.toFixed(0)} \u2192 ${LN1.toFixed(0)} — strength is up, but the new muscle isn\u2019t aerobic yet.`; col='#E8862E'; }
+    else { head='Aerobic detraining'; sub=`Engine per lean mass fell ${LN0.toFixed(0)} \u2192 ${LN1.toFixed(0)} ml/kgLM — the engine lost capacity.`; col='#C0392B'; }
+  } else {
+    if(net>0){ head='Lighter, not fitter'; sub=`ml/kg rose ${R0.toFixed(0)} \u2192 ${R1.toFixed(0)}, but engine-per-lean held at ~${LN1.toFixed(0)}. You lost weight — the engine is unchanged.`; col='#0A6F9E'; }
+    else { head='Heavier, same engine'; sub=`ml/kg fell ${R0.toFixed(0)} \u2192 ${R1.toFixed(0)} from added weight; engine-per-lean held at ~${LN1.toFixed(0)}.`; col='#0A6F9E'; }
+  }
+  let s=`<rect x="${X}" y="${Y}" width="${Wb}" height="${Hb}" rx="14" fill="#10151B"/>`;
+  s+=`<text x="${X+20}" y="${Y+30}" fill="#8da0ad" style="font:700 12px Inter" letter-spacing="1.2">SINCE YOUR BASELINE</text>`;
+  const sgn=v=>(v>=0?'+':'\u2212')+Math.abs(v).toFixed(1);
+  s+=`<text x="${X+20}" y="${Y+58}" fill="#fff" style="font:700 14px Inter">ml/kg/min: ${R0.toFixed(1)} \u2192 ${R1.toFixed(1)} <tspan fill="#cfd8df">(net ${sgn(net)})</tspan></text>`;
+  s+=`<text x="${X+34}" y="${Y+80}" fill="#9aa7b2" style="font:600 13px Inter">from engine ${sgn(engC)} · from body weight ${sgn(wtC)}</text>`;
+  s+=`<text x="${X+20}" y="${Y+104}" fill="#7ec8e8" style="font:700 14px Inter">VO₂ / lean mass: ${LN0.toFixed(1)} \u2192 ${LN1.toFixed(1)} ml/kgLM</text>`;
+  s+=`<line x1="${X+18}" y1="${Y+120}" x2="${X+Wb-18}" y2="${Y+120}" stroke="#2a3540"/>`;
+  s+=`<rect x="${X+18}" y="${Y+134}" width="8" height="${Hb-150}" rx="3" fill="${col}"/>`;
+  s+=`<text x="${X+36}" y="${Y+156}" fill="${col==='#0A6F9E'?'#7ec8e8':col==='#1F9D55'?'#7ee0a4':col==='#E8862E'?'#f0c08a':col==='#C0392B'?'#f0b9b1':'#cfd8df'}" style="font:900 19px Archivo">${head}</text>`;
+  // wrap sub (~46 chars/line)
+  const words=sub.split(' '); let line='',ly=Y+178;
+  words.forEach(w=>{ if((line+w).length>52){ s+=`<text x="${X+36}" y="${ly}" fill="#cfd8df" style="font:600 12.5px Inter">${line.trim()}</text>`; line=w+' '; ly+=18; } else line+=w+' '; });
+  if(line.trim()) s+=`<text x="${X+36}" y="${ly}" fill="#cfd8df" style="font:600 12.5px Inter">${line.trim()}</text>`;
+  push(s);
+}
+
+/* ============================ controls ============================ */
+function setNote(){
+  document.getElementById('note').innerHTML =
+    `The number on your report \u2014 <strong>ml/kg/min</strong> \u2014 is your engine\u2019s oxygen use divided by your <em>whole</em> body weight, so it rises when you lose fat and falls when you gain weight, <strong>even if your engine never changed</strong>. That\u2019s not wrong (you really do carry less uphill), but it isn\u2019t fitness. Because VO₂max scales almost exactly with <strong>lean</strong> mass, dividing by lean tissue \u2014 and, for cyclists and runners, by <strong>leg</strong> lean \u2014 strips the fat out of the comparison. So when your score moves, we check <strong>VO₂ per lean mass</strong>: if it held, the change was body composition; if it climbed, your engine genuinely improved. Try it \u2014 drop fat with the engine fixed (score up, fitness flat), or raise the engine (score and per-lean both up).`;
+}
+function syncVals(){
+  document.getElementById('engV').textContent=state.eng.toFixed(2)+' L/min';
+  document.getElementById('fatV').textContent=state.fat+' lb';
+  document.getElementById('leanV').textContent=state.lean+' lb';
+}
+function refresh(){ syncVals(); setNote(); render(); }
+document.getElementById('engR').addEventListener('input',e=>{ state.eng=+e.target.value; syncVals(); render(); });
+document.getElementById('fatR').addEventListener('input',e=>{ state.fat=+e.target.value; syncVals(); render(); });
+document.getElementById('leanR').addEventListener('input',e=>{ state.lean=+e.target.value; syncVals(); render(); });
+document.getElementById('resetBtn').addEventListener('click',()=>{ state.eng=BASE.eng; state.fat=BASE.fat; state.lean=BASE.lean;
+  document.getElementById('engR').value=BASE.eng; document.getElementById('fatR').value=BASE.fat; document.getElementById('leanR').value=BASE.lean; refresh(); });
+window.addEventListener('resize', render);
+
+/* gallery embed */
+(function(){ const q=new URLSearchParams(location.search); if(q.get('embed')) document.body.classList.add('embed'); })();
+
+refresh();
+</script>
+</body>
+</html>

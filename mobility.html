@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mobility (Sit-Rise Test) — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --good:#2E9E5B; --risk:#C0392B;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:10px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .scorewrap{display:flex;align-items:center;gap:12px;min-width:300px;}
+  .scorewrap input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;
+    background:linear-gradient(90deg,var(--risk),#E8862E 35%,#EAC043 55%,var(--good));outline:none;}
+  .scorewrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+  .scorewrap input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .scoreval{font-family:"Archivo";font-weight:900;font-size:26px;min-width:44px;text-align:center;}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:16px;padding:10px 4px 16px;align-items:center;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:80ch;line-height:1.45;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+  @media (max-width:860px){ .topbar{gap:12px;padding:12px 14px;} .scorewrap{min-width:220px;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="ctl-note" style="max-width:48ch">Observational data, adults 46–75. A strong predictor of risk — not a verdict.</div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">Can you get off the floor without your hands?</div>
+      <div class="ccontext">Sitting-Rising Test · a longevity vital sign</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="gctl scorewrap">
+          <span class="lbl" style="white-space:nowrap">Sit-rise score</span>
+          <input id="scoreRange" type="range" min="0" max="10" value="8" step="0.5">
+          <span class="scoreval" id="scoreVal">8</span>
+        </div>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   DATA — Sitting-Rising Test (SRT), 0–10.
+   12-year mortality by score group from Araújo et al. 2025 (Eur J Prev Cardiol,
+   n=4,282, ages 46–75, median 12.3-yr follow-up):
+     0–4 → 42.1% ·  4.5–7.5 → 20.4% ·  8 → 11.1% ·  8.5–9.5 → 7.0% ·  10 → 3.7%
+   Each 1-point increment ≈ 21% lower mortality (Brito/Araújo 2012). Adjusted for
+   age/sex/BMI, the lowest scorers had ~3.8× (natural) and ~6× (CV) the risk.
+   Rates are crude and observational — a marker of underlying fitness, modifiable.
+   ========================================================================== */
+const GROUPS=[
+  {lo:0,   hi:4.25, rate:42.1, col:'#C0392B', label:'0–4',     mean:'Needs hands, knees, or outside help to get up.'},
+  {lo:4.25,hi:7.75, rate:20.4, col:'#E8862E', label:'4.5–7.5', mean:'Several supports used — risk is markedly elevated.'},
+  {lo:7.75,hi:8.25, rate:11.1, col:'#EAC043', label:'8',       mean:'One support — solidly in the safer range.'},
+  {lo:8.25,hi:9.75, rate:7.0,  col:'#8FBF3F', label:'8.5–9.5', mean:'Near-perfect control and balance — low risk.'},
+  {lo:9.75,hi:10.01,rate:3.7,  col:'#2E9E5B', label:'10',      mean:'Floor to stand, no hands — the lowest risk on the test.'}
+];
+const CURVE=[[2,42.1],[6,20.4],[8,11.1],[9,7.0],[10,3.7]];   // dose-response through group midpoints
+function groupOf(s){ for(const g of GROUPS){ if(s<g.hi) return g; } return GROUPS[GROUPS.length-1]; }
+function curveAt(s){ if(s<=CURVE[0][0]) return CURVE[0][1];
+  for(let i=0;i<CURVE.length-1;i++){ if(s<=CURVE[i+1][0]){ const [x0,y0]=CURVE[i],[x1,y1]=CURVE[i+1]; return y0+(y1-y0)*(s-x0)/(x1-x0); } }
+  return CURVE[CURVE.length-1][1]; }
+
+const state = { score:8 };
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1040,H=600,m={l:78,r:48,t:48,b:104};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const MMAX=46;
+  const X=s=>m.l+(s/10)*iw;
+  const Y=v=>m.t+(MMAX-v)/MMAX*ih;
+  const baseY=m.t+ih;
+  const g=groupOf(state.score);
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Sit-rise score versus 12-year mortality" style="cursor:pointer">`;
+
+  /* score-group bands */
+  GROUPS.forEach(gr=>{
+    const x0=X(gr.lo<0?0:gr.lo), x1=X(gr.hi>10?10:gr.hi), active=gr===g;
+    svg+=`<rect x="${x0}" y="${m.t}" width="${x1-x0}" height="${ih}" fill="${gr.col}" opacity="${active?.24:.12}"/>`;
+    svg+=`<rect x="${x0}" y="${Y(gr.rate)}" width="${x1-x0}" height="${baseY-Y(gr.rate)}" fill="${gr.col}" opacity="${active?.85:.5}"/>`;
+    svg+=`<text x="${(x0+x1)/2}" y="${Y(gr.rate)-9}" text-anchor="middle" style="font:900 ${active?20:16}px Archivo" fill="${active?'#10151B':'#3A4753'}">${gr.rate}%</text>`;
+  });
+
+  /* axes */
+  for(let v=0;v<=40;v+=10){
+    svg+=`<line x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}" stroke="#10151B" stroke-width="1" opacity=".06"/>`;
+    svg+=`<text x="${m.l-12}" y="${Y(v)+5}" text-anchor="end" style="font:600 13px Inter" fill="#3A4753">${v}%</text>`;
+  }
+  for(let s=0;s<=10;s++) svg+=`<text x="${X(s)}" y="${baseY+26}" text-anchor="middle" style="font:700 14px Inter" fill="#10151B">${s}</text>`;
+  svg+=`<text x="${m.l+iw/2}" y="${baseY+48}" text-anchor="middle" style="font:800 13px Inter" fill="#3A4753">Sit-rise score (0–10)</text>`;
+  svg+=`<text x="${m.l+iw/2}" y="${baseY+70}" text-anchor="middle" style="font:600 12px Inter" fill="#7A8893">Score 10 = sit down &amp; stand up using no hands · −1 per hand/knee/forearm used · −0.5 for a wobble</text>`;
+  svg+=`<text x="${m.l-52}" y="${m.t-22}" style="font:800 12.5px Inter" fill="#3A4753">Died within ~12 yrs</text>`;
+  svg+=`<rect x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" fill="none" stroke="#10151B" stroke-width="1.5"/>`;
+
+  /* dose-response curve */
+  let d='M'; for(let s=0;s<=10;s+=0.25) d+=(s===0?'':' L')+X(s).toFixed(1)+','+Y(curveAt(s)).toFixed(1);
+  svg+=`<path d="${d}" fill="none" stroke="#10151B" stroke-width="3" opacity=".7" stroke-linecap="round"/>`;
+
+  /* client marker */
+  const mx=X(state.score), my=Y(curveAt(state.score));
+  svg+=`<line x1="${mx}" y1="${m.t}" x2="${mx}" y2="${baseY}" stroke="#10151B" stroke-width="2.5"/>`;
+  svg+=`<circle cx="${mx}" cy="${my}" r="9" fill="#fff" stroke="#10151B" stroke-width="4"/>`;
+
+  /* readout (upper-right empty corner) */
+  const cX=m.l+iw-322,cY=m.t+14,cW=308,cH=176;
+  svg+=`<rect x="${cX}" y="${cY}" width="${cW}" height="${cH}" rx="14" fill="#10151B"/>`;
+  svg+=`<text x="${cX+20}" y="${cY+34}" fill="#8da0ad" style="font:700 12px Inter" letter-spacing="1.4">YOUR SCORE</text>`;
+  svg+=`<text x="${cX+20}" y="${cY+78}" fill="#fff" style="font:900 44px Archivo">${(state.score%1===0)?state.score:state.score.toFixed(1)}<tspan dx="4" fill="#8da0ad" style="font:700 18px Archivo">/10</tspan></text>`;
+  svg+=`<rect x="${cX+150}" y="${cY+44}" width="${cW-170}" height="34" rx="8" fill="${g.col}"/>`;
+  svg+=`<text x="${cX+150+(cW-170)/2}" y="${cY+67}" text-anchor="middle" fill="#10151B" style="font:800 15px Archivo">${g.rate}% died · 12 yr</text>`;
+  svg+=`<line x1="${cX+18}" y1="${cY+96}" x2="${cX+cW-18}" y2="${cY+96}" stroke="#2a3540" stroke-width="1"/>`;
+  const rr=(g.rate/3.7);
+  svg+=`<text x="${cX+20}" y="${cY+122}" fill="#fff" style="font:800 15px Archivo">${rr<1.2?'Lowest risk on the test':'≈ '+rr.toFixed(1)+'× the risk of a perfect 10'}</text>`;
+  const mn=g.mean; svg+=`<text x="${cX+20}" y="${cY+148}" fill="#cfd8df" style="font:600 13px Inter">${mn.length>40?mn.slice(0,40):mn}</text>`;
+  if(mn.length>40) svg+=`<text x="${cX+20}" y="${cY+166}" fill="#cfd8df" style="font:600 13px Inter">${mn.slice(40)}</text>`;
+
+  /* pillars (lower-left empty corner) */
+  const pX=m.l+14,pY=baseY-150,pW=292;
+  svg+=`<rect x="${pX}" y="${pY}" width="${pW}" height="138" rx="13" fill="#F4F8FB" stroke="#DCE7EE" stroke-width="1.5"/>`;
+  svg+=`<text x="${pX+18}" y="${pY+28}" fill="#3A4753" style="font:800 12px Inter" letter-spacing="1.2">WHAT THIS TEST BUNDLES</text>`;
+  const pillars=['Strength &amp; power','Flexibility','Balance','Body composition'];
+  pillars.forEach((p,i)=>{ const px=pX+18+(i%2)*138, py=pY+52+Math.floor(i/2)*26;
+    svg+=`<rect x="${px}" y="${py-11}" width="11" height="11" rx="3" fill="#0E9BD6"/>`;
+    svg+=`<text x="${px+18}" y="${py}" fill="#10151B" style="font:700 13px Inter">${p}</text>`; });
+  svg+=`<text x="${pX+18}" y="${pY+120}" fill="#0A6F9E" style="font:700 12px Inter">Mobility is the trainable lever — own the range.</text>`;
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+  host.querySelector('svg').addEventListener('click',ev=>{
+    const rect=host.querySelector('svg').getBoundingClientRect();
+    const px=(ev.clientX-rect.left)/rect.width*W;
+    if(px<m.l||px>m.l+iw) return;
+    state.score=Math.max(0,Math.min(10, Math.round(((px-m.l)/iw*10)*2)/2));
+    sync(); render();
+  });
+}
+
+/* ============================ controls ============================ */
+function setNote(){
+  document.getElementById('note').innerHTML =
+    `Getting off the floor takes <strong>strength, flexibility, balance, and a favorable weight</strong> all at once \u2014 which is why this 30-second test predicts longevity. In a 4,282-person study, each <strong>1-point</strong> higher score meant ~<strong>21% lower mortality</strong>, and scoring under 8 carried 2\u20135\u00d7 the death rate of a top score. It\u2019s corroborated by walking speed and balance (both predict falls and survival) and by the link between stiff bodies and stiff arteries. The performance side is the same coin: <strong>you can only express strength through a range you actually own</strong> \u2014 mobility is the multiplier, and your 3D Functional Movement scan maps exactly where yours is limited. A low score isn\u2019t a verdict; it\u2019s a wake-up call, and every input is trainable at any age.`;
+}
+function sync(){ document.getElementById('scoreRange').value=state.score; document.getElementById('scoreVal').textContent=(state.score%1===0)?state.score:state.score.toFixed(1); }
+function refresh(){ setNote(); render(); }
+const sR=document.getElementById('scoreRange');
+sR.addEventListener('input',()=>{ state.score=+sR.value; document.getElementById('scoreVal').textContent=(state.score%1===0)?state.score:state.score.toFixed(1); render(); });
+window.addEventListener('resize', render);
+
+/* gallery embed */
+(function(){ const q=new URLSearchParams(location.search); if(q.get('embed')) document.body.classList.add('embed'); })();
+
+sync(); refresh();
+</script>
+</body>
+</html>

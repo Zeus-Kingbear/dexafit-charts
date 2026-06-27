@@ -160,6 +160,62 @@ const T = {
     <line x1="194" y1="60" x2="194" y2="132" stroke="#10151B" stroke-width="4"/>
     <circle cx="194" cy="60" r="6" fill="#fff" stroke="#10151B" stroke-width="4"/>
   </svg>`,
+  'body-fat':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <path d="M0,118 L300,96 L300,158 L0,158 Z" fill="#3AA0D6" opacity=".30"/>
+    <path d="M0,86 L300,64 L300,96 L0,118 Z" fill="#2E9E5B" opacity=".40"/>
+    <path d="M0,52 L300,34 L300,64 L0,86 Z" fill="#EAC043" opacity=".55"/>
+    <path d="M0,0 L300,0 L300,34 L0,52 Z" fill="#DC4636" opacity=".40"/>
+    <path d="M0,70 L300,40" fill="none" stroke="#10151B" stroke-width="3" stroke-dasharray="9 5"/>
+    <rect x="150" y="86" width="18" height="18" fill="#fff" stroke="#10151B" stroke-width="4"/>
+  </svg>`,
+  'visceral-fat':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <rect x="20" y="92" width="68" height="34" fill="#2E9E5B" opacity=".88"/>
+    <rect x="88" y="92" width="68" height="34" fill="#EAC043" opacity=".88"/>
+    <rect x="156" y="92" width="60" height="34" fill="#E8862E" opacity=".88"/>
+    <rect x="216" y="92" width="64" height="34" fill="#DC4636" opacity=".88"/>
+    <path d="M188,90 l-12,-18 l24,0 Z" fill="#10151B"/>
+    <line x1="188" y1="90" x2="188" y2="126" stroke="#10151B" stroke-width="3"/>
+    <text x="188" y="60" text-anchor="middle" style="font:900 22px Archivo" fill="#10151B">2.4 lb</text>
+  </svg>`,
+  'cardio-pyramid':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <defs><linearGradient id="tpyr" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#0E9BD6"/><stop offset="1" stop-color="#E8862E"/></linearGradient></defs>
+    <polygon points="150,24 44,134 256,134" fill="url(#tpyr)" opacity=".9"/>
+    <circle cx="150" cy="24" r="5" fill="#10151B"/>
+  </svg>`,
+  'progressive-overload':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <path d="M24,120 C70,120 96,96 150,92 C210,88 250,86 280,86" fill="none" stroke="#8C9AA6" stroke-width="6" stroke-linecap="round"/>
+    <path d="M24,120 C70,116 96,86 150,64 C210,40 250,28 280,20" fill="none" stroke="#0E9BD6" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="280" cy="20" r="5" fill="#0A6F9E"/>
+  </svg>`,
+  'medicine-3':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <line x1="14" y1="104" x2="286" y2="104" stroke="#10151B" stroke-width="1.5" stroke-dasharray="6 5" opacity=".4"/>
+    <path d="M20,34 C120,36 150,46 176,118 C188,150 196,150 210,150" fill="none" stroke="#8C9AA6" stroke-width="4"/>
+    <path d="M20,34 C150,36 210,40 244,120 C252,142 258,144 268,146" fill="none" stroke="#1F9D55" stroke-width="5.5" stroke-linecap="round"/>
+  </svg>`,
+  'mobility':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <rect x="20"  y="40"  width="48" height="110" fill="#C0392B" opacity=".8"/>
+    <rect x="74"  y="78"  width="48" height="72"  fill="#E8862E" opacity=".8"/>
+    <rect x="128" y="100" width="34" height="50"  fill="#EAC043" opacity=".8"/>
+    <rect x="168" y="116" width="48" height="34"  fill="#8FBF3F" opacity=".8"/>
+    <rect x="222" y="132" width="48" height="18"  fill="#2E9E5B" opacity=".85"/>
+    <path d="M44,46 C100,70 150,112 245,138" fill="none" stroke="#10151B" stroke-width="3.5" opacity=".7"/>
+  </svg>`,
+  'vt-thresholds':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <rect x="0" y="0" width="156" height="158" fill="#2E9E5B" opacity=".13"/>
+    <rect x="156" y="0" width="66" height="158" fill="#E8A13A" opacity=".15"/>
+    <rect x="222" y="0" width="78" height="158" fill="#C0392B" opacity=".15"/>
+    <line x1="156" y1="0" x2="156" y2="158" stroke="#1F7A45" stroke-width="2.5" stroke-dasharray="2 4"/>
+    <line x1="222" y1="0" x2="222" y2="158" stroke="#9C2A20" stroke-width="2.5" stroke-dasharray="2 4"/>
+    <path d="M14,138 L156,104 L222,72 L288,20" fill="none" stroke="#10151B" stroke-width="3.5" stroke-linejoin="round"/>
+  </svg>`,
+  'vo2-decomposition':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <rect x="40" y="36" width="220" height="26" rx="5" fill="#0A6F9E"/>
+    <line x1="40" y1="79" x2="260" y2="79" stroke="#10151B" stroke-width="3"/>
+    <rect x="40" y="96" width="70" height="26" rx="5" fill="#E8B84B"/>
+    <rect x="110" y="96" width="92" height="26" fill="#9FC7DD"/>
+    <rect x="202" y="96" width="58" height="26" rx="5" fill="#0E9BD6"/>
+  </svg>`,
   'soon':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
     <line x1="20" y1="120" x2="280" y2="120" stroke="#CDD8E0" stroke-width="2"/>
     <path d="M30,108 C120,96 190,60 270,44" fill="none" stroke="#C2CDD6" stroke-width="6" stroke-linecap="round" stroke-dasharray="3 10"/>
@@ -174,12 +230,36 @@ const LIVE = [
   {id:'vo2', file:'vo2-percentile.html', cat:'Cardiorespiratory', sa:true, amin:20, amax:80,
    title:'VO₂ max percentiles',
    blurb:'Where a cardio number ranks by age and sex, and how simply holding it climbs you up the field over time.'},
+  {id:'vt-thresholds', file:'vt-thresholds.html', cat:'Cardiorespiratory', sa:false,
+   title:'VT1 / VT2 — your gears',
+   blurb:'The two ventilatory thresholds inside your VO₂ test set your real training zones — and training moves them, not just your ceiling.'},
+  {id:'vo2-decomposition', file:'vo2-decomposition.html', cat:'Cardiorespiratory', sa:false,
+   title:'What moves your VO₂max',
+   blurb:'VO₂max is engine ÷ body mass — so losing fat raises it without raising fitness. We divide by lean mass to tell real gains from weight changes.'},
   {id:'almi', file:'almi-percentile.html', cat:'Muscle', sa:true, amin:20, amax:80,
    title:'Lean mass percentiles',
    blurb:'Appendicular lean mass vs. the sarcopenia floor, or total lean mass vs. the natural muscle ceiling.'},
   {id:'bone-density', file:'bone-density.html', cat:'Bone', sa:true, amin:20, amax:90,
    title:'Bone density (T-score)',
    blurb:'The classic DEXA bone chart, made live — total body, spine, hip or femoral neck. Plot a T-score by age; read the category, the Z-score vs. peers, and the trajectory ahead.'},
+  {id:'body-fat', file:'body-fat.html', cat:'Body composition', sa:true, amin:20, amax:79,
+   title:'Healthy body fat %',
+   blurb:'Two myths, one chart: nobody walks around at 12%, and the healthy band rises with age. DXA-accurate zones with the real population overlaid.'},
+  {id:'visceral-fat', file:'visceral-fat.html', cat:'Body composition', sa:true, amin:20, amax:79,
+   title:'Visceral fat (lbs)',
+   blurb:'The fat around your organs, on a risk ladder in pounds — what the number means, where you rank, and how fast it falls when you train.'},
+  {id:'cardio-pyramid', file:'cardio-pyramid.html', cat:'Cardiorespiratory', sa:true, amin:20, amax:79,
+   title:'Cardio fitness pyramid',
+   blurb:'Build total cardio fitness block by block: 4×4 intervals raise the VO₂max peak, Zone 2 widens the endurance base — and balance wins.'},
+  {id:'progressive-overload', file:'progressive-overload.html', cat:'Training', sa:false,
+   title:'Progressive overload',
+   blurb:'Why the same workout flattens out while adding a little each week keeps climbing — drag the weekly nudge to zero and watch them merge.'},
+  {id:'medicine-3', file:'medicine-3.html', cat:'Longevity', sa:false,
+   title:'Medicine 3.0 — healthspan',
+   blurb:'Healthspan vs. lifespan: medicine alone just stretches the tail, but investing in reserve squares the curve and shrinks the years in decline.'},
+  {id:'mobility', file:'mobility.html', cat:'Mobility', sa:false,
+   title:'Mobility (sit-rise test)',
+   blurb:'Getting off the floor without your hands is a 30-second longevity test — score 8 carries triple the 12-year mortality of a perfect 10.'},
   {id:'precision', file:'precision-accuracy.html', cat:'Reading results', sa:false,
    title:'Precision vs. accuracy',
    blurb:'Why a DEXA scan detects a real 1–2 point change that a bathroom scale can only guess at.'},
@@ -188,8 +268,8 @@ const LIVE = [
    blurb:'The bell curve behind every percentile — with rarity framing and a bone-density T-score mode.'},
 ];
 const SOON = [
-  {id:'soon', title:'Ventilatory thresholds (VT1 / VT2)', blurb:'Aerobic base, tempo, and the redline pulled from the VO₂ test.'},
-  {id:'soon', title:'Visceral fat', blurb:'The fat wrapped around your organs — and why this measurement is the hard one.'},
+  {id:'soon', title:'Biological age — capstone', blurb:'How old your body really measures, tying the whole panel into one number.'},
+  {id:'soon', title:'Arterial health', blurb:'Vascular age and stiffness, from the advanced arterial assessment.'},
 ];
 
 /* ===================== state ===================== */

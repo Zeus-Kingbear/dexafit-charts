@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Visceral Fat (lbs) — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E;
+    --opt:#2E9E5B; --mod:#EAC043; --high:#E8862E; --vhigh:#DC4636;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;
+    border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;
+    letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:10px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;}
+  .seg button{border:0;background:transparent;font:inherit;font-weight:700;padding:11px 16px;border-radius:10px;
+    color:var(--ink-soft);cursor:pointer;min-height:46px;}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;}
+  .agewrap,.vwrap,.lwrap{display:flex;align-items:center;gap:12px;min-width:230px;}
+  .agewrap input[type=range],.vwrap input[type=range],.lwrap input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;
+    background:linear-gradient(90deg,var(--surface-3),var(--brand));outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;
+    background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .vwrap input[type=range]{background:linear-gradient(90deg,var(--opt),var(--mod) 40%,var(--high) 65%,var(--vhigh));}
+  .ageval,.vval,.lval{font-family:"Archivo";font-weight:800;font-size:22px;min-width:60px;text-align:center;}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:14px;padding:10px 4px 16px;align-items:center;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:80ch;line-height:1.45;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+  @media (max-width:860px){ .topbar{gap:12px;padding:12px 14px;} .agewrap,.vwrap,.lwrap{min-width:170px;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="gctl">
+      <span class="lbl">Sex</span>
+      <div class="seg" id="sexSeg">
+        <button data-sex="male" aria-pressed="true">Male</button>
+        <button data-sex="female" aria-pressed="false">Female</button>
+      </div>
+    </div>
+    <div class="gctl agewrap">
+      <span class="lbl">Age</span>
+      <input id="ageRange" type="range" min="20" max="79" value="50" step="1">
+      <span class="ageval" id="ageVal">50</span>
+    </div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">Visceral fat — the pounds that matter most</div>
+      <div class="ccontext" id="cContext">Male · GE Lunar CoreScan</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="gctl vwrap">
+          <span class="lbl" style="white-space:nowrap">Visceral fat</span>
+          <input id="vRange" type="range" min="0" max="5" value="2.2" step="0.05">
+          <span class="vval" id="vVal">2.20 lb</span>
+        </div>
+        <div class="gctl lwrap">
+          <span class="lbl" style="white-space:nowrap">If weight ↓</span>
+          <input id="lRange" type="range" min="0" max="15" value="0" step="1">
+          <span class="lval" id="lVal">0%</span>
+        </div>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   DATA  —  GE Lunar CoreScan VAT *mass*, reported in pounds (as on a DexaFit report).
+   Risk-band anchors (VAT mass):
+     • Healthy young-adult mean (Miazgowski 2017, GE Prodigy/CoreScan, age 20–30):
+       men 542 g (~1.2 lb), women 258 g (~0.6 lb).
+     • Metabolic-syndrome threshold (Algerian iDXA/CoreScan, IDF criteria):
+       men ≥1369 g (~3.0 lb), women ≥1082 g (~2.4 lb)  → the "Very high" line.
+     • US median VAT by age (Swartz iDXA): men 0.25 kg @20–24, 0.71 kg @25–49 (rising).
+   Bands below are sex-specific cut-points in POUNDS; thresholds are population-
+   dependent, so they're framed as risk-associated ranges, not diagnoses.
+   Median-by-age curve is approximate (blended across the GE Lunar datasets above).
+   ========================================================================== */
+const VMAX=5;
+const BANDS = {
+  male:  [{to:1.0,name:'Optimal',col:'#2E9E5B'},{to:2.0,name:'Moderate',col:'#EAC043'},{to:3.0,name:'High',col:'#E8862E'},{to:VMAX,name:'Very high',col:'#DC4636'}],
+  female:[{to:0.75,name:'Optimal',col:'#2E9E5B'},{to:1.5,name:'Moderate',col:'#EAC043'},{to:2.4,name:'High',col:'#E8862E'},{to:VMAX,name:'Very high',col:'#DC4636'}]
+};
+const MEANING = {
+  Optimal:['Minimal visceral fat.','Metabolically favorable — keep it here.'],
+  Moderate:['Common in adults, but above optimal.','Low-grade inflammation and insulin','resistance can begin to creep in.'],
+  High:['Linked to clearly higher odds of','metabolic syndrome, type-2 diabetes,','fatty liver and high blood pressure.'],
+  'Very high':['At or above the level tied to metabolic','syndrome in DXA studies. A priority','target — and the first fat to respond.']
+};
+const AGES=[25,35,45,55,65,75];
+const MED = { male:[0.6,1.2,1.7,2.2,2.6,2.8], female:[0.5,0.9,1.4,1.9,2.2,2.4] };  // approx median VAT (lb) by age
+
+/* helpers */
+function erf(x){ const s=x<0?-1:1; x=Math.abs(x); const t=1/(1+0.3275911*x);
+  const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x); return s*y; }
+const Phi=z=>0.5*(1+erf(z/Math.SQRT2));
+function medAt(sex,age){ const a=Math.max(25,Math.min(75,age)), m=MED[sex];
+  if(a<=25)return m[0]; if(a>=75)return m[5]; const i=Math.min(4,Math.floor((a-25)/10)),f=((a-25)-i*10)/10; return m[i]+(m[i+1]-m[i])*f; }
+function pctOf(sex,age,v){ const med=medAt(sex,age); return Math.max(1,Math.min(99, Phi((v-med)/(0.85*med))*100)); }
+function bandOf(sex,v){ const bs=BANDS[sex]; for(const b of bs){ if(v<b.to) return b; } return bs[bs.length-1]; }
+function ord(n){ const s=["th","st","nd","rd"], r=n%100; return n+(s[(r-20)%10]||s[r]||s[0]); }
+
+/* state */
+const state = { sex:'male', age:50, v:2.2, wl:0 };
+
+/* render */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1040,H=600;
+  const PADX=80, BARW=880, BARY=372, BARH=78;
+  const X=v=>PADX+(v/VMAX)*BARW;
+  const bs=BANDS[state.sex], band=bandOf(state.sex,state.v);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Visceral fat risk ladder" style="cursor:pointer">`;
+
+  /* ---------- abdominal schematic (top-left) ---------- */
+  const CX=212,CY=176,RO=118;
+  const amt=Math.min(1,state.v/4);                          // 0..1 visceral load
+  svg+=`<ellipse cx="${CX}" cy="${CY}" rx="${RO}" ry="${RO*0.82}" fill="#FBE3C8"/>`;     // subcutaneous
+  svg+=`<ellipse cx="${CX}" cy="${CY}" rx="${RO-20}" ry="${RO*0.82-18}" fill="#F7D6D6"/>`;// cavity
+  // organ hints
+  svg+=`<ellipse cx="${CX-34}" cy="${CY-22}" rx="40" ry="26" fill="#B9595A" opacity=".55"/>`;
+  svg+=`<ellipse cx="${CX+30}" cy="${CY+16}" rx="46" ry="34" fill="#A8666B" opacity=".45"/>`;
+  // visceral fat cluster — grows + reddens with value
+  const blobs=[[CX,CY-2,1],[CX-44,CY+18,.8],[CX+40,CY-30,.8],[CX-14,CY+40,.7],[CX+52,CY+34,.7],[CX-58,CY-26,.6],[CX+10,CY-44,.6]];
+  const n=Math.max(1,Math.round(amt*blobs.length));
+  for(let i=0;i<n;i++){ const b=blobs[i], r=(7+amt*16)*b[2]; svg+=`<circle cx="${b[0]}" cy="${b[1]}" r="${r.toFixed(1)}" fill="${band.col}" opacity="${(0.55+0.4*amt).toFixed(2)}"/>`; }
+  svg+=`<ellipse cx="${CX}" cy="${CY}" rx="${RO}" ry="${RO*0.82}" fill="none" stroke="#10151B" stroke-width="2" opacity=".25"/>`;
+  svg+=`<text x="${CX}" y="${CY+RO*0.82+26}" text-anchor="middle" style="font:700 13px Inter" fill="#3A4753">visceral fat wraps the organs</text>`;
+
+  /* ---------- readout card (top-right) ---------- */
+  const cX=470,cY=64,cW=498,cH=224;
+  svg+=`<rect x="${cX}" y="${cY}" width="${cW}" height="${cH}" rx="15" fill="#10151B"/>`;
+  svg+=`<text x="${cX+24}" y="${cY+38}" fill="#8da0ad" style="font:700 13px Inter" letter-spacing="1.5">YOUR VISCERAL FAT</text>`;
+  svg+=`<text x="${cX+24}" y="${cY+86}" fill="#fff" style="font:900 46px Archivo">${state.v.toFixed(2)} lb</text>`;
+  svg+=`<rect x="${cX+232}" y="${cY+54}" width="${cW-256}" height="40" rx="10" fill="${band.col}"/>`;
+  svg+=`<text x="${cX+232+(cW-256)/2}" y="${cY+81}" text-anchor="middle" fill="#10151B" style="font:800 19px Archivo">${band.name.toUpperCase()} RISK</text>`;
+  const mn=MEANING[band.name]; let my=cY+126;
+  mn.forEach(l=>{ svg+=`<text x="${cX+24}" y="${my}" fill="#dfe6ec" style="font:600 15px Inter">${l}</text>`; my+=22; });
+  const pct=Math.round(pctOf(state.sex,state.age,state.v));
+  const approxCm=Math.round(state.v*95);
+  svg+=`<text x="${cX+24}" y="${cY+cH-16}" fill="#fff" style="font:800 15px Archivo">Higher than ${pct}%<tspan dx="6" fill="#8da0ad" style="font:600 12.5px Inter">of ${state.sex==='male'?'men':'women'} age ${state.age}  ·  ≈ ${approxCm} cm² (rough)</tspan></text>`;
+
+  /* ---------- the ladder ---------- */
+  let prev=0;
+  bs.forEach(b=>{ const x0=X(prev), x1=X(b.to);
+    svg+=`<rect x="${x0}" y="${BARY}" width="${x1-x0}" height="${BARH}" fill="${b.col}" opacity=".88"/>`;
+    svg+=`<text x="${(x0+x1)/2}" y="${BARY+30}" text-anchor="middle" fill="#fff" style="font:800 17px Archivo">${b.name}</text>`;
+    if(prev>0) svg+=`<text x="${x0}" y="${BARY+BARH+24}" text-anchor="middle" style="font:700 13px Inter" fill="#3A4753">${prev.toFixed(prev<1?2:1)} lb</text>`;
+    prev=b.to; });
+  svg+=`<rect x="${X(0)}" y="${BARY}" width="${BARW}" height="${BARH}" fill="none" stroke="#10151B" stroke-width="1.5"/>`;
+  svg+=`<text x="${X(0)}" y="${BARY+BARH+24}" text-anchor="middle" style="font:700 13px Inter" fill="#3A4753">0</text>`;
+  svg+=`<text x="${X(VMAX)}" y="${BARY+BARH+24}" text-anchor="middle" style="font:700 13px Inter" fill="#3A4753">${VMAX} lb</text>`;
+
+  /* typical-for-age tick (below bar) */
+  const med=medAt(state.sex,state.age), mx=X(med);
+  svg+=`<path d="M${mx},${BARY+BARH+34} l-7,12 l14,0 Z" fill="#3A4753"/>`;
+  svg+=`<text x="${mx}" y="${BARY+BARH+62}" text-anchor="middle" style="font:700 12px Inter" fill="#3A4753">typical at ${state.age} (${med.toFixed(1)} lb)</text>`;
+
+  /* projection ghost (after weight loss) */
+  let vNew=state.v;
+  if(state.wl>0){
+    const red=Math.min(0.55, 0.032*state.wl);   // VAT falls faster than total weight
+    vNew=state.v*(1-red); const gx=X(vNew);
+    svg+=`<line x1="${gx}" y1="${BARY-8}" x2="${X(state.v)}" y2="${BARY-8}" stroke="#10151B" stroke-width="2" stroke-dasharray="3 4" opacity=".5"/>`;
+    svg+=`<path d="M${gx},${BARY-2} l-11,-16 l22,0 Z" fill="#fff" stroke="#10151B" stroke-width="3"/>`;
+    svg+=`<text x="${gx}" y="${BARY-30}" text-anchor="middle" style="font:800 14px Archivo" fill="#10151B">${vNew.toFixed(2)} lb</text>`;
+  }
+
+  /* client pointer (above bar) */
+  const px=X(state.v);
+  svg+=`<line x1="${px}" y1="${BARY-2}" x2="${px}" y2="${BARY+BARH}" stroke="#10151B" stroke-width="2.5"/>`;
+  svg+=`<path d="M${px},${BARY+2} l-13,-20 l26,0 Z" fill="#10151B"/>`;
+  svg+=`<text x="${px}" y="${BARY-30}" text-anchor="middle" style="font:900 20px Archivo" fill="#10151B">${state.v.toFixed(2)} lb</text>`;
+
+  /* projection caption */
+  if(state.wl>0){
+    const red=Math.round(Math.min(0.55,0.032*state.wl)*100);
+    const nb=bandOf(state.sex,vNew);
+    const moved = nb.name!==band.name ? ` — that drops you into <tspan fill="${nb.col}" style="font:800 15px Archivo">${nb.name}</tspan>` : '';
+    svg+=`<text x="${X(0)}" y="${BARY+BARH+96}" style="font:600 15px Inter" fill="#3A4753">A ~${state.wl}% body-weight loss typically cuts visceral fat about ${red}%<tspan style="font:700 15px Inter" fill="#10151B"> </tspan>${moved}.</text>`;
+  } else {
+    svg+=`<text x="${X(0)}" y="${BARY+BARH+96}" style="font:600 15px Inter" fill="#7A8893">Visceral fat is the <tspan fill="#10151B" style="font:700 15px Inter">first fat mobilized</tspan> — slide “If weight ↓” to see the payoff.</text>`;
+  }
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+  host.querySelector('svg').addEventListener('click',ev=>{
+    const rect=host.querySelector('svg').getBoundingClientRect();
+    const px=(ev.clientX-rect.left)/rect.width*W, py=(ev.clientY-rect.top)/rect.height*H;
+    if(py<BARY-30||py>BARY+BARH+10) return;
+    state.v=Math.max(0,Math.min(VMAX, Math.round(((px-PADX)/BARW*VMAX)*20)/20));
+    syncInputs(); render();
+  });
+}
+
+/* controls */
+function setContext(){ document.getElementById('cContext').textContent=(state.sex==='male'?'Male':'Female')+' · GE Lunar CoreScan'; }
+function setNote(){
+  const m = state.sex==='male'
+    ? 'Men store about twice the visceral fat of women — a young, healthy man averages ~1.2 lb.'
+    : 'Women carry less until menopause, when it climbs sharply — a young, healthy woman averages ~0.6 lb.';
+  document.getElementById('note').innerHTML =
+    `This is the fat <strong>around your organs</strong>, not under your skin \u2014 and it\u2019s metabolically active, driving inflammation and insulin resistance. It predicts diabetes and heart risk <strong>independent of weight or total body fat</strong>, which is why a lean-looking person can still score high. ${m} The good news: it\u2019s the <strong>first fat your body burns</strong>, so it responds fast to training and a modest calorie deficit. Bands are risk-associated ranges from GE Lunar DXA studies, not a diagnosis.`;
+}
+function syncInputs(){
+  document.getElementById('ageRange').value=state.age; document.getElementById('ageVal').textContent=state.age;
+  document.getElementById('vRange').value=state.v; document.getElementById('vVal').textContent=state.v.toFixed(2)+' lb';
+  document.getElementById('lRange').value=state.wl; document.getElementById('lVal').textContent=state.wl+'%';
+}
+function refresh(){ setContext(); setNote(); render(); }
+document.getElementById('sexSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return; state.sex=b.dataset.sex;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b)); refresh();
+});
+const ageR=document.getElementById('ageRange');
+ageR.addEventListener('input',()=>{ state.age=+ageR.value; document.getElementById('ageVal').textContent=ageR.value; render(); });
+const vR=document.getElementById('vRange');
+vR.addEventListener('input',()=>{ state.v=+vR.value; document.getElementById('vVal').textContent=(+vR.value).toFixed(2)+' lb'; render(); });
+const lR=document.getElementById('lRange');
+lR.addEventListener('input',()=>{ state.wl=+lR.value; document.getElementById('lVal').textContent=lR.value+'%'; render(); });
+window.addEventListener('resize', render);
+
+/* gallery embed (sex + age from shell) */
+(function(){
+  const q=new URLSearchParams(location.search); if(!q.get('embed')) return;
+  document.body.classList.add('embed');
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  function applySA(sx,ag){
+    if(sx){ state.sex=sx; document.querySelectorAll('#sexSeg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.sex===sx)); }
+    if(ag!=null&&ag!=='') state.age=clamp(+ag,20,79);
+    syncInputs(); refresh();
+  }
+  applySA(q.get('sex'), q.get('age'));
+  window.addEventListener('message',e=>{ const d=e.data||{}; if(d.type==='sa') applySA(d.sex,d.age); });
+})();
+
+syncInputs(); refresh();
+</script>
+</body>
+</html>

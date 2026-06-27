@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Protein diversity — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --good:#1F9D55; --gap:#C0392B; --warn:#E8862E;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .hint{font-size:12px;color:var(--ink-soft);font-weight:600;}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-direction:column;gap:10px;padding:10px 6px 16px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .chip{border:1.5px solid var(--surface-3);background:var(--surface);border-radius:999px;padding:8px 15px;font-family:"Inter";font-weight:700;font-size:13.5px;color:var(--ink-soft);cursor:pointer;display:flex;align-items:center;gap:7px;}
+  .chip .dot{width:10px;height:10px;border-radius:50%;}
+  .chip[aria-pressed=true]{border-color:var(--brand);background:#EAF6FB;color:var(--brand-deep);}
+  .chip-cat{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9aa7b2;margin:0 2px 0 8px;align-self:center;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:82ch;line-height:1.45;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="hint">Pick one protein — then add a second to fill the gaps.</div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">Why variety beats the same meat every meal</div>
+      <div class="ccontext">A protein is only as usable as its weakest amino acid</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="chips" id="chips"></div>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   AMINO ACID PROFILES vs the adult requirement pattern (WHO/FAO, mg/g protein):
+     His 15 · Ile 30 · Leu 59 · Lys 45 · Met+Cys 22 · Phe+Tyr 38 · Thr 23 · Trp 6 · Val 39
+   Each food is plotted as % of requirement. The LOWEST essential amino acid is the
+   "limiting" one — by Liebig's law of the minimum, it caps how much of that protein
+   the body can use to build (eating MORE of the same food never raises it). DIAAS is
+   the FAO's digestibility-corrected quality score. Values are composite literature means.
+   Teaching: animal proteins & soy are complete (no gaps); grains are limited in LYSINE,
+   legumes in METHIONINE — pairing them (or adding any animal/soy protein) fills the gap.
+   ========================================================================== */
+const REF = { His:15, Ile:30, Leu:59, Lys:45, SAA:22, AAA:38, Thr:23, Trp:6, Val:39 };
+const AAS = ['His','Ile','Leu','Lys','SAA','AAA','Thr','Trp','Val'];
+const AALAB = { His:'His', Ile:'Ile', Leu:'Leu', Lys:'Lys', SAA:'Met/Cys', AAA:'Phe/Tyr', Thr:'Thr', Trp:'Trp', Val:'Val' };
+const AAFULL = { Lys:'lysine', SAA:'methionine', Leu:'leucine', Thr:'threonine', Val:'valine', Ile:'isoleucine', His:'histidine', Trp:'tryptophan', AAA:'phenylalanine' };
+
+const FOODS = {
+  fish:   {name:'Fish',        cat:'Animal', col:'#0A6F9E', diaas:1.00, aa:{His:29,Ile:48,Leu:81,Lys:92,SAA:43,AAA:73,Thr:44,Trp:11,Val:52}},
+  chicken:{name:'Poultry',     cat:'Animal', col:'#0A6F9E', diaas:1.08, aa:{His:30,Ile:53,Leu:75,Lys:85,SAA:42,AAA:73,Thr:42,Trp:12,Val:50}},
+  beef:   {name:'Beef',        cat:'Animal', col:'#0A6F9E', diaas:1.10, aa:{His:38,Ile:51,Leu:80,Lys:89,SAA:40,AAA:80,Thr:46,Trp:12,Val:54}},
+  dairy:  {name:'Dairy (whey)',cat:'Animal', col:'#0A6F9E', diaas:1.09, aa:{His:18,Ile:60,Leu:105,Lys:95,SAA:50,AAA:60,Thr:70,Trp:18,Val:55}},
+  egg:    {name:'Egg',         cat:'Animal', col:'#0A6F9E', diaas:1.13, aa:{His:24,Ile:54,Leu:86,Lys:70,SAA:55,AAA:98,Thr:50,Trp:13,Val:70}},
+  soy:    {name:'Soy',         cat:'Plant',  col:'#1F9D55', diaas:0.90, aa:{His:26,Ile:48,Leu:78,Lys:60,SAA:26,AAA:90,Thr:39,Trp:13,Val:50}},
+  pea:    {name:'Pea',         cat:'Plant',  col:'#1F9D55', diaas:0.82, aa:{His:24,Ile:46,Leu:84,Lys:75,SAA:20,AAA:88,Thr:39,Trp:10,Val:52}},
+  rice:   {name:'Rice',        cat:'Plant',  col:'#1F9D55', diaas:0.42, aa:{His:24,Ile:43,Leu:82,Lys:31,SAA:48,AAA:95,Thr:36,Trp:12,Val:60}},
+  wheat:  {name:'Wheat',       cat:'Plant',  col:'#1F9D55', diaas:0.40, aa:{His:21,Ile:37,Leu:68,Lys:18,SAA:38,AAA:80,Thr:26,Trp:11,Val:42}}
+};
+const ORDER = ['fish','chicken','beef','dairy','egg','soy','pea','rice','wheat'];
+
+let sel = ['rice'];   // up to 2 selected
+
+function blendAA(){ const out={}; AAS.forEach(a=>{ out[a]=sel.reduce((s,k)=>s+FOODS[k].aa[a],0)/sel.length; }); return out; }
+function pct(a, aa){ return aa[a]/REF[a]*100; }
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1040,H=600;
+  const aa=blendAA();
+  const pcts=AAS.map(a=>({a, v:pct(a,aa)}));
+  let limit=pcts[0]; pcts.forEach(p=>{ if(p.v<limit.v) limit=p; });
+  const complete = limit.v>=100;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Amino acid profile versus requirement">`;
+
+  /* ---- headline cards ---- */
+  // left: ceiling / limiting
+  const lcol = complete?'#1F9D55':'#C0392B';
+  svg+=`<rect x="60" y="14" width="430" height="120" rx="14" fill="#10151B"/>`;
+  const names = sel.map(k=>FOODS[k].name).join('  +  ');
+  svg+=`<text x="82" y="42" fill="#8da0ad" style="font:700 12px Inter" letter-spacing="1.1">${sel.length>1?'YOUR PLATE':'EATING ONLY'}</text>`;
+  svg+=`<text x="82" y="74" fill="#fff" style="font:900 26px Archivo">${names}</text>`;
+  if(complete){
+    svg+=`<text x="82" y="106" fill="#7ee0a4" style="font:800 16px Archivo">Complete — every amino acid clears the bar ✓</text>`;
+    svg+=`<text x="82" y="126" fill="#cfd8df" style="font:600 12px Inter">Usable ceiling ${Math.round(limit.v)}% · no gaps to fill</text>`;
+  } else {
+    svg+=`<text x="82" y="106" fill="${lcol}" style="font:800 16px Archivo">Limited by ${AAFULL[limit.a]||AALAB[limit.a]} — capped at ${Math.round(limit.v)}%</text>`;
+    svg+=`<text x="82" y="126" fill="#cfd8df" style="font:600 12px Inter">Eating more of the same never raises this — only a complement does</text>`;
+  }
+  // right: DIAAS (single) or complementation (blend)
+  const rx=520, rw=460;
+  if(sel.length===1){
+    const f=FOODS[sel[0]], tier=f.diaas>=1?'Excellent':f.diaas>=0.75?'Good':'Low';
+    const tcol=f.diaas>=1?'#1F9D55':f.diaas>=0.75?'#E8A13A':'#C0392B';
+    svg+=`<rect x="${rx}" y="14" width="${rw}" height="120" rx="14" fill="#F4F8FB" stroke="#DCE7EE" stroke-width="1.5"/>`;
+    svg+=`<text x="${rx+22}" y="42" fill="#7A8893" style="font:700 12px Inter" letter-spacing="1.1">DIAAS · PROTEIN QUALITY SCORE</text>`;
+    svg+=`<text x="${rx+22}" y="92" fill="${tcol}" style="font:900 44px Archivo">${f.diaas.toFixed(2)}<tspan dx="10" fill="${tcol}" style="font:800 18px Archivo">${tier}</tspan></text>`;
+    svg+=`<text x="${rx+22}" y="120" fill="#5a6b78" style="font:600 12px Inter">FAO digestibility-corrected score · ≥1.00 excellent, &lt;0.75 low</text>`;
+  } else {
+    svg+=`<rect x="${rx}" y="14" width="${rw}" height="120" rx="14" fill="${complete?'#EAF6EE':'#FDEEE9'}" stroke="${complete?'#BFE6CC':'#F2C9BC'}" stroke-width="1.5"/>`;
+    svg+=`<text x="${rx+22}" y="42" fill="#3A4753" style="font:700 12px Inter" letter-spacing="1.1">COMPLEMENTATION</text>`;
+    svg+=`<text x="${rx+22}" y="80" fill="${complete?'#177A41':'#B5631F'}" style="font:900 22px Archivo">${complete?'Gaps filled — now complete':'Still short — try another pairing'}</text>`;
+    svg+=`<text x="${rx+22}" y="108" fill="#3A4753" style="font:600 12.5px Inter">Each protein\u2019s surplus covers the other\u2019s shortfall.</text>`;
+    svg+=`<text x="${rx+22}" y="126" fill="#5a6b78" style="font:600 11.5px Inter">e.g. rice (low lysine) + pea (low methionine) \u2192 complete.</text>`;
+  }
+
+  /* ---- bar chart: each EAA as % of requirement ---- */
+  const m={l:60,r:36,t:172,b:74}, iw=W-m.l-m.r, ih=H-m.t-m.b, YMAX=240;
+  const Y=v=>m.t+(YMAX-Math.min(v,YMAX))/YMAX*ih, baseY=m.t+ih;
+  // gridlines
+  [50,100,150,200].forEach(g=>{ svg+=`<line x1="${m.l}" y1="${Y(g)}" x2="${m.l+iw}" y2="${Y(g)}" stroke="#10151B" stroke-width="1" opacity=".05"/>`;
+    svg+=`<text x="${m.l-10}" y="${Y(g)+4}" text-anchor="end" style="font:600 11px Inter" fill="#7A8893">${g}%</text>`; });
+  // requirement line @100%
+  svg+=`<line x1="${m.l}" y1="${Y(100)}" x2="${m.l+iw}" y2="${Y(100)}" stroke="#10151B" stroke-width="2.5"/>`;
+  svg+=`<text x="${m.l+6}" y="${Y(100)-8}" style="font:800 12px Inter" fill="#10151B">REQUIREMENT — below this line is a gap</text>`;
+  // bars
+  const bw=iw/AAS.length, barW=bw*0.6;
+  pcts.forEach((p,i)=>{ const cx=m.l+i*bw+bw/2, x=cx-barW/2, isLim=(p.a===limit.a&&!complete), below=p.v<100;
+    const col = below?'#C0392B':(p.a==='Leu'?'#0E9BD6':'#5E94B4');
+    svg+=`<rect x="${x.toFixed(1)}" y="${Y(p.v).toFixed(1)}" width="${barW.toFixed(1)}" height="${(baseY-Y(p.v)).toFixed(1)}" rx="4" fill="${col}"${isLim?' stroke="#7A1F16" stroke-width="3"':''}/>`;
+    svg+=`<text x="${cx}" y="${Y(p.v)-8}" text-anchor="middle" style="font:800 12px Archivo" fill="${below?'#C0392B':'#3A4753'}">${Math.round(p.v)}</text>`;
+    svg+=`<text x="${cx}" y="${baseY+20}" text-anchor="middle" style="font:700 12.5px Inter" fill="#10151B">${AALAB[p.a]}</text>`;
+    if(p.a==='Leu') svg+=`<text x="${cx}" y="${baseY+36}" text-anchor="middle" style="font:700 9.5px Inter" fill="#0A6F9E">trigger</text>`;
+    if(isLim) svg+=`<text x="${cx}" y="${baseY+36}" text-anchor="middle" style="font:800 9.5px Inter" fill="#C0392B">LIMITING</text>`;
+  });
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+/* ============================ controls ============================ */
+function buildChips(){
+  const host=document.getElementById('chips'); let html=''; let lastCat='';
+  ORDER.forEach(k=>{ const f=FOODS[k];
+    if(f.cat!==lastCat){ html+=`<span class="chip-cat">${f.cat==='Animal'?'Animal':'Plant'}</span>`; lastCat=f.cat; }
+    html+=`<button class="chip" data-k="${k}" aria-pressed="${sel.includes(k)}"><span class="dot" style="background:${f.col}"></span>${f.name}</button>`;
+  });
+  host.innerHTML=html;
+  host.querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{
+    const k=b.dataset.k;
+    if(sel.includes(k)){ if(sel.length>1) sel=sel.filter(x=>x!==k); }     // can't deselect last one
+    else { sel.push(k); if(sel.length>2) sel.shift(); }                    // max 2; drop oldest
+    syncChips(); setNote(); render();
+  }));
+}
+function syncChips(){ document.querySelectorAll('#chips .chip').forEach(b=>b.setAttribute('aria-pressed', sel.includes(b.dataset.k))); }
+function setNote(){
+  document.getElementById('note').innerHTML =
+    `Every protein carries all nine essential amino acids, but in different amounts \u2014 and your body can only build up to the <strong>lowest</strong> one (Liebig\u2019s law of the minimum). <strong>Animal proteins and soy are \u201ccomplete\u201d</strong>: every bar clears the line, so the same chicken twice won\u2019t leave you short on amino acids. The gaps show up with <strong>grains</strong> (short on <strong>lysine</strong>) and <strong>legumes</strong> (short on <strong>methionine</strong>) \u2014 and eating more of the same limited food never lifts its weakest bar. The fix is <strong>variety</strong>: pair a grain with a legume, or add any animal/soy protein, and the surplus in one covers the shortfall in the other. Note <strong>leucine</strong> (the muscle-building trigger) runs lower in plants, so plant eaters need a bit more total protein per meal to fire it. Even with complete proteins, variety still pays off \u2014 in the vitamins, minerals, and fats that ride along.`;
+}
+function refresh(){ buildChips(); setNote(); render(); }
+window.addEventListener('resize', render);
+
+/* gallery embed */
+(function(){ const q=new URLSearchParams(location.search); if(q.get('embed')) document.body.classList.add('embed'); })();
+
+refresh();
+</script>
+</body>
+</html>

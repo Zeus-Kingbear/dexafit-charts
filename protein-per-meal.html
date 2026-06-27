@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Protein per meal — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --good:#1F9D55; --warn:#E8862E; --low:#8AA4B4;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:11px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
+  .gctl input[type=range]{-webkit-appearance:none;appearance:none;width:150px;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--surface-3),var(--brand));outline:none;}
+  .gctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:#fff;border:4px solid var(--brand);box-shadow:0 2px 7px rgba(0,0,0,.18);cursor:pointer;}
+  .gctl input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .gval{font-family:"Archivo";font-weight:800;font-size:15px;min-width:64px;text-align:left;color:var(--brand-deep);}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:4px;gap:2px;}
+  .seg button{border:0;background:transparent;font-family:"Inter";font-weight:700;font-size:13.5px;color:var(--ink-soft);padding:7px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;}
+  .seg button[aria-pressed=true]{background:var(--brand);color:#fff;}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:14px 22px;padding:10px 6px 16px;align-items:center;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:82ch;line-height:1.45;flex-basis:100%;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="ctl-note" style="max-width:44ch">Feed your muscles, not your fat — lean-mass targeting is the DexaFit standard.</div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">How much protein — and how to spread it</div>
+      <div class="ccontext">Every meal in the muscle-building sweet spot</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="gctl"><span class="lbl">Sex</span>
+          <div class="seg" id="sexSeg"><button data-s="male" aria-pressed="true">Male</button><button data-s="female" aria-pressed="false">Female</button></div></div>
+        <div class="gctl"><span class="lbl">Weight</span><input id="wtR" type="range" min="100" max="280" step="1" value="180"><span class="gval" id="wtV">180 lb</span></div>
+        <div class="gctl"><span class="lbl">Body fat</span><input id="bfR" type="range" min="8" max="45" step="1" value="20"><span class="gval" id="bfV">20%</span></div>
+        <div class="gctl"><span class="lbl">Target</span>
+          <div class="seg" id="methSeg"><button data-m="lean" aria-pressed="true">Lean mass</button><button data-m="bw" aria-pressed="false">Body weight</button></div></div>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   PROTEIN PER MEAL. Two daily targets, then split across 3–6 meals against the
+   per-meal "sweet spot."  Grounded in:
+   • Daily: 0.8–1.0 g/lb BODY WEIGHT  vs  1.0–1.2 g/lb LEAN MASS (DexaFit standard).
+   • Per-meal MPS is maximized ~0.4 g/kg body weight, ≈ the leucine threshold
+     (2.5–3 g leucine). Practically: a band of ~25–50 g (men) / ~20–40 g (women).
+       – Below the floor → the meal under-fires the muscle-building signal (Areta 2013:
+         8×10 g beat by 4×20 g).
+       – Above the ceiling → diminishing returns FOR THAT MEAL's synthesis. NOT "wasted"
+         and NOT an absorption limit — Trommelen 2023 showed 100 g is still used, just
+         over a longer time. Spreading simply gives more MPS pulses per day.
+   ========================================================================== */
+const BAND = { male:{floor:25,ceil:50}, female:{floor:20,ceil:40} };
+const state = { sex:'male', wt:180, bf:20, meth:'lean' };
+
+function calc(){
+  const lean=state.wt*(1-state.bf/100);
+  const bwLo=state.wt*0.8, bwHi=state.wt*1.0, bwMid=state.wt*0.9;
+  const lmLo=lean*1.0,    lmHi=lean*1.2,    lmMid=lean*1.1;
+  const total = state.meth==='lean'?lmMid:bwMid;
+  return { lean, bwLo,bwHi,bwMid, lmLo,lmHi,lmMid, total, band:BAND[state.sex] };
+}
+function zoneOf(v,b){ return v<b.floor?'low':(v>b.ceil?'high':'ok'); }
+const ZC={ low:'#8AA4B4', ok:'#1F9D55', high:'#E8862E' };
+const ZTXT={ low:'under the trigger', ok:'in the sweet spot', high:'past the peak' };
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1040,H=600;
+  const c=calc(), b=c.band;
+  const r=n=>Math.round(n);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Protein per meal across 3 to 6 meals">`;
+
+  /* ---- top: two daily-target cards ---- */
+  const leftActive=state.meth==='bw';
+  function methodCard(x,active,tag,sub,lo,hi){
+    svg+=`<rect x="${x}" y="14" width="372" height="116" rx="14" fill="${active?'#10151B':'#F4F8FB'}" stroke="${active?'#10151B':'#DCE7EE'}" stroke-width="1.5"/>`;
+    svg+=`<text x="${x+22}" y="42" fill="${active?'#8da0ad':'#7A8893'}" style="font:700 11.5px Inter" letter-spacing="1.1">${tag}</text>`;
+    svg+=`<text x="${x+22}" y="84" fill="${active?'#fff':'#3A4753'}" style="font:900 34px Archivo">${r(lo)}\u2013${r(hi)}<tspan dx="6" fill="${active?'#8da0ad':'#9aa7b2'}" style="font:700 14px Inter">g/day</tspan></text>`;
+    svg+=`<text x="${x+22}" y="110" fill="${active?'#cfd8df':'#5a6b78'}" style="font:600 12px Inter">${sub}</text>`;
+    if(active) svg+=`<text x="${x+372-20}" y="42" text-anchor="end" fill="#7ee0a4" style="font:800 11px Inter">USING THIS ✓</text>`;
+  }
+  methodCard(60, leftActive, 'BODY-WEIGHT METHOD · 0.8–1.0 g/lb', 'Counts your whole body — fat included', c.bwLo, c.bwHi);
+  methodCard(60+372+56, !leftActive, 'LEAN-MASS METHOD · 1.0–1.2 g/lb', `Your lean mass: ${r(c.lean)} lb · feeds muscle only`, c.lmLo, c.lmHi);
+
+  /* ---- plot area ---- */
+  const m={l:64,r:40,t:172,b:80}, iw=W-m.l-m.r, ih=H-m.t-m.b, GMAX=72;
+  const X0=m.l, Y=g=>m.t+(GMAX-Math.min(g,GMAX))/GMAX*ih, baseY=m.t+ih;
+  // y axis
+  for(let g=0;g<=70;g+=10){ svg+=`<line x1="${m.l}" y1="${Y(g)}" x2="${m.l+iw}" y2="${Y(g)}" stroke="#10151B" stroke-width="1" opacity=".05"/>`;
+    svg+=`<text x="${m.l-10}" y="${Y(g)+4}" text-anchor="end" style="font:600 11px Inter" fill="#7A8893">${g}</text>`; }
+  svg+=`<text x="${m.l-48}" y="${m.t-12}" style="font:800 12px Inter" fill="#3A4753">Protein per meal (g)</text>`;
+  // sweet-spot band
+  svg+=`<rect x="${m.l}" y="${Y(b.ceil)}" width="${iw}" height="${Y(b.floor)-Y(b.ceil)}" fill="#1F9D55" opacity=".13"/>`;
+  svg+=`<line x1="${m.l}" y1="${Y(b.ceil)}" x2="${m.l+iw}" y2="${Y(b.ceil)}" stroke="#1F9D55" stroke-width="1.5" stroke-dasharray="5 4" opacity=".6"/>`;
+  svg+=`<line x1="${m.l}" y1="${Y(b.floor)}" x2="${m.l+iw}" y2="${Y(b.floor)}" stroke="#1F9D55" stroke-width="1.5" stroke-dasharray="5 4" opacity=".6"/>`;
+  svg+=`<text x="${m.l+iw-6}" y="${Y(b.ceil)-7}" text-anchor="end" style="font:700 11px Inter" fill="#177A41">${b.ceil} g — peak per-meal synthesis (more = diminishing returns, not wasted)</text>`;
+  svg+=`<text x="${m.l+iw-6}" y="${Y(b.floor)+16}" text-anchor="end" style="font:700 11px Inter" fill="#177A41">${b.floor} g — minimum to fire the muscle-building signal</text>`;
+
+  /* ---- four scenarios: 3 / 4 / 5 / 6 meals ---- */
+  const scen=[3,4,5,6], colW=iw/4;
+  scen.forEach((n,gi)=>{
+    const gx0=m.l+gi*colW, per=c.total/n, z=zoneOf(per,b), col=ZC[z];
+    // dividers
+    if(gi>0) svg+=`<line x1="${gx0}" y1="${m.t}" x2="${gx0}" y2="${baseY}" stroke="#10151B" stroke-width="1" opacity=".07"/>`;
+    // N bars (the meals)
+    const innerPad=26, gw=colW-innerPad*2, gap=Math.min(14,gw/n*0.3), bw=(gw-gap*(n-1))/n;
+    for(let i=0;i<n;i++){ const bx=gx0+innerPad+i*(bw+gap);
+      svg+=`<rect x="${bx.toFixed(1)}" y="${Y(per).toFixed(1)}" width="${bw.toFixed(1)}" height="${(baseY-Y(per)).toFixed(1)}" rx="3" fill="${col}"/>`; }
+    // labels
+    svg+=`<text x="${gx0+colW/2}" y="${baseY+24}" text-anchor="middle" style="font:800 15px Archivo" fill="#10151B">${n} meals</text>`;
+    svg+=`<text x="${gx0+colW/2}" y="${baseY+44}" text-anchor="middle" style="font:700 13px Inter" fill="${z==='ok'?'#177A41':z==='high'?'#B5631F':'#5E7888'}">${Math.round(per)} g each · ${ZTXT[z]}</text>`;
+  });
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+/* ============================ controls ============================ */
+function setNote(){
+  document.getElementById('note').innerHTML =
+    `Two ways to set a daily target: per pound of <strong>body weight</strong> (0.8\u20131.0) or per pound of <strong>lean mass</strong> (1.0\u20131.2). For a lean person they\u2019re close \u2014 but the heavier with body fat you are, the more the body-weight method inflates the number by counting fat you don\u2019t need to feed, which is why we target <strong>lean mass</strong>. Then spread it out: each meal has a <strong>sweet spot</strong>. Below ~${BAND[state.sex].floor} g a meal under-fires the muscle-building signal; above ~${BAND[state.sex].ceil} g you hit <strong>diminishing returns for that meal</strong> \u2014 the extra isn\u2019t wasted or \u201cunabsorbed\u201d (your body uses 100 g fine, just over more hours), it simply does less for muscle right then. The win is <strong>more meals that each clear the bar</strong>: 4\u20135 feedings usually keeps every plate in the green. Too few stacks each meal over the top; too many drops each under the trigger.`;
+}
+function syncVals(){ document.getElementById('wtV').textContent=state.wt+' lb'; document.getElementById('bfV').textContent=state.bf+'%'; }
+function refresh(){ syncVals(); setNote(); render(); }
+document.getElementById('wtR').addEventListener('input',e=>{ state.wt=+e.target.value; syncVals(); render(); });
+document.getElementById('bfR').addEventListener('input',e=>{ state.bf=+e.target.value; syncVals(); render(); });
+document.getElementById('sexSeg').addEventListener('click',e=>{ const x=e.target.closest('button'); if(!x)return; state.sex=x.dataset.s;
+  document.querySelectorAll('#sexSeg button').forEach(y=>y.setAttribute('aria-pressed',y.dataset.s===x.dataset.s)); refresh(); });
+document.getElementById('methSeg').addEventListener('click',e=>{ const x=e.target.closest('button'); if(!x)return; state.meth=x.dataset.m;
+  document.querySelectorAll('#methSeg button').forEach(y=>y.setAttribute('aria-pressed',y.dataset.m===x.dataset.m)); render(); });
+window.addEventListener('resize', render);
+
+/* gallery embed */
+(function(){ const q=new URLSearchParams(location.search); if(q.get('embed')) document.body.classList.add('embed'); })();
+
+refresh();
+</script>
+</body>
+</html>

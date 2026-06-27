@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Norwegian 4×4 — DexaFit Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --hot:#C0392B; --good:#1F9D55; --warn:#E8862E;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-left:8px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:11px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
+  .gctl input[type=range]{-webkit-appearance:none;appearance:none;width:150px;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--surface-3),var(--brand));outline:none;}
+  .gctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:#fff;border:4px solid var(--brand);box-shadow:0 2px 7px rgba(0,0,0,.18);cursor:pointer;}
+  .gctl input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .gval{font-family:"Archivo";font-weight:800;font-size:15px;min-width:62px;text-align:left;color:var(--brand-deep);}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:4px;gap:2px;}
+  .seg button{border:0;background:transparent;font-family:"Inter";font-weight:700;font-size:14px;color:var(--ink-soft);padding:7px 16px;border-radius:999px;cursor:pointer;}
+  .seg button[aria-pressed=true]{background:var(--brand);color:#fff;}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:14px 24px;padding:10px 6px 16px;align-items:center;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:82ch;line-height:1.45;flex-basis:100%;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="ctl-note" style="max-width:44ch">Power shown in watts as an example — your numbers come from your VO₂ test.</div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">The Norwegian 4×4 — and why 4 isn\u2019t magic</div>
+      <div class="ccontext">It\u2019s the time near your ceiling that counts, not the number on the box</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="gctl"><span class="lbl">Interval length</span><input id="durR" type="range" min="3" max="8" step="1" value="4"><span class="gval" id="durV">4 min</span></div>
+        <div class="gctl"><span class="lbl"># of intervals</span><input id="repR" type="range" min="3" max="8" step="1" value="4"><span class="gval" id="repV">4</span></div>
+        <div class="gctl"><span class="lbl">Per week</span>
+          <div class="seg" id="freqSeg">
+            <button data-f="1" aria-pressed="false">1×</button>
+            <button data-f="2" aria-pressed="true">2×</button>
+            <button data-f="3" aria-pressed="false">3×</button>
+          </div>
+        </div>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   Norwegian 4×4 as a session profile. The teaching points, all research-grounded:
+   • "4 minutes" isn't magic — 3–8 min work bouts all drive VO₂max; the currency is
+     accumulated time NEAR VO₂max (Bacon 2013 meta: 3–5 min intervals gave the biggest
+     gains, ~0.8–0.9 L/min; Seiler used 3×8). Effective sessions ≈ 12–32 min of work.
+   • Watts drift DOWN across reps (fatigue) while heart rate / %VO₂max stays pinned near
+     max — same internal effort, falling external power. That's why it still counts.
+   • Frequency: 1×/wk gives real gains and preserves fitness (maintenance). 2×/wk gives the
+     largest gains (the sweet spot). A 3rd session adds little over two.
+   Watts (example: 250 → ~200) and HR are illustrative, not personal.
+   ========================================================================== */
+const state = { dur:4, reps:4, freq:2 };
+const Pk  = k => Math.round((200+50*Math.exp(-k*0.5))/5)*5;     // descending peak watts, k=0..N-1
+const HRk = k => Math.min(96, Math.round(92+k*0.7));            // %HRmax — stays near max
+const FREQ = {
+  1:{good:false, head:'Real gains + maintenance', sub:'One quality session a week preserves most of your fitness — the best insurance when life gets busy.'},
+  2:{good:true,  head:'The sweet spot', sub:'Twice a week produces the largest VO₂max gains in the research — the clear step up from once.'},
+  3:{good:false, head:'Diminishing returns', sub:'A third session adds little over two, while raising fatigue and injury risk. Save the legs for Zone 2.'}
+};
+
+function buildSession(){
+  const D=state.dur, N=state.reps, REC=112, WU=8, CD=3, RECT=3;
+  let pts=[[0,82],[WU,150]]; let bands=[]; let cur=WU;
+  for(let k=0;k<N;k++){
+    const P=Pk(k);
+    pts.push([+(cur+0.4).toFixed(2),P]);
+    const wEnd=cur+0.4+(D-0.4);
+    pts.push([+wEnd.toFixed(2),P]);
+    bands.push({t0:cur,t1:wEnd,P,HR:HRk(k)});
+    if(k<N-1){ pts.push([+(wEnd+0.3).toFixed(2),REC]); pts.push([+(wEnd+0.3+(RECT-0.3)).toFixed(2),REC]); cur=wEnd+RECT; }
+    else     { pts.push([+(wEnd+0.3).toFixed(2),REC]); pts.push([+(wEnd+0.3+CD).toFixed(2),82]); cur=wEnd+0.3+CD; }
+  }
+  return {pts, bands, total:cur};
+}
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1040,H=600;
+  const ses=buildSession(), totalT=ses.total, workMin=state.dur*state.reps;
+  // top readout band, plot below
+  const m={l:60,r:50,t:156,b:84}, iw=W-m.l-m.r, ih=H-m.t-m.b, PMAX=280;
+  const X=t=>m.l+(t/totalT)*iw, Y=p=>m.t+(PMAX-p)/PMAX*ih, baseY=m.t+ih;
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Norwegian 4x4 interval session profile">`;
+
+  /* ---- top readout band ---- */
+  const inRange = workMin>=12 && workMin<=32;
+  const tcol = inRange?'#1F9D55':'#E8862E';
+  // left dark card: time at VO2max
+  svg+=`<rect x="${m.l}" y="14" width="372" height="124" rx="14" fill="#10151B"/>`;
+  svg+=`<text x="${m.l+22}" y="42" fill="#8da0ad" style="font:700 12px Inter" letter-spacing="1.2">TIME NEAR VO₂MAX</text>`;
+  svg+=`<text x="${m.l+22}" y="92" fill="${tcol}" style="font:900 46px Archivo">${workMin} min</text>`;
+  svg+=`<text x="${m.l+22}" y="120" fill="#cfd8df" style="font:600 13.5px Inter">${state.reps} × ${state.dur} min · watts ${Pk(0)} → ${Pk(state.reps-1)} · effort held ~${HRk(Math.floor(state.reps/2))}% HRmax</text>`;
+  if(!inRange) svg+=`<text x="${m.l+22}" y="${138}" fill="#f0c08a" style="font:700 11.5px Inter">${workMin<12?'below the effective range':'past the effective range — fatigue sets a ceiling'} (~12–32 min)</text>`;
+  // right card: weekly benefit
+  const f=FREQ[state.freq], rcx=m.l+iw-372;
+  svg+=`<rect x="${rcx}" y="14" width="372" height="124" rx="14" fill="${f.good?'#EAF6EE':'#F4F8FB'}" stroke="${f.good?'#BFE6CC':'#DCE7EE'}" stroke-width="1.5"/>`;
+  svg+=`<text x="${rcx+22}" y="42" fill="#3A4753" style="font:700 12px Inter" letter-spacing="1.2">${state.freq}× PER WEEK</text>`;
+  svg+=`<text x="${rcx+22}" y="74" fill="${f.good?'#177A41':'#0A6F9E'}" style="font:900 22px Archivo">${f.head}</text>`;
+  // wrap sub
+  (function(){ const words=f.sub.split(' '); let line='',ly=98; words.forEach(w=>{ if((line+w).length>50){ svg+=`<text x="${rcx+22}" y="${ly}" fill="#3A4753" style="font:600 12.5px Inter">${line.trim()}</text>`; line=w+' '; ly+=18;} else line+=w+' '; }); if(line.trim()) svg+=`<text x="${rcx+22}" y="${ly}" fill="#3A4753" style="font:600 12.5px Inter">${line.trim()}</text>`; })();
+
+  /* ---- axes ---- */
+  for(let p=0;p<=280;p+=70){ svg+=`<line x1="${m.l}" y1="${Y(p)}" x2="${m.l+iw}" y2="${Y(p)}" stroke="#10151B" stroke-width="1" opacity=".06"/>`;
+    svg+=`<text x="${m.l-10}" y="${Y(p)+4}" text-anchor="end" style="font:600 11px Inter" fill="#7A8893">${p}</text>`; }
+  svg+=`<text x="${m.l-46}" y="${m.t-12}" style="font:800 12px Inter" fill="#3A4753">Power (watts)</text>`;
+  const tickEvery = totalT>60?20:10;
+  for(let t=0;t<=totalT;t+=tickEvery){ svg+=`<text x="${X(t)}" y="${baseY+22}" text-anchor="middle" style="font:600 11.5px Inter" fill="#7A8893">${t}</text>`; }
+  svg+=`<text x="${m.l+iw/2}" y="${baseY+44}" text-anchor="middle" style="font:800 12.5px Inter" fill="#3A4753">Time (minutes)</text>`;
+
+  /* ---- VO2max work bands (the accumulated time near max) ---- */
+  ses.bands.forEach(b=>{ svg+=`<rect x="${X(b.t0)}" y="${m.t}" width="${X(b.t1)-X(b.t0)}" height="${ih}" fill="#C0392B" opacity=".09"/>`; });
+
+  /* ---- power profile area + line ---- */
+  let dArea=`M${X(0)},${baseY} L`+ses.pts.map(([t,p])=>X(t).toFixed(1)+','+Y(p).toFixed(1)).join(' L')+` L${X(totalT)},${baseY} Z`;
+  svg+=`<path d="${dArea}" fill="#0E9BD6" opacity=".14"/>`;
+  let dLine='M'+ses.pts.map(([t,p])=>X(t).toFixed(1)+','+Y(p).toFixed(1)).join(' L');
+  svg+=`<path d="${dLine}" fill="none" stroke="#0A6F9E" stroke-width="3" stroke-linejoin="round"/>`;
+
+  /* ---- per-rep labels: watts (descending) + HR (flat-high) ---- */
+  ses.bands.forEach((b,i)=>{ const cx=(X(b.t0)+X(b.t1))/2;
+    svg+=`<text x="${cx}" y="${Y(b.P)+22}" text-anchor="middle" style="font:900 15px Archivo" fill="#0A6F9E">${b.P}W</text>`;
+    svg+=`<text x="${cx}" y="${Y(b.P)-12}" text-anchor="middle" style="font:800 12px Archivo" fill="#C0392B">\u2665 ${b.HR}%</text>`;
+  });
+  // effort annotation
+  svg+=`<text x="${X(ses.bands[0].t0)}" y="${m.t+14}" style="font:700 12px Inter" fill="#C0392B">heart rate stays pinned near max \u2014 even as the watts fall \u2193</text>`;
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+/* ============================ controls ============================ */
+function setNote(){
+  document.getElementById('note').innerHTML =
+    `The famous 4×4 works \u2014 but there\u2019s <strong>nothing magic about four minutes</strong>. What drives the adaptation is <strong>total time spent near your VO₂max</strong>, and intervals anywhere from <strong>3 to 8 minutes</strong> get you there (3\u20135 min tends to give the biggest bang). Effective sessions land around <strong>12\u201332 minutes of hard work</strong> total \u2014 more isn\u2019t automatically better, because fatigue and form set the ceiling. Notice the watts <em>fall</em> on each rep while your heart rate stays <strong>pinned near max</strong>: that\u2019s the same internal effort at a lower power, and it still counts. Do this <strong>once a week</strong> and you\u2019ll make real gains and hold your fitness; <strong>twice</strong> is the sweet spot for the biggest improvement; a third adds little. Pair it with easy Zone 2 the rest of the week \u2014 ~80% easy, ~20% hard.`;
+}
+function syncVals(){ document.getElementById('durV').textContent=state.dur+' min'; document.getElementById('repV').textContent=state.reps; }
+function refresh(){ syncVals(); setNote(); render(); }
+document.getElementById('durR').addEventListener('input',e=>{ state.dur=+e.target.value; syncVals(); render(); });
+document.getElementById('repR').addEventListener('input',e=>{ state.reps=+e.target.value; syncVals(); render(); });
+document.getElementById('freqSeg').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
+  state.freq=+b.dataset.f; document.querySelectorAll('#freqSeg button').forEach(x=>x.setAttribute('aria-pressed', x.dataset.f===b.dataset.f)); render(); });
+window.addEventListener('resize', render);
+
+/* gallery embed */
+(function(){ const q=new URLSearchParams(location.search); if(q.get('embed')) document.body.classList.add('embed'); })();
+
+refresh();
+</script>
+</body>
+</html>

@@ -148,20 +148,43 @@ function render(){
   const bs=BANDS[state.sex], band=bandOf(state.sex,state.v);
   let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Visceral fat risk ladder" style="cursor:pointer">`;
 
-  /* ---------- abdominal schematic (top-left) ---------- */
-  const CX=212,CY=176,RO=118;
-  const amt=Math.min(1,state.v/4);                          // 0..1 visceral load
-  svg+=`<ellipse cx="${CX}" cy="${CY}" rx="${RO}" ry="${RO*0.82}" fill="#FBE3C8"/>`;     // subcutaneous
-  svg+=`<ellipse cx="${CX}" cy="${CY}" rx="${RO-20}" ry="${RO*0.82-18}" fill="#F7D6D6"/>`;// cavity
-  // organ hints
-  svg+=`<ellipse cx="${CX-34}" cy="${CY-22}" rx="40" ry="26" fill="#B9595A" opacity=".55"/>`;
-  svg+=`<ellipse cx="${CX+30}" cy="${CY+16}" rx="46" ry="34" fill="#A8666B" opacity=".45"/>`;
-  // visceral fat cluster — grows + reddens with value
-  const blobs=[[CX,CY-2,1],[CX-44,CY+18,.8],[CX+40,CY-30,.8],[CX-14,CY+40,.7],[CX+52,CY+34,.7],[CX-58,CY-26,.6],[CX+10,CY-44,.6]];
-  const n=Math.max(1,Math.round(amt*blobs.length));
-  for(let i=0;i<n;i++){ const b=blobs[i], r=(7+amt*16)*b[2]; svg+=`<circle cx="${b[0]}" cy="${b[1]}" r="${r.toFixed(1)}" fill="${band.col}" opacity="${(0.55+0.4*amt).toFixed(2)}"/>`; }
-  svg+=`<ellipse cx="${CX}" cy="${CY}" rx="${RO}" ry="${RO*0.82}" fill="none" stroke="#10151B" stroke-width="2" opacity=".25"/>`;
-  svg+=`<text x="${CX}" y="${CY+RO*0.82+26}" text-anchor="middle" style="font:700 13px Inter" fill="#3A4753">visceral fat wraps the organs</text>`;
+  /* ---------- abdominal cross-section (axial, ~L4 / navel plane) ---------- */
+  const CX=210, CY=170;
+  const amt=Math.min(1,state.v/VMAX);                 // 0..1 visceral load
+  const CYd=CY-amt*7;                                 // belly distends anteriorly (up)
+  const rxO=140, ryO=100+amt*12;
+  const rcx=rxO-34, rcy=ryO-31;                       // peritoneal cavity radii
+  const sf=1+amt*0.42;                                // organs spread as fat accumulates
+  const vis=(0.12+0.55*amt).toFixed(2);
+  // wall layers: subcutaneous fat → muscle wall → cavity
+  svg+=`<ellipse cx="${CX}" cy="${CYd}" rx="${rxO}" ry="${ryO}" fill="#F2D49A"/>`;
+  svg+=`<ellipse cx="${CX}" cy="${CYd}" rx="${rxO-22}" ry="${ryO-20}" fill="#B5635A"/>`;
+  svg+=`<line x1="${CX}" y1="${CYd-ryO+21}" x2="${CX}" y2="${CYd-ryO+33}" stroke="#9C4F48" stroke-width="3"/>`;
+  svg+=`<ellipse cx="${CX}" cy="${CYd}" rx="${rcx}" ry="${rcy}" fill="#EFDCC6"/>`;
+  svg+=`<ellipse cx="${CX}" cy="${CYd}" rx="${rcx}" ry="${rcy}" fill="${band.col}" opacity="${vis}"/>`;
+  // posterior structures: spine, psoas, great vessels
+  const spY=CYd+rcy*0.60;
+  svg+=`<path d="M${CX-9} ${(spY+17).toFixed(1)} L${CX+9} ${(spY+17).toFixed(1)} L${CX} ${(spY+30).toFixed(1)} Z" fill="#DBCBA6"/>`;
+  svg+=`<ellipse cx="${CX}" cy="${spY.toFixed(1)}" rx="26" ry="20" fill="#E9E3D2" stroke="#CDBF9C" stroke-width="2"/>`;
+  svg+=`<ellipse cx="${CX-32}" cy="${(CYd+rcy*0.48).toFixed(1)}" rx="15" ry="20" fill="#A95E57"/>`;
+  svg+=`<ellipse cx="${CX+32}" cy="${(CYd+rcy*0.48).toFixed(1)}" rx="15" ry="20" fill="#A95E57"/>`;
+  svg+=`<circle cx="${CX-9}" cy="${(CYd+rcy*0.34).toFixed(1)}" r="7" fill="#C0392B"/>`;
+  svg+=`<ellipse cx="${CX+13}" cy="${(CYd+rcy*0.34).toFixed(1)}" rx="10" ry="7" fill="#6E96B4"/>`;
+  // bowel loops (small + large intestine), pushed apart as fat accumulates
+  const loops=[[-50,-44],[2,-52],[52,-40],[-68,-10],[-14,-14],[40,-12],[-32,22],[26,22]];
+  loops.forEach(([ox,oy])=>{ const lx=CX+ox*sf*0.9, ly=CYd+oy*sf;
+    svg+=`<circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="17" fill="#CDA088" stroke="#B3866C" stroke-width="2"/>`;
+    svg+=`<circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="8" fill="#E2C7B4"/>`; });
+  // mesenteric fat infiltrating between loops — grows + reddens with value
+  const blobs=[[-26,-30],[28,-28],[-46,6],[8,2],[48,0],[-10,32],[36,32],[-60,-20]];
+  const nb=Math.round(amt*blobs.length);
+  for(let i=0;i<nb;i++){ const [bx,by]=blobs[i];
+    svg+=`<circle cx="${(CX+bx*sf).toFixed(1)}" cy="${(CYd+by*sf).toFixed(1)}" r="${(7+amt*4).toFixed(1)}" fill="${band.col}" opacity="0.8"/>`; }
+  // skin outline
+  svg+=`<ellipse cx="${CX}" cy="${CYd}" rx="${rxO}" ry="${ryO}" fill="none" stroke="#8A5A3A" stroke-width="2.5"/>`;
+  // labels
+  svg+=`<text x="${CX}" y="${(CYd-ryO-8).toFixed(1)}" text-anchor="middle" style="font:700 12.5px Inter" fill="#9C7A2E">subcutaneous fat — the pinchable layer</text>`;
+  svg+=`<text x="${CX}" y="${(CYd+ryO+24).toFixed(1)}" text-anchor="middle" style="font:800 13px Inter" fill="#3A4753">VISCERAL FAT — wraps your organs, deep inside</text>`;
 
   /* ---------- readout card (top-right) ---------- */
   const cX=470,cY=64,cW=498,cH=224;

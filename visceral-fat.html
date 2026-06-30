@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- © 2026 DexaFit Scottsdale -->
+<meta name="copyright" content="© 2026 DexaFit Scottsdale">
+<!-- Google Tag Manager (embed-aware) -->
+<script>(function(){if(new URLSearchParams(location.search).get('embed'))return;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MGC5F4HG');})();</script>
+<!-- End Google Tag Manager -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Visceral Fat (lbs) — DexaFit Education Charts</title>
+<title>Visceral Fat (lbs) — DexaFit Scottsdale Education Charts</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -54,12 +59,25 @@
   .ctl-note strong{color:var(--ink);}
   body.embed .topbar{display:none;}
   @media (max-width:860px){ .topbar{gap:12px;padding:12px 14px;} .agewrap,.vwrap,.lwrap{min-width:170px;} }
+  .brand .loc{color:var(--ink);margin-left:8px;}
+  .helpBtn{position:fixed;top:14px;right:16px;z-index:40;width:40px;height:40px;border-radius:50%;border:2px solid var(--brand);background:#fff;color:var(--brand-deep);font-family:"Archivo";font-weight:900;font-size:20px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;}
+  .helpBtn:hover{background:var(--brand);color:#fff;}
+  .helpModal{position:fixed;inset:0;z-index:50;background:rgba(16,21,27,.55);display:flex;align-items:center;justify-content:center;padding:24px;}
+  .helpModal[hidden]{display:none;}
+  .helpCard{background:#fff;border-radius:18px;max-width:560px;width:100%;padding:30px 32px 22px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:88vh;overflow:auto;}
+  .helpClose{position:absolute;top:14px;right:16px;border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;color:var(--ink-soft);}
+  .helpCard h2{font-family:"Archivo";font-weight:900;font-size:24px;margin:0 0 14px;letter-spacing:-.02em;}
+  .helpCard p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 12px;}
+  .helpCard strong{color:var(--ink);}
+  .helpFoot{margin-top:16px;padding-top:14px;border-top:1px solid var(--surface-3);font-size:11.5px;color:#90a0ac;}
+  .copyr{position:fixed;bottom:8px;right:14px;z-index:30;font-size:10.5px;font-weight:600;color:#9aa7b2;opacity:.8;pointer-events:none;user-select:none;}
 </style>
 </head>
 <body>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MGC5F4HG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="app">
   <div class="topbar">
-    <div class="brand"><span>DEXA</span><span class="x">FIT</span><small>Education Charts</small></div>
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><span class="loc">Scottsdale</span><small>Education Charts</small></div>
     <div class="spacer"></div>
     <div class="gctl">
       <span class="lbl">Sex</span>
@@ -99,7 +117,24 @@
   </div>
 </div>
 
+
+<button id="helpBtn" class="helpBtn" aria-label="What is this and how do I use it?">?</button>
+<div id="helpModal" class="helpModal" hidden>
+  <div class="helpCard">
+    <button id="helpClose" class="helpClose" aria-label="Close">×</button>
+    <h2 id="helpTitle"></h2>
+    <div id="helpBody"></div>
+    <div class="helpFoot">© 2026 DexaFit Scottsdale · An education tool for your consultation — not medical advice.</div>
+  </div>
+</div>
+<div class="copyr">© 2026 DexaFit Scottsdale</div>
 <script>
+/* DexaFit Scottsdale — domain lock (recommended level) */
+(function(){var ALLOW=['charts.kingbear.co','localhost','127.0.0.1'],REDIRECT='https://www.dexafit.com';var h=(location.hostname||'').toLowerCase();var ok=h===''||h.endsWith('.vercel.app')||ALLOW.some(function(d){return h===d||h.endsWith('.'+d);});if(!ok){document.documentElement.innerHTML='<div style="font:600 18px/1.5 system-ui;padding:48px;color:#10151B;max-width:620px">This interactive content is © DexaFit Scottsdale and is licensed for use only on its official site. <a href="'+REDIRECT+'" style="color:#0A6F9E">Visit DexaFit Scottsdale →</a></div>';throw new Error('DexaFit Scottsdale: unlicensed host');}})();
+/* DexaFit Scottsdale — help */
+var HELP_TITLE="Visceral fat & your risk";var HELP_BODY="<p>Visceral fat is the deep fat around your organs \u2014 the kind that drives metabolic risk \u2014 shown in pounds from the DEXA CoreScan, with risk bands and an anatomical cross-section that fills in as the amount climbs.</p><p><strong>How to use it:</strong> slide the amount to watch risk rise, and use the weight-loss marker to see how fast visceral fat responds when you lose weight (it goes first).</p>";
+(function(){var hb=document.getElementById('helpBtn'),hm=document.getElementById('helpModal');if(!hb||!hm)return;document.getElementById('helpTitle').textContent=HELP_TITLE;document.getElementById('helpBody').innerHTML=HELP_BODY;hb.addEventListener('click',function(){hm.hidden=false;});document.getElementById('helpClose').addEventListener('click',function(){hm.hidden=true;});hm.addEventListener('click',function(e){if(e.target.id==='helpModal')hm.hidden=true;});})();
+
 /* ============================================================================
    DATA  —  GE Lunar CoreScan VAT *mass*, reported in pounds (as on a DexaFit report).
    Risk-band anchors (VAT mass):

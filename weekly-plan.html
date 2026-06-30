@@ -1,0 +1,285 @@
+<!doctype html>
+<!-- © 2026 DexaFit Scottsdale. All rights reserved. Licensed for use on DexaFit Scottsdale properties only. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- © 2026 DexaFit Scottsdale -->
+<meta name="copyright" content="© 2026 DexaFit Scottsdale">
+<!-- Google Tag Manager (embed-aware) -->
+<script>(function(){if(new URLSearchParams(location.search).get('embed'))return;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MGC5F4HG');})();</script>
+<!-- End Google Tag Manager -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The ideal training week — DexaFit Scottsdale Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E;
+    --c-s:#0A6F9E; --c-z:#1F9D55; --c-v:#C0392B; --c-b:#7A4FB0; --c-m:#E8862E;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:0;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand .loc{color:var(--ink);margin-left:8px;}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-left:10px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:14px 26px;padding:10px 6px 16px;align-items:center;}
+  .gctl{display:flex;align-items:center;gap:11px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
+  .gctl input[type=range]{-webkit-appearance:none;appearance:none;width:300px;height:8px;border-radius:999px;background:var(--surface-3);outline:none;}
+  .gctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand-deep);box-shadow:0 2px 7px rgba(0,0,0,.2);cursor:pointer;}
+  .gctl input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand-deep);cursor:pointer;}
+  .budget{font-family:"Archivo";font-weight:900;font-size:19px;min-width:92px;}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:4px;gap:2px;}
+  .seg button{border:0;background:transparent;font-family:"Inter";font-weight:700;font-size:13.5px;color:var(--ink-soft);padding:7px 15px;border-radius:999px;cursor:pointer;}
+  .seg button[aria-pressed=true]{background:var(--brand);color:#fff;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:96ch;line-height:1.5;flex-basis:100%;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+  .helpBtn{position:fixed;top:14px;right:16px;z-index:40;width:40px;height:40px;border-radius:50%;border:2px solid var(--brand);background:#fff;color:var(--brand-deep);font-family:"Archivo";font-weight:900;font-size:20px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;}
+  .helpBtn:hover{background:var(--brand);color:#fff;}
+  .helpModal{position:fixed;inset:0;z-index:50;background:rgba(16,21,27,.55);display:flex;align-items:center;justify-content:center;padding:24px;}
+  .helpModal[hidden]{display:none;}
+  .helpCard{background:#fff;border-radius:18px;max-width:560px;width:100%;padding:30px 32px 22px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:88vh;overflow:auto;}
+  .helpClose{position:absolute;top:14px;right:16px;border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;color:var(--ink-soft);}
+  .helpCard h2{font-family:"Archivo";font-weight:900;font-size:24px;margin:0 0 14px;letter-spacing:-.02em;}
+  .helpCard p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 12px;}
+  .helpCard strong{color:var(--ink);}
+  .helpFoot{margin-top:16px;padding-top:14px;border-top:1px solid var(--surface-3);font-size:11.5px;color:#90a0ac;}
+  .copyr{position:fixed;bottom:8px;right:14px;z-index:30;font-size:10.5px;font-weight:600;color:#9aa7b2;opacity:.8;pointer-events:none;user-select:none;}
+</style>
+</head>
+<body>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MGC5F4HG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><span class="loc">Scottsdale</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="ctl-note" style="max-width:42ch">What an ideal week looks like — and what to keep first when time is short.</div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">The ideal training week</div>
+      <div class="ccontext">Set your weekly budget — see what to prioritize and how to spread it</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="gctl"><span class="lbl">Time / week</span>
+          <input id="budgetR" type="range" min="0" max="5" step="1" value="2">
+          <span class="budget" id="budgetLbl"></span>
+        </div>
+        <div class="gctl"><span class="lbl">Stage</span>
+          <div class="seg" id="ageSeg">
+            <button data-a="u50" aria-pressed="true">Under 50</button>
+            <button data-a="50" aria-pressed="false">50+</button>
+            <button data-a="65" aria-pressed="false">65+</button>
+          </div>
+        </div>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="helpBtn" class="helpBtn" aria-label="What is this and how do I use it?">?</button>
+<div id="helpModal" class="helpModal" hidden>
+  <div class="helpCard">
+    <button id="helpClose" class="helpClose" aria-label="Close">\u00d7</button>
+    <h2 id="helpTitle"></h2>
+    <div id="helpBody"></div>
+    <div class="helpFoot">\u00a9 2026 DexaFit Scottsdale \u00b7 An education tool for your consultation \u2014 not medical advice.</div>
+  </div>
+</div>
+<div class="copyr">\u00a9 2026 DexaFit Scottsdale</div>
+
+<script>
+/* DexaFit Scottsdale — domain lock (recommended level) */
+(function(){var ALLOW=['charts.kingbear.co','localhost','127.0.0.1'],REDIRECT='https://www.dexafit.com';var h=(location.hostname||'').toLowerCase();var ok=h===''||h.endsWith('.vercel.app')||ALLOW.some(function(d){return h===d||h.endsWith('.'+d);});if(!ok){document.documentElement.innerHTML='<div style="font:600 18px/1.5 system-ui;padding:48px;color:#10151B;max-width:620px">This interactive content is \u00a9 DexaFit Scottsdale and is licensed for use only on its official site. <a href="'+REDIRECT+'" style="color:#0A6F9E">Visit DexaFit Scottsdale \u2192</a></div>';throw new Error('DexaFit Scottsdale: unlicensed host');}})();
+
+/* ============================================================================
+   THE IDEAL TRAINING WEEK — time-budgeted allocation across 7 days.
+   Anchored to: WHO 2020 (150–300 min/wk moderate or 75–150 vigorous aerobic;
+   muscle-strengthening 2+ days/wk; 65+ add balance 3+ days/wk). Dose-response:
+   aerobic all-cause-mortality benefit climbs to ~300–600 min/wk moderate then
+   plateaus (Lee 2022, Circulation), with vigorous ~30–60% of total optimal;
+   resistance mortality benefit peaks ~30–60 min/wk, J-shaped (Momma 2022 BJSM;
+   Shailendra 2022 AJPM ~27% at ~60 min), while muscle/strength/bone keep
+   responding to higher volume; strength+aerobic combined ≈40% lower mortality
+   vs ~15–21% for either alone. Low-budget allocations follow that ROI order;
+   they are an evidence-guided prioritization, not a validated prescription.
+   ========================================================================== */
+const CAT = {
+  S:{label:'Strength',     color:'#0A6F9E'},
+  Z:{label:'Zone 2',       color:'#1F9D55'},
+  V:{label:'VO\u2082max',  color:'#C0392B'},
+  B:{label:'Balance',      color:'#7A4FB0'},
+  M:{label:'Mobility',     color:'#E8862E'}
+};
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const d=(...s)=>s.map(o=>({c:o[0],m:o[1]}));   // helper: d(['S',45]) -> {c:'S',m:45}
+
+// 6 budget tiers; each week = 7 days of sessions
+const TIERS = [
+  { hrs:1, label:'1 h',
+    week:[ d(['S',40]), [], [], d(['V',20]), [], [], [] ],
+    note:"With one hour, spend it on the two biggest levers: a full-body <strong>strength</strong> session (muscle and bone \u2014 what actually fades with age) and a short <strong>VO\u2082max</strong> interval bout (the fitness measure most tied to lifespan). Daily walking is assumed on top, for free. This is below the 2-day strength floor \u2014 if muscle is the priority, make it two 30-min strength days instead." },
+  { hrs:3, label:'3 h',
+    week:[ d(['S',45]), d(['V',25]), [], d(['S',45]), [], d(['Z',55]), d(['M',10]) ],
+    note:"Now you clear the floor: two <strong>strength</strong> days, an easy <strong>Zone 2</strong> session, one <strong>VO\u2082max</strong> bout, a little mobility \u2014 with two full rest days. Strength and aerobic together beat either alone (~40% vs ~15\u201321% lower mortality)." },
+  { hrs:5, label:'5 h',
+    week:[ d(['S',50]), d(['Z',50]), d(['S',50]), d(['V',30]), d(['S',50]), d(['Z',50]), d(['B',10],['M',10]) ],
+    note:"A well-rounded week: three <strong>strength</strong> sessions every other day, two <strong>Zone 2</strong> efforts, one <strong>VO\u2082max</strong> session, and a Sunday of balance + mobility as active recovery. You\u2019re now inside the longevity-optimal aerobic range." },
+  { hrs:7, label:'7 h',
+    week:[ d(['S',55]), d(['Z',75]), d(['S',55]), d(['V',35]), d(['S',55]), d(['Z',80]), d(['B',30],['M',35]) ],
+    note:"Room to build: a deeper <strong>Zone 2</strong> base, dedicated balance and mobility, intensity still capped at ~2 hard days a week. Hard days never sit back to back." },
+  { hrs:9, label:'9 h',
+    week:[ d(['S',60],['Z',40]), d(['Z',80]), d(['S',55],['B',30]), d(['V',45]), d(['S',60],['M',35]), d(['Z',105],['B',25]), [] ],
+    note:"High volume with structure \u2014 a couple of two-a-days, a deliberate easy day, one full rest day. Beyond here, more training mostly adds performance and body composition, not much more lifespan." },
+  { hrs:11, label:'Max',
+    week:[ d(['S',60],['M',20]), d(['Z',90]), d(['S',60],['B',30]), d(['V',60],['M',20]), d(['S',60],['B',30]), d(['S',60],['Z',90]), d(['Z',60],['M',20]) ],
+    note:"If time and money were no object: ~4 h <strong>strength</strong>, ~5 h <strong>cardio</strong> (a big <strong>Zone 2</strong> base + <strong>VO\u2082max</strong>), and ~1 h each of <strong>balance</strong> and <strong>mobility</strong>, with easy days woven in. Honest caveat: most of the <em>mortality</em> benefit is already banked by the 3\u20135 h plans \u2014 the extra here buys strength, muscle and resilience, which shape how well you live, not just how long." }
+];
+const REST_NOTE = " <strong>Rest is where you adapt:</strong> leave ~48 h before training the same muscles again, alternate hard and easy days, keep at least one easy/rest day, and protect sleep \u2014 the foundation under all of it. <strong>Floors (WHO):</strong> 150 min/wk aerobic + 2 strength days; 65+ add balance 3 days/wk. <strong>Optimal:</strong> ~300\u2013600 min/wk moderate aerobic (plateaus ~600), vigorous ~\u2153 of it; resistance\u2019s mortality benefit peaks near ~30\u201360 min/wk, but more builds the muscle and bone that protect healthspan.";
+
+const state = { tier:2, age:'u50' };
+
+function buildWeek(){
+  const week = JSON.parse(JSON.stringify(TIERS[state.tier].week));   // deep copy
+  // age adjustment: scale existing balance, then guarantee minimum balance days (additive)
+  const factor = state.age==='65' ? 2.0 : state.age==='50' ? 1.4 : 1.0;
+  const minBDays = state.age==='65' ? 3 : state.age==='50' ? 2 : 0;
+  const addMin = state.age==='65' ? 12 : 10;
+  if(factor!==1) week.forEach(day=>day.forEach(s=>{ if(s.c==='B') s.m=Math.round(s.m*factor/5)*5; }));
+  if(minBDays){
+    let have = week.filter(day=>day.some(s=>s.c==='B')).length;
+    for(let i=0;i<7 && have<minBDays;i++){ const day=week[i];
+      if(day.length && !day.some(s=>s.c==='B')){ day.push({c:'B',m:addMin}); have++; } }
+  }
+  return week;
+}
+function totals(week){ const t={S:0,Z:0,V:0,B:0,M:0}; week.forEach(day=>day.forEach(s=>t[s.c]+=s.m)); return t; }
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1060,H=612, m={l:62,r:24,t:152,b:96}, iw=W-m.l-m.r, gy1=H-m.b, gy0=m.t, gh=gy1-gy0;
+  const week=buildWeek(), t=totals(week);
+  const totalMin=t.S+t.Z+t.V+t.B+t.M, aer=t.Z+t.V;
+  const sDays=week.filter(day=>day.some(s=>s.c==='S')).length;
+  const bDays=week.filter(day=>day.some(s=>s.c==='B')).length;
+  const maxDay=Math.max(120, ...week.map(day=>day.reduce((a,s)=>a+s.m,0)));
+  const yMax=Math.ceil(maxDay/30)*30;
+  const col=iw/7, bw=Math.min(78,col-22);
+  const X=i=>m.l+i*col+col/2;
+  const Yb=min=>gy1-(min/yMax)*gh;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Recommended training week">`;
+
+  /* ---------- top-left readout: your week ---------- */
+  svg+=`<rect x="60" y="12" width="486" height="124" rx="14" fill="#10151B"/>`;
+  svg+=`<text x="82" y="38" fill="#8da0ad" style="font:700 12px Inter" letter-spacing="1.1">YOUR WEEK</text>`;
+  svg+=`<text x="82" y="78" fill="#fff" style="font:900 34px Archivo">${(totalMin/60).toFixed(1)} h</text>`;
+  svg+=`<text x="180" y="78" fill="#8da0ad" style="font:600 13px Inter">${totalMin} min total \u00b7 ${sDays} strength days</text>`;
+  // stacked horizontal bar of category totals
+  const bx=82,by=94,bW=442,bH=22; let cx=bx;
+  ['S','Z','V','B','M'].forEach(k=>{ if(t[k]<=0) return; const w=t[k]/totalMin*bW;
+    svg+=`<rect x="${cx.toFixed(1)}" y="${by}" width="${w.toFixed(1)}" height="${bH}" fill="${CAT[k].color}"/>`;
+    if(w>34) svg+=`<text x="${(cx+w/2).toFixed(1)}" y="${by+15}" text-anchor="middle" fill="#fff" style="font:700 10.5px Inter">${t[k]}</text>`;
+    cx+=w; });
+  svg+=`<rect x="${bx}" y="${by}" width="${bW}" height="${bH}" rx="5" fill="none" stroke="#2b3640"/>`;
+
+  /* ---------- top-right readout: vs the evidence ---------- */
+  const rx=560, rw=440; svg+=`<rect x="${rx}" y="12" width="${rw}" height="124" rx="14" fill="#F4F8FB" stroke="#DCE7EE" stroke-width="1.5"/>`;
+  svg+=`<text x="${rx+22}" y="36" fill="#7A8893" style="font:700 12px Inter" letter-spacing="1.1">VS THE EVIDENCE</text>`;
+  function row(y,label,val,ok){ svg+=`<text x="${rx+22}" y="${y}" fill="#3A4753" style="font:600 13px Inter">${label}</text>`;
+    svg+=`<text x="${rx+rw-22}" y="${y}" text-anchor="end" style="font:800 13px Inter" fill="${ok?'#1F9D55':'#B5631F'}">${ok?'\u2713 ':''}${val}</text>`; }
+  const aerTxt = aer<150?`${aer} min \u2014 below floor`: aer<300?`${aer} min \u2014 meets floor`: aer<=600?`${aer} min \u2014 optimal`:`${aer} min \u2014 plenty`;
+  row(62,'Aerobic (Zone 2 + VO\u2082max)',aerTxt, aer>=150);
+  row(88,'Strength days', `${sDays} / wk`, sDays>=2);
+  const bTarget = state.age==='65'?3:state.age==='50'?2:0;
+  row(114,'Balance days'+(bTarget?` (target ${bTarget})`:' (optional)'), `${bDays} / wk`, bTarget? bDays>=bTarget : true);
+
+  /* ---------- y axis + gridlines ---------- */
+  for(let g=0;g<=yMax;g+=30){ const y=Yb(g);
+    svg+=`<line x1="${m.l}" y1="${y}" x2="${m.l+iw}" y2="${y}" stroke="${g===0?'#10151B':'#EEF3F7'}" stroke-width="${g===0?1.5:1}"/>`;
+    svg+=`<text x="${m.l-9}" y="${y+4}" text-anchor="end" style="font:600 11px Inter" fill="#9aa7b2">${g}</text>`; }
+  svg+=`<text x="${m.l-9}" y="${gy0-10}" text-anchor="end" style="font:800 11px Inter" fill="#3A4753">min</text>`;
+
+  /* ---------- day columns ---------- */
+  week.forEach((day,i)=>{
+    const x=X(i), tot=day.reduce((a,s)=>a+s.m,0);
+    if(tot===0){
+      svg+=`<rect x="${x-bw/2}" y="${gy1-30}" width="${bw}" height="30" rx="7" fill="#EEF3F7"/>`;
+      svg+=`<text x="${x}" y="${gy1-11}" text-anchor="middle" style="font:700 12px Inter" fill="#9aa7b2">Rest</text>`;
+    } else {
+      let yb=gy1;
+      day.forEach(s=>{ const hgt=(s.m/yMax)*gh; yb-=hgt;
+        svg+=`<rect x="${x-bw/2}" y="${yb.toFixed(1)}" width="${bw}" height="${hgt.toFixed(1)}" fill="${CAT[s.c].color}"/>`;
+        if(hgt>=20) svg+=`<text x="${x}" y="${(yb+hgt/2+4).toFixed(1)}" text-anchor="middle" fill="#fff" style="font:700 11px Inter">${s.m}</text>`;
+      });
+      svg+=`<text x="${x}" y="${(yb-8).toFixed(1)}" text-anchor="middle" style="font:800 12px Archivo" fill="#10151B">${tot}</text>`;
+      const lowIntensity = !day.some(s=>s.c==='S'||s.c==='V');
+      if(lowIntensity && (i===6)) svg+=`<text x="${x}" y="${gy1+34}" text-anchor="middle" style="font:600 10px Inter" fill="#7A4FB0">active recovery</text>`;
+    }
+    svg+=`<text x="${x}" y="${gy1+18}" text-anchor="middle" style="font:800 13px Archivo" fill="#3A4753">${DAYS[i]}</text>`;
+  });
+
+  /* ---------- daily walking band (free) ---------- */
+  const wy=gy1+44;
+  svg+=`<rect x="${m.l}" y="${wy}" width="${iw}" height="18" rx="6" fill="#D7E9F4"/>`;
+  svg+=`<text x="${m.l+12}" y="${wy+13}" style="font:700 11px Inter" fill="#0A6F9E">+ Daily walking &amp; steps \u2014 assumed on top of all this, for free</text>`;
+
+  /* ---------- legend ---------- */
+  let lx=m.l; const ly=H-12;
+  Object.keys(CAT).forEach(k=>{ svg+=`<rect x="${lx}" y="${ly-11}" width="13" height="13" rx="3" fill="${CAT[k].color}"/>`;
+    svg+=`<text x="${lx+19}" y="${ly}" style="font:600 12px Inter" fill="#3A4753">${CAT[k].label}</text>`; lx+=CAT[k].label.length*7.4+48; });
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+/* ============================ controls + help ============================ */
+const HELP_TITLE='How much exercise — and what to keep first';
+const HELP_BODY=`
+  <p>This shows a full week of training as daily bars, colored by type: <strong>Strength</strong>, <strong>Zone 2</strong> (easy cardio), <strong>VO\u2082max</strong> (hard intervals), <strong>Balance</strong>, and <strong>Mobility</strong>. Rest days are marked, and everyday walking is assumed on top for free.</p>
+  <p>The research is clear on the floors (150\u2013300 min/wk of cardio + 2 strength days) and on where benefit peaks: aerobic gains keep climbing to about 5\u201310 hours a week then level off, while resistance training\u2019s effect on lifespan maxes out near an hour \u2014 though more lifting keeps building the muscle and bone that protect how you age.</p>
+  <p><strong>How to use it:</strong> drag <em>Time / week</em> from 1 hour up to no-limits and watch what gets prioritized first \u2014 strength and a VO\u2082max hit come before extra volume. Set your <em>Stage</em>; at 65+ balance becomes a dedicated priority to prevent falls.</p>`;
+function openHelp(){ document.getElementById('helpTitle').textContent=HELP_TITLE; document.getElementById('helpBody').innerHTML=HELP_BODY; document.getElementById('helpModal').hidden=false; }
+document.getElementById('helpBtn').addEventListener('click',openHelp);
+document.getElementById('helpClose').addEventListener('click',()=>document.getElementById('helpModal').hidden=true);
+document.getElementById('helpModal').addEventListener('click',e=>{ if(e.target.id==='helpModal') document.getElementById('helpModal').hidden=true; });
+
+function ageNote(){ return state.age==='65' ? " <strong>65+:</strong> balance is now a priority \u2014 at least 3 short sessions a week to prevent falls, added on top per guidelines."
+  : state.age==='50' ? " <strong>50+:</strong> balance starts earning dedicated time." : ""; }
+function refresh(){
+  document.getElementById('budgetLbl').textContent = TIERS[state.tier].label + (TIERS[state.tier].hrs===11?' (~11 h)':'');
+  document.getElementById('note').innerHTML = TIERS[state.tier].note + ageNote() + REST_NOTE;
+  render();
+}
+document.getElementById('budgetR').addEventListener('input',e=>{ state.tier=+e.target.value; refresh(); });
+document.getElementById('ageSeg').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
+  state.age=b.dataset.a; document.querySelectorAll('#ageSeg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.a===b.dataset.a)); refresh(); });
+window.addEventListener('resize',render);
+
+/* gallery embed */
+(function(){ if(new URLSearchParams(location.search).get('embed')) document.body.classList.add('embed'); })();
+refresh();
+</script>
+</body>
+</html>

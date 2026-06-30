@@ -1,0 +1,269 @@
+<!doctype html>
+<!-- © 2026 DexaFit Scottsdale. All rights reserved. Licensed for use on DexaFit Scottsdale properties only. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- © 2026 DexaFit Scottsdale -->
+<meta name="copyright" content="© 2026 DexaFit Scottsdale">
+<!-- Google Tag Manager (embed-aware) -->
+<script>(function(){if(new URLSearchParams(location.search).get('embed'))return;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MGC5F4HG');})();</script>
+<!-- End Google Tag Manager -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="copyright" content="© 2026 DexaFit Scottsdale">
+<title>Energy systems — DexaFit Scottsdale Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --oxi:#1F9D55; --gly:#E8862E; --pho:#C0392B;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
+    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:0;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand .loc{color:var(--ink);margin-left:8px;}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-left:10px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .gctl{display:flex;align-items:center;gap:11px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
+  .gctl input[type=range]{-webkit-appearance:none;appearance:none;width:230px;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--oxi),var(--gly),var(--pho));outline:none;}
+  .gctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--ink);box-shadow:0 2px 7px rgba(0,0,0,.2);cursor:pointer;}
+  .gctl input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--ink);cursor:pointer;}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:4px;gap:2px;}
+  .seg button{border:0;background:transparent;font-family:"Inter";font-weight:700;font-size:13.5px;color:var(--ink-soft);padding:7px 15px;border-radius:999px;cursor:pointer;}
+  .seg button[aria-pressed=true]{background:var(--brand);color:#fff;}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:14px 24px;padding:10px 6px 16px;align-items:center;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:82ch;line-height:1.45;flex-basis:100%;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+
+  /* ---- shared: help button + modal (DexaFit Scottsdale standard) ---- */
+  .helpBtn{position:fixed;top:14px;right:16px;z-index:40;width:40px;height:40px;border-radius:50%;
+    border:2px solid var(--brand);background:#fff;color:var(--brand-deep);font-family:"Archivo";font-weight:900;font-size:20px;
+    cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;}
+  .helpBtn:hover{background:var(--brand);color:#fff;}
+  .helpModal{position:fixed;inset:0;z-index:50;background:rgba(16,21,27,.55);display:flex;align-items:center;justify-content:center;padding:24px;}
+  .helpModal[hidden]{display:none;}
+  .helpCard{background:#fff;border-radius:18px;max-width:560px;width:100%;padding:30px 32px 22px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:88vh;overflow:auto;}
+  .helpClose{position:absolute;top:14px;right:16px;border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;color:var(--ink-soft);}
+  .helpCard h2{font-family:"Archivo";font-weight:900;font-size:24px;margin:0 0 14px;letter-spacing:-.02em;}
+  .helpCard p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 12px;}
+  .helpCard strong{color:var(--ink);}
+  .helpFoot{margin-top:16px;padding-top:14px;border-top:1px solid var(--surface-3);font-size:11.5px;color:#90a0ac;}
+
+  /* ---- shared: copyright notice ---- */
+  .copyr{position:fixed;bottom:8px;right:14px;z-index:30;font-size:10.5px;font-weight:600;color:#9aa7b2;opacity:.8;pointer-events:none;user-select:none;}
+</style>
+</head>
+<body>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MGC5F4HG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><span class="loc">Scottsdale</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="ctl-note" style="max-width:40ch">Your three engines — and where your VT1 / VT2 lines fall.</div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">The body’s three energy systems</div>
+      <div class="ccontext">Which engine powers the work as the effort climbs</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="gctl"><span class="lbl">Fitness</span>
+          <div class="seg" id="fitSeg">
+            <button data-f="untrained" aria-pressed="false">Untrained</button>
+            <button data-f="trained" aria-pressed="true">Trained</button>
+            <button data-f="elite" aria-pressed="false">Elite</button>
+          </div>
+        </div>
+        <div class="gctl"><span class="lbl">Effort</span><input id="effR" type="range" min="0" max="100" step="1" value="42"></div>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- shared standard: help + copyright -->
+<button id="helpBtn" class="helpBtn" aria-label="What is this and how do I use it?">?</button>
+<div id="helpModal" class="helpModal" hidden>
+  <div class="helpCard">
+    <button id="helpClose" class="helpClose" aria-label="Close">×</button>
+    <h2 id="helpTitle"></h2>
+    <div id="helpBody"></div>
+    <div class="helpFoot">© 2026 DexaFit Scottsdale · An education tool for your consultation — not medical advice.</div>
+  </div>
+</div>
+<div class="copyr">© 2026 DexaFit Scottsdale</div>
+
+<script>
+/* DexaFit Scottsdale — domain lock (recommended level) */
+(function(){var ALLOW=['charts.kingbear.co','localhost','127.0.0.1'],REDIRECT='https://www.dexafit.com';var h=(location.hostname||'').toLowerCase();var ok=h===''||h.endsWith('.vercel.app')||ALLOW.some(function(d){return h===d||h.endsWith('.'+d);});if(!ok){document.documentElement.innerHTML='<body style="font:600 18px/1.5 system-ui;padding:48px;color:#10151B;max-width:620px">This interactive content is © DexaFit Scottsdale and is licensed for use only on its official site. <a href="'+REDIRECT+'" style="color:#0A6F9E">Visit DexaFit Scottsdale →</a></body>';throw new Error('DexaFit Scottsdale: unlicensed host');}})();
+
+/* ============================================================================
+   ENERGY SYSTEMS vs effort, and how they relate to VT1 / VT2.
+   Grounded in: the ~75–80 s aerobic↔anaerobic crossover (Sports Med 2026 review);
+   classic relative-contribution data (e.g. 100 m ~90% anaerobic, 800 m ~60% aerobic,
+   5 k ~95% aerobic, marathon ~99% aerobic); ATP-PCr dominant ≤~10 s, glycolytic
+   ~10 s–2 min, oxidative >2 min; and the VT1 carbohydrate-shift (fat oxidation
+   declines as effort crosses VT1; lactate accumulates above VT2).
+   The mix here is a conceptual model anchored to those facts, not a metabolic-cart trace.
+   ========================================================================== */
+const FIT = { untrained:{vt1:48,vt2:74}, trained:{vt1:58,vt2:85}, elite:{vt1:68,vt2:90} };
+const state = { fit:'trained', eff:42 };
+
+// contribution knots (oxidative, glycolytic, phosphagen) at effort e
+function knots(){ const v=FIT[state.fit];
+  return [ {e:0,o:100,g:0,p:0}, {e:v.vt1,o:88,g:12,p:0}, {e:v.vt2,o:66,g:34,p:0}, {e:96,o:48,g:46,p:6}, {e:100,o:12,g:40,p:48} ];
+}
+function contrib(e){ const K=knots(); let a=K[0],b=K[K.length-1];
+  for(let i=0;i<K.length-1;i++){ if(e>=K[i].e&&e<=K[i+1].e){ a=K[i]; b=K[i+1]; break; } }
+  const t=b.e===a.e?0:(e-a.e)/(b.e-a.e);
+  let o=a.o+(b.o-a.o)*t, g=a.g+(b.g-a.g)*t, p=a.p+(b.p-a.p)*t; const s=o+g+p;
+  return { o:o/s*100, g:g/s*100, p:p/s*100 };
+}
+function durationAt(e){ const v=FIT[state.fit];
+  if(e<v.vt1-3) return 'hours — all day';
+  if(e<v.vt1+3) return '2–4 hours';
+  if(e<v.vt2-3) return '30–90 minutes';
+  if(e<v.vt2+3) return '~30–60 minutes';
+  if(e<96) return '3–10 minutes';
+  if(e<100) return '1–4 minutes';
+  return 'seconds';
+}
+function zoneAt(e){ const v=FIT[state.fit];
+  if(e<v.vt1) return {t:'Below VT1 — easy aerobic',c:'#1F9D55',fuel:'Mostly FAT'};
+  if(e<v.vt2) return {t:'VT1–VT2 — tempo / threshold',c:'#E8862E',fuel:'Mostly CARBS'};
+  if(e<99) return {t:'Above VT2 — VO₂max zone',c:'#C0392B',fuel:'CARBS (lactate rising)'};
+  return {t:'All-out — explosive',c:'#7A1F16',fuel:'Phosphocreatine'};
+}
+const ACTS = [
+  {e:12,label:'Walk'}, {e:38,label:'Zone 2 jog'}, {e:72,label:'Tempo run'},
+  {e:94,label:'4×4 intervals'}, {e:100,label:'Sprint / 1-rep max'}
+];
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1040,H=600, v=FIT[state.fit];
+  const m={l:60,r:44,t:150,b:118}, iw=W-m.l-m.r, ih=H-m.t-m.b, baseY=m.t+ih;
+  const X=e=>m.l+(e/100)*iw, Y=pct=>m.t+(100-pct)/100*ih;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Energy system contribution across effort">`;
+
+  /* sample bands */
+  let oTop=[],gTop=[]; for(let e=0;e<=100;e++){ const c=contrib(e); oTop.push([e,c.o]); gTop.push([e,c.o+c.g]); }
+  const pathUp=(arr)=>arr.map(([e,y])=>X(e).toFixed(1)+','+Y(y).toFixed(1)).join(' L');
+  const pathDn=(arr)=>arr.slice().reverse().map(([e,y])=>X(e).toFixed(1)+','+Y(y).toFixed(1)).join(' L');
+  // oxidative (baseline -> oTop)
+  svg+=`<path d="M${X(0)},${baseY} L${pathUp(oTop)} L${X(100)},${baseY} Z" fill="#1F9D55" opacity=".82"/>`;
+  // glycolytic (oTop -> gTop)
+  svg+=`<path d="M${pathUp(oTop)} L${pathDn(gTop)} Z" fill="#E8862E" opacity=".88"/>`;
+  // phosphagen (gTop -> 100/top)
+  svg+=`<path d="M${pathUp(gTop)} L${X(100)},${Y(100)} L${X(0)},${Y(100)} Z" fill="#C0392B" opacity=".9"/>`;
+
+  /* system labels inside bands */
+  svg+=`<text x="${X(22)}" y="${Y(45)}" style="font:800 20px Archivo" fill="#0f5b30">OXIDATIVE (aerobic)</text>`;
+  svg+=`<text x="${X(22)}" y="${Y(45)+20}" style="font:600 12px Inter" fill="#0f5b30">fat &amp; carbohydrate · with oxygen · no time limit</text>`;
+  svg+=`<text x="${X(90)}" y="${Y(78)}" text-anchor="end" style="font:800 14px Archivo" fill="#fff">GLYCOLYTIC</text>`;
+  svg+=`<text x="${X(99.6)}" y="${Y(96)}" text-anchor="end" style="font:800 12px Archivo" fill="#fff">PHOSPHAGEN</text>`;
+
+  /* y axis */
+  [0,25,50,75,100].forEach(g=>{ svg+=`<text x="${m.l-10}" y="${Y(g)+4}" text-anchor="end" style="font:600 11px Inter" fill="#7A8893">${g}%</text>`; });
+  svg+=`<text x="${m.l-46}" y="${m.t-12}" style="font:800 12px Inter" fill="#3A4753">Share of the work</text>`;
+
+  /* VT lines */
+  [['VT1',v.vt1,'#177A41'],['VT2',v.vt2,'#B5631F']].forEach(([lab,e,col])=>{
+    svg+=`<line x1="${X(e)}" y1="${m.t}" x2="${X(e)}" y2="${baseY}" stroke="#10151B" stroke-width="2.5" stroke-dasharray="6 4"/>`;
+    svg+=`<rect x="${X(e)-22}" y="${m.t-2}" width="44" height="22" rx="6" fill="#10151B"/>`;
+    svg+=`<text x="${X(e)}" y="${m.t+13}" text-anchor="middle" style="font:900 12px Archivo" fill="#fff">${lab}</text>`;
+  });
+
+  /* x-axis effort + activities */
+  svg+=`<line x1="${m.l}" y1="${baseY}" x2="${m.l+iw}" y2="${baseY}" stroke="#10151B" stroke-width="1.5"/>`;
+  ['easy','moderate','hard','all-out'].forEach((t,i)=>{ const e=[8,42,80,99][i];
+    svg+=`<text x="${X(e)}" y="${baseY+18}" text-anchor="middle" style="font:700 11px Inter" fill="#9aa7b2" letter-spacing=".08em">${t.toUpperCase()}</text>`; });
+  ACTS.forEach(a=>{ svg+=`<line x1="${X(a.e)}" y1="${baseY}" x2="${X(a.e)}" y2="${baseY+30}" stroke="#3A4753" stroke-width="1.5"/>`;
+    svg+=`<text x="${X(a.e)}" y="${baseY+44}" text-anchor="middle" style="font:700 12px Inter" fill="#10151B">${a.label}</text>`; });
+
+  /* fuel strip */
+  const fy=baseY+58, fh=20;
+  svg+=`<defs><linearGradient id="fuel" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#E8A13A"/><stop offset="${(v.vt1/100).toFixed(2)}" stop-color="#E8A13A"/>
+    <stop offset="${((v.vt1+8)/100).toFixed(2)}" stop-color="#0E9BD6"/><stop offset="0.93" stop-color="#0E9BD6"/>
+    <stop offset="1" stop-color="#C0392B"/></linearGradient></defs>`;
+  svg+=`<rect x="${m.l}" y="${fy}" width="${iw}" height="${fh}" rx="6" fill="url(#fuel)" opacity=".85"/>`;
+  svg+=`<text x="${X(v.vt1/2)}" y="${fy+14}" text-anchor="middle" style="font:800 11px Inter" fill="#7a5210">FAT</text>`;
+  svg+=`<text x="${X((v.vt1+96)/2)}" y="${fy+14}" text-anchor="middle" style="font:800 11px Inter" fill="#fff">CARBOHYDRATE</text>`;
+  svg+=`<text x="${m.l-10}" y="${fy+14}" text-anchor="end" style="font:700 10.5px Inter" fill="#7A8893">Fuel</text>`;
+
+  /* effort marker */
+  const e=state.eff, c=contrib(e), z=zoneAt(e);
+  svg+=`<line x1="${X(e)}" y1="${m.t}" x2="${X(e)}" y2="${fy+fh}" stroke="#10151B" stroke-width="3"/>`;
+  svg+=`<circle cx="${X(e)}" cy="${m.t}" r="9" fill="#10151B"/>`;
+
+  /* ---- top readout cards ---- */
+  // left: the mix
+  svg+=`<rect x="60" y="14" width="470" height="120" rx="14" fill="#10151B"/>`;
+  svg+=`<text x="82" y="40" fill="#8da0ad" style="font:700 12px Inter" letter-spacing="1.1">AT THIS EFFORT — WHO\u2019S DOING THE WORK</text>`;
+  function pill(x,lab,val,col){ svg+=`<rect x="${x}" y="54" width="128" height="62" rx="10" fill="${col}"/>`;
+    svg+=`<text x="${x+64}" y="84" text-anchor="middle" fill="#fff" style="font:900 26px Archivo">${Math.round(val)}%</text>`;
+    svg+=`<text x="${x+64}" y="104" text-anchor="middle" fill="#fff" style="font:700 10.5px Inter" opacity=".95">${lab}</text>`; }
+  pill(82,'Oxidative',c.o,'#1F9D55'); pill(220,'Glycolytic',c.g,'#E8862E'); pill(358,'Phosphagen',c.p,'#C0392B');
+  // right: zone / fuel / duration
+  svg+=`<rect x="556" y="14" width="424" height="120" rx="14" fill="#F4F8FB" stroke="#DCE7EE" stroke-width="1.5"/>`;
+  svg+=`<text x="578" y="40" fill="#7A8893" style="font:700 12px Inter" letter-spacing="1.1">YOUR ZONE</text>`;
+  svg+=`<text x="578" y="68" fill="${z.c}" style="font:900 20px Archivo">${z.t}</text>`;
+  svg+=`<text x="578" y="96" fill="#3A4753" style="font:600 13px Inter">Fuel: <tspan style="font:800 13px Inter" fill="#10151B">${z.fuel}</tspan></text>`;
+  svg+=`<text x="578" y="118" fill="#3A4753" style="font:600 13px Inter">You could hold this for: <tspan style="font:800 13px Inter" fill="#10151B">${durationAt(e)}</tspan></text>`;
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+/* ============================ controls + help ============================ */
+const HELP_TITLE = 'Your three energy engines';
+const HELP_BODY = `
+  <p>Your body makes energy three ways, and they hand off as you push harder. The <strong>oxidative (aerobic)</strong> engine burns fat and carbs with oxygen and can run all day. The <strong>glycolytic</strong> engine kicks in for hard efforts of seconds to a couple of minutes. The <strong>phosphagen</strong> engine is your instant, explosive power for a few all-out seconds.</p>
+  <p><strong>VT1</strong> and <strong>VT2</strong> are the two lines from your VO₂ test. Below VT1 you\u2019re easy and fat-fueled; between them you\u2019re \u201ccomfortably hard\u201d and switching to carbs; above VT2 lactate builds and the clock starts.</p>
+  <p><strong>How to use it:</strong> slide <em>Effort</em> from easy to all-out and watch the mix change, see which fuel you\u2019re burning, and how long you could hold it. Switch <em>Fitness</em> to see how training pushes both thresholds to the right \u2014 letting you go faster before lactate piles up.</p>`;
+function openHelp(){ document.getElementById('helpTitle').textContent=HELP_TITLE; document.getElementById('helpBody').innerHTML=HELP_BODY; document.getElementById('helpModal').hidden=false; }
+function closeHelp(){ document.getElementById('helpModal').hidden=true; }
+document.getElementById('helpBtn').addEventListener('click',openHelp);
+document.getElementById('helpClose').addEventListener('click',closeHelp);
+document.getElementById('helpModal').addEventListener('click',e=>{ if(e.target.id==='helpModal') closeHelp(); });
+
+function setNote(){
+  const v=FIT[state.fit];
+  document.getElementById('note').innerHTML =
+    `All three engines run at once \u2014 what changes is <strong>who carries the load</strong>. Easy efforts are almost all <strong>oxidative</strong>, burning mostly fat, and you can hold them for hours. As you pass <strong>VT1</strong> you shift toward <strong>carbohydrate</strong> and the <strong>glycolytic</strong> system climbs; past <strong>VT2</strong> lactate outpaces clearance and you\u2019re down to minutes. Only true <strong>all-out</strong> bursts tap the <strong>phosphagen</strong> system \u2014 a sprint or a max lift, gone in seconds. Fitter people push <strong>both lines right</strong> (here VT1 \u2248 ${v.vt1}%, VT2 \u2248 ${v.vt2}%), so they go faster while still aerobic. This is the companion to your <strong>VT1 / VT2 thresholds</strong> chart.`;
+}
+function refresh(){ setNote(); render(); }
+document.getElementById('effR').addEventListener('input',e=>{ state.eff=+e.target.value; render(); });
+document.getElementById('fitSeg').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
+  state.fit=b.dataset.f; document.querySelectorAll('#fitSeg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.f===b.dataset.f)); refresh(); });
+window.addEventListener('resize', render);
+
+/* gallery embed */
+(function(){ const q=new URLSearchParams(location.search); if(q.get('embed')) document.body.classList.add('embed'); })();
+
+refresh();
+</script>
+</body>
+</html>

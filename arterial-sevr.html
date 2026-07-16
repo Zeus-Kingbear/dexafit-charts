@@ -1,0 +1,263 @@
+<!doctype html>
+<!-- © 2026 DexaFit Scottsdale. All rights reserved. Licensed for use on DexaFit Scottsdale properties only. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- © 2026 DexaFit Scottsdale -->
+<meta name="copyright" content="© 2026 DexaFit Scottsdale">
+<!-- Google Tag Manager (embed-aware) -->
+<script>(function(){if(new URLSearchParams(location.search).get('embed'))return;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MGC5F4HG');})();</script>
+<!-- End Google Tag Manager -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SEVR — DexaFit Scottsdale Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151B; --ink-soft:#3A4753;
+    --surface:#FFFFFF; --surface-2:#EEF3F7; --surface-3:#E2EAF0;
+    --brand:#0E9BD6; --brand-deep:#0A6F9E; --supply:#1F9D55; --demand:#E8862E; --risk:#C0392B;
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  .app{display:flex;flex-direction:column;height:100dvh;}
+  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
+  .brand{display:flex;align-items:baseline;gap:0;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
+  .brand .x{color:var(--brand);}
+  .brand .loc{color:var(--ink);margin-left:8px;}
+  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-left:10px;align-self:center;}
+  .spacer{flex:1 1 auto;}
+  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
+  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
+  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
+  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
+  .plot{flex:1;min-height:0;}
+  .plot svg{width:100%;height:100%;display:block;}
+  .controls{display:flex;flex-wrap:wrap;gap:12px 24px;padding:10px 6px 8px;align-items:center;}
+  .gctl{display:flex;align-items:center;gap:11px;}
+  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
+  .gctl input[type=range]{-webkit-appearance:none;appearance:none;width:230px;height:8px;border-radius:999px;background:var(--surface-3);outline:none;}
+  .gctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand-deep);box-shadow:0 2px 7px rgba(0,0,0,.2);cursor:pointer;}
+  .gctl input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand-deep);cursor:pointer;}
+  .hrbadge{font-family:"Archivo";font-weight:900;font-size:18px;min-width:78px;}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:4px;gap:2px;}
+  .seg button{border:0;background:transparent;font-family:"Inter";font-weight:700;font-size:13.5px;color:var(--ink-soft);padding:7px 15px;border-radius:999px;cursor:pointer;}
+  .seg button[aria-pressed=true]{background:var(--brand);color:#fff;}
+  .chip{border:1.5px solid var(--surface-3);background:#fff;border-radius:999px;padding:7px 14px;font-weight:700;font-size:13px;color:var(--ink-soft);cursor:pointer;}
+  .chip[aria-pressed=true]{background:var(--brand-deep);border-color:var(--brand-deep);color:#fff;}
+  .vinput{display:flex;align-items:center;gap:6px;background:var(--surface-2);border-radius:10px;padding:5px 8px;}
+  .vinput.hidden{display:none;}
+  .vinput label{font-size:12px;font-weight:800;color:var(--ink-soft);}
+  .vinput input{width:70px;border:0;background:#fff;border-radius:7px;padding:6px 8px;font-family:"Inter";font-weight:700;font-size:14px;color:var(--ink);text-align:center;}
+  .vinput small{font-size:11px;color:#9aa7b2;}
+  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:98ch;line-height:1.5;flex-basis:100%;}
+  .ctl-note strong{color:var(--ink);}
+  body.embed .topbar{display:none;}
+  .helpBtn{position:fixed;top:14px;right:16px;z-index:40;width:40px;height:40px;border-radius:50%;border:2px solid var(--brand);background:#fff;color:var(--brand-deep);font-family:"Archivo";font-weight:900;font-size:20px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;}
+  .helpBtn:hover{background:var(--brand);color:#fff;}
+  .helpModal{position:fixed;inset:0;z-index:50;background:rgba(16,21,27,.55);display:flex;align-items:center;justify-content:center;padding:24px;}
+  .helpModal[hidden]{display:none;}
+  .helpCard{background:#fff;border-radius:18px;max-width:560px;width:100%;padding:30px 32px 22px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:88vh;overflow:auto;}
+  .helpClose{position:absolute;top:14px;right:16px;border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;color:var(--ink-soft);}
+  .helpCard h2{font-family:"Archivo";font-weight:900;font-size:24px;margin:0 0 14px;letter-spacing:-.02em;}
+  .helpCard p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 12px;}
+  .helpCard strong{color:var(--ink);}
+  .helpFoot{margin-top:16px;padding-top:14px;border-top:1px solid var(--surface-3);font-size:11.5px;color:#90a0ac;}
+  .copyr{position:fixed;bottom:8px;right:14px;z-index:30;font-size:10.5px;font-weight:600;color:#9aa7b2;opacity:.8;pointer-events:none;user-select:none;}
+</style>
+</head>
+<body>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MGC5F4HG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span>DEXA</span><span class="x">FIT</span><span class="loc">Scottsdale</span><small>Education Charts</small></div>
+    <div class="spacer"></div>
+    <div class="ctl-note" style="max-width:44ch">One heartbeat, two areas: what feeds the heart (diastole) vs what the heart spends (systole). SEVR is their ratio.</div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">Your heart\u2019s supply &amp; demand</div>
+      <div class="ccontext">SEVR \u2014 does blood supply keep up with the heart\u2019s workload?</div>
+    </div>
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+      <div class="controls">
+        <div class="gctl"><span class="lbl">Resting heart rate</span>
+          <input id="hrR" type="range" min="48" max="112" step="1" value="62">
+          <span class="hrbadge" id="hrLbl"></span>
+        </div>
+        <div class="gctl"><span class="lbl">Arteries</span>
+          <div class="seg" id="stiffSeg">
+            <button data-k="0.1" aria-pressed="false">Flexible</button>
+            <button data-k="0.4" aria-pressed="true">Average</button>
+            <button data-k="0.8" aria-pressed="false">Stiff</button>
+          </div>
+        </div>
+        <button class="chip" id="plotToggle" aria-pressed="false">Plot client's SEVR</button>
+        <div class="vinput hidden" id="cbox"><label>SEVR</label><input id="in_sevr" type="number" inputmode="decimal" placeholder="—"><small>%</small></div>
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="helpBtn" class="helpBtn" aria-label="What is this and how do I use it?">?</button>
+<div id="helpModal" class="helpModal" hidden>
+  <div class="helpCard">
+    <button id="helpClose" class="helpClose" aria-label="Close">\u00d7</button>
+    <h2 id="helpTitle"></h2>
+    <div id="helpBody"></div>
+    <div class="helpFoot">\u00a9 2026 DexaFit Scottsdale \u00b7 An education tool for your consultation \u2014 not medical advice. SEVR (Buckberg index) illustrated conceptually; values calibrated to reported reference ranges.</div>
+  </div>
+</div>
+<div class="copyr">\u00a9 2026 DexaFit Scottsdale</div>
+
+<script>
+/* DexaFit Scottsdale — domain lock (recommended level) */
+(function(){var ALLOW=['charts.kingbear.co','localhost','127.0.0.1'],REDIRECT='https://www.dexafit.com';var h=(location.hostname||'').toLowerCase();var ok=h===''||h.endsWith('.vercel.app')||ALLOW.some(function(d){return h===d||h.endsWith('.'+d);});if(!ok){document.documentElement.innerHTML='<div style="font:600 18px/1.5 system-ui;padding:48px;color:#10151B;max-width:620px">This interactive content is \u00a9 DexaFit Scottsdale and is licensed for use only on its official site. <a href="'+REDIRECT+'" style="color:#0A6F9E">Visit DexaFit Scottsdale \u2192</a></div>';throw new Error('DexaFit Scottsdale: unlicensed host');}})();
+
+/* ============================================================================
+   SEVR — Subendocardial Viability Ratio (Buckberg index) = DPTI / SPTI.
+   DPTI = area under the aortic curve in DIASTOLE = myocardial oxygen SUPPLY
+   (the subendocardium is perfused almost entirely in diastole). SPTI = area in
+   SYSTOLE = the heart's oxygen DEMAND / workload. SEVR is their ratio.
+   Because ejection (systolic) time is roughly fixed while diastole shrinks as
+   heart rate rises, faster HR closes the supply window and lowers SEVR — the
+   single biggest lever. Stiff arteries raise systolic load and lower SEVR too.
+   The waveform + SEVR value here are a calibrated conceptual model (baseline 60,
+   K=1.4132) landing in reported ranges; research cutoff 1.30 (130%), device
+   normal band ~136–187%. Higher SEVR = a more comfortable supply/demand margin.
+   ========================================================================== */
+const B = 60, K = 1.4132;                 // pressure baseline for shaded areas; calibration constant
+const state = { hr:62, stiff:0.4, plot:false, sevrIn:null };
+
+function waveform(){
+  const hr=state.hr, stiff=state.stiff;
+  const T=60/hr; let ST=0.30-0.0008*(hr-60); ST=Math.max(0.24,Math.min(0.34,ST)); const DT=T-ST;
+  const DBP=80, PP=40+22*stiff;
+  const sysCP=[[0,0],[0.10,0.80],[0.22,1.00],[0.45,0.86],[0.62,0.70+0.28*stiff],[0.82,0.68+0.20*stiff],[1.0,0.55]];
+  const vsys=u=>{for(let i=0;i<sysCP.length-1;i++){const[a,va]=sysCP[i],[b,vb]=sysCP[i+1];if(u>=a&&u<=b)return va+(vb-va)*(u-a)/(b-a);}return .55;};
+  const vdia=w=>0.55*Math.exp(-3*w);
+  const P=frac=>{ const t=frac*T; return t<=ST ? DBP+PP*vsys(t/ST) : DBP+PP*vdia((t-ST)/DT); };
+  // integrate areas (∫(P-B)) for supply/demand
+  const N=600; let SPTI=0,DPTI=0; for(let i=0;i<N;i++){const t=(i+0.5)/N*T; const p=t<=ST?DBP+PP*vsys(t/ST):DBP+PP*vdia((t-ST)/DT); const a=Math.max(0,p-B)*(T/N); if(t<=ST)SPTI+=a; else DPTI+=a;}
+  const sevr=K*DPTI/SPTI*100, STf=ST/T;
+  return {P, STf, T, ST, DT, DBP, SBP:DBP+PP, notchP:DBP+PP*0.55, SPTI, DPTI, sevr, DTshare:DT/T};
+}
+function zoneOf(s){ return s>=135 ? {t:'Healthy', c:'#1F9D55'} : s>=125 ? {t:'Borderline', c:'#E8862E'} : {t:'Low', c:'#C0392B'}; }
+
+/* ============================ render ============================ */
+function render(){
+  const host=document.getElementById('plot');
+  const W=1060,H=602;
+  const wf=waveform(), z=zoneOf(wf.sevr);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Aortic pressure wave with systolic demand and diastolic supply areas">`;
+
+  /* ---------- readout: left (SEVR) ---------- */
+  svg+=`<rect x="40" y="14" width="360" height="116" rx="14" fill="#10151B"/>`;
+  svg+=`<text x="62" y="40" fill="#8da0ad" style="font:700 12px Inter" letter-spacing="1.1">SEVR \u00b7 SUPPLY \u00f7 DEMAND</text>`;
+  svg+=`<text x="62" y="88" fill="#fff" style="font:900 44px Archivo">${wf.sevr.toFixed(0)}%</text>`;
+  svg+=`<rect x="196" y="58" width="${z.t.length*9+34}" height="30" rx="15" fill="${z.c}"/>`;
+  svg+=`<text x="${196+(z.t.length*9+34)/2}" y="78" text-anchor="middle" fill="#fff" style="font:800 14px Inter">${z.t}</text>`;
+  svg+=`<text x="62" y="114" fill="#8da0ad" style="font:600 12px Inter">higher = more supply margin \u00b7 device-normal 136\u2013187%</text>`;
+
+  /* ---------- readout: right (supply vs demand) ---------- */
+  const rx=418, rw=602; svg+=`<rect x="${rx}" y="14" width="${rw}" height="116" rx="14" fill="#F4F8FB" stroke="#DCE7EE" stroke-width="1.5"/>`;
+  svg+=`<text x="${rx+22}" y="38" fill="#7A8893" style="font:700 12px Inter" letter-spacing="1.1">SUPPLY vs DEMAND, THIS BEAT</text>`;
+  const mx=Math.max(wf.SPTI,wf.DPTI), bw=380, bx=rx+150;
+  svg+=`<text x="${rx+22}" y="64" style="font:800 13px Inter" fill="#0f5b30">Supply</text>`;
+  svg+=`<rect x="${bx}" y="52" width="${(wf.DPTI/mx*bw).toFixed(1)}" height="18" rx="4" fill="#1F9D55"/>`;
+  svg+=`<text x="${rx+22}" y="92" style="font:800 13px Inter" fill="#8a4a12">Demand</text>`;
+  svg+=`<rect x="${bx}" y="80" width="${(wf.SPTI/mx*bw).toFixed(1)}" height="18" rx="4" fill="#E8862E"/>`;
+  svg+=`<text x="${rx+22}" y="118" style="font:600 12.5px Inter" fill="#3A4753">Diastole is <tspan style="font:800 12.5px Inter" fill="#10151B">${(wf.DTshare*100).toFixed(0)}%</tspan> of each beat \u2014 the window that feeds the heart.</text>`;
+
+  /* ---------- waveform plot ---------- */
+  const px0=70, px1=1030, plotW=px1-px0, py0=176, py1=478;
+  const Xf=frac=>px0+frac*plotW, Yp=p=>py1-(Math.max(B,Math.min(150,p))-B)/(150-B)*(py1-py0);
+  // pressure axis
+  [70,90,110,130,150].forEach(p=>{ svg+=`<line x1="${px0}" y1="${Yp(p)}" x2="${px1}" y2="${Yp(p)}" stroke="#EEF3F7" stroke-width="1"/>`;
+    svg+=`<text x="${px0-8}" y="${Yp(p)+4}" text-anchor="end" style="font:600 10.5px Inter" fill="#9aa7b2">${p}</text>`; });
+  svg+=`<text x="${px0-8}" y="${py0-8}" text-anchor="end" style="font:800 11px Inter" fill="#3A4753">mmHg</text>`;
+  // sample curve
+  const N=160, pts=[]; for(let i=0;i<=N;i++){ const f=i/N; pts.push([Xf(f), Yp(wf.P(f))]); }
+  const xNotch=Xf(wf.STf);
+  // split points by systole/diastole for the two areas
+  const sysPts=pts.filter(p=>p[0]<=xNotch), diaPts=pts.filter(p=>p[0]>=xNotch);
+  const areaPath=(arr)=>`M${arr[0][0].toFixed(1)},${py1} L`+arr.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L')+` L${arr[arr.length-1][0].toFixed(1)},${py1} Z`;
+  svg+=`<path d="${areaPath(sysPts)}" fill="#E8862E" opacity=".22"/>`;
+  svg+=`<path d="${areaPath(diaPts)}" fill="#1F9D55" opacity=".22"/>`;
+  // area labels
+  svg+=`<text x="${(px0+xNotch)/2}" y="${py0+26}" text-anchor="middle" style="font:800 13px Archivo" fill="#8a4a12">DEMAND</text>`;
+  svg+=`<text x="${(px0+xNotch)/2}" y="${py0+43}" text-anchor="middle" style="font:600 10.5px Inter" fill="#8a4a12">systole \u00b7 the work</text>`;
+  svg+=`<text x="${(xNotch+px1)/2}" y="${py0+26}" text-anchor="middle" style="font:800 13px Archivo" fill="#0f5b30">SUPPLY</text>`;
+  svg+=`<text x="${(xNotch+px1)/2}" y="${py0+43}" text-anchor="middle" style="font:600 10.5px Inter" fill="#0f5b30">diastole \u00b7 the feeding window</text>`;
+  // curve on top
+  svg+=`<path d="M`+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L')+`" fill="none" stroke="#10151B" stroke-width="2.5"/>`;
+  // dicrotic notch marker
+  svg+=`<line x1="${xNotch.toFixed(1)}" y1="${py0-2}" x2="${xNotch.toFixed(1)}" y2="${py1}" stroke="#10151B" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  svg+=`<circle cx="${xNotch.toFixed(1)}" cy="${Yp(wf.notchP).toFixed(1)}" r="5" fill="#10151B"/>`;
+  svg+=`<text x="${xNotch.toFixed(1)}" y="${py0-6}" text-anchor="middle" style="font:700 10.5px Inter" fill="#3A4753">aortic valve closes \u2014 perfusion begins</text>`;
+  // systole / diastole duration labels under axis
+  svg+=`<line x1="${px0}" y1="${py1}" x2="${px1}" y2="${py1}" stroke="#10151B" stroke-width="1.5"/>`;
+  svg+=`<text x="${(px0+xNotch)/2}" y="${py1+18}" text-anchor="middle" style="font:700 11px Inter" fill="#8a4a12">SYSTOLE \u00b7 ${(wf.ST*1000).toFixed(0)} ms</text>`;
+  svg+=`<text x="${(xNotch+px1)/2}" y="${py1+18}" text-anchor="middle" style="font:700 11px Inter" fill="#0f5b30">DIASTOLE \u00b7 ${(wf.DT*1000).toFixed(0)} ms  (supply window)</text>`;
+
+  /* ---------- zone scale ---------- */
+  const zy=py1+44, zh=18, zmin=70, zmax=210;
+  const zX=s=>px0+(Math.max(zmin,Math.min(zmax,s))-zmin)/(zmax-zmin)*plotW;
+  svg+=`<rect x="${px0}" y="${zy}" width="${(zX(125)-px0).toFixed(1)}" height="${zh}" rx="4" fill="#C0392B" opacity=".8"/>`;
+  svg+=`<rect x="${zX(125).toFixed(1)}" y="${zy}" width="${(zX(135)-zX(125)).toFixed(1)}" height="${zh}" fill="#E8862E" opacity=".85"/>`;
+  svg+=`<rect x="${zX(135).toFixed(1)}" y="${zy}" width="${(px1-zX(135)).toFixed(1)}" height="${zh}" rx="4" fill="#1F9D55" opacity=".8"/>`;
+  ['Low','Healthy'].forEach((t,i)=>{ const x=i? (zX(135)+px1)/2 : (px0+zX(125))/2; svg+=`<text x="${x}" y="${zy+13}" text-anchor="middle" style="font:800 10.5px Inter" fill="#fff">${t}</text>`; });
+  [125,135].forEach(v=>{ svg+=`<text x="${zX(v).toFixed(1)}" y="${zy+zh+14}" text-anchor="middle" style="font:600 10px Inter" fill="#9aa7b2">${v}</text>`; });
+  // modeled marker
+  svg+=`<path d="M${zX(wf.sevr).toFixed(1)},${(zy-4).toFixed(1)} l-7,-9 l14,0 Z" fill="#10151B"/>`;
+  svg+=`<text x="${zX(wf.sevr).toFixed(1)}" y="${zy-16}" text-anchor="middle" style="font:800 11px Inter" fill="#10151B">${wf.sevr.toFixed(0)}%</text>`;
+  // client marker
+  if(state.plot && state.sevrIn!==null && !isNaN(state.sevrIn)){
+    const cz=zoneOf(state.sevrIn);
+    svg+=`<circle cx="${zX(state.sevrIn).toFixed(1)}" cy="${(zy+zh+2).toFixed(1)}" r="7" fill="${cz.c}" stroke="#fff" stroke-width="2"/>`;
+    svg+=`<text x="${zX(state.sevrIn).toFixed(1)}" y="${zy+zh+34}" text-anchor="middle" style="font:800 11px Inter" fill="${cz.c}">client ${state.sevrIn}% \u00b7 ${cz.t}</text>`;
+  }
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+/* ============================ controls + help ============================ */
+const HELP_TITLE='Your heart\u2019s supply & demand (SEVR)';
+const HELP_BODY=`
+  <p>Your heart muscle is fed by its own arteries \u2014 but only during <strong>diastole</strong>, the resting phase between beats (during the squeeze of systole those vessels are pinched shut). So each heartbeat has a <strong>supply</strong> side (the diastole area, green) and a <strong>demand</strong> side (the systole area, orange). <strong>SEVR is supply \u00f7 demand.</strong></p>
+  <p>The biggest lever is <strong>heart rate</strong>. As it rises, the beat gets shorter \u2014 and almost all of that shortening comes out of diastole, closing the feeding window. Drag the heart-rate slider and watch the green area (and SEVR) shrink. <strong>Stiff arteries</strong> hurt too: they raise the systolic workload. Higher SEVR is better \u2014 a comfortable margin between what the heart is fed and what it spends.</p>
+  <p><strong>How to use it:</strong> set a client's resting heart rate and artery stiffness to show what drives their number, then tap <em>Plot client's SEVR</em> to mark their actual value on the scale. A low value is often about a high resting heart rate \u2014 which aerobic fitness brings down.</p>`;
+function openHelp(){ document.getElementById('helpTitle').textContent=HELP_TITLE; document.getElementById('helpBody').innerHTML=HELP_BODY; document.getElementById('helpModal').hidden=false; }
+document.getElementById('helpBtn').addEventListener('click',openHelp);
+document.getElementById('helpClose').addEventListener('click',()=>document.getElementById('helpModal').hidden=true);
+document.getElementById('helpModal').addEventListener('click',e=>{ if(e.target.id==='helpModal') document.getElementById('helpModal').hidden=true; });
+
+function setNote(){
+  const wf=waveform();
+  document.getElementById('note').innerHTML =
+    `<strong>SEVR</strong> is the ratio of the heart\u2019s oxygen <strong>supply</strong> (blood delivered during diastole \u2014 the green area) to its <strong>demand</strong> (the workload of systole \u2014 the orange area). The subendocardium, the innermost heart muscle, is fed <strong>almost entirely in diastole</strong>, so anything that shortens diastole squeezes supply. The dominant factor is <strong>resting heart rate</strong>: here it\u2019s ${state.hr} bpm, leaving diastole at ${(wf.DTshare*100).toFixed(0)}% of the beat. A fast or caffeinated reading looks worse for exactly this reason \u2014 which is why <strong>aerobic fitness</strong> (a lower resting heart rate) is the main way to raise it. Higher is better; there\u2019s no upper concern.`;
+}
+function refresh(){ document.getElementById('hrLbl').textContent = state.hr+' bpm'; setNote(); render(); }
+
+document.getElementById('hrR').addEventListener('input',e=>{ state.hr=+e.target.value; refresh(); });
+document.getElementById('stiffSeg').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
+  state.stiff=+b.dataset.k; document.querySelectorAll('#stiffSeg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.k===b.dataset.k)); refresh(); });
+document.getElementById('plotToggle').addEventListener('click',e=>{ state.plot=!state.plot;
+  e.target.setAttribute('aria-pressed',state.plot); document.getElementById('cbox').classList.toggle('hidden',!state.plot); render(); });
+document.getElementById('in_sevr').addEventListener('input',e=>{ const v=e.target.value.trim(); state.sevrIn= v===''?null:parseFloat(v); render(); });
+window.addEventListener('resize',render);
+
+/* gallery embed */
+(function(){ if(new URLSearchParams(location.search).get('embed')) document.body.classList.add('embed'); })();
+refresh();
+</script>
+</body>
+</html>

@@ -149,6 +149,13 @@ var HELP_TITLE="DexaFit Scottsdale Education Charts";var HELP_BODY="<p>A library
 
 /* ===================== thumbnails ===================== */
 const T = {
+  'arterial-sevr':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <path d="M20,132 L28,124 L40,58 L55,70 L80,78 L105,86 L120,92 L120,132 Z" fill="#E8862E" opacity=".24"/>
+    <path d="M120,92 L150,102 L195,115 L245,126 L280,131 L280,132 L120,132 Z" fill="#1F9D55" opacity=".24"/>
+    <line x1="120" y1="30" x2="120" y2="132" stroke="#10151B" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <path d="M20,132 L28,124 L40,58 L55,70 L80,78 L105,86 L120,92 L150,102 L195,115 L245,126 L280,131" fill="none" stroke="#10151B" stroke-width="2.5"/>
+    <line x1="18" y1="132" x2="282" y2="132" stroke="#10151B" stroke-width="1.2"/>
+  </svg>`,
   'arterial-health':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
     <defs>
       <linearGradient id="tag" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1F9D55" stop-opacity=".85"/><stop offset="1" stop-color="#C7E9D4"/></linearGradient>
@@ -332,6 +339,9 @@ const LIVE = [
   {id:'arterial-health', file:'arterial-health.html', cat:'Heart', sa:false,
    title:'Healthy arteries by age',
    blurb:'Your central pressure and arterial-stiffness markers against the healthy range for your age and sex — plot a client’s four report numbers and see where they land.'},
+  {id:'arterial-sevr', file:'arterial-sevr.html', cat:'Heart', sa:false,
+   title:'Your heart’s supply & demand',
+   blurb:'SEVR made visual — one heartbeat split into the blood that feeds the heart (diastole) and the work it does (systole), and why a lower resting heart rate lifts the ratio.'},
   {id:'almi', file:'almi-percentile.html', cat:'Muscle', sa:true, amin:20, amax:80,
    title:'Lean mass percentiles',
    blurb:'Appendicular lean mass vs. the sarcopenia floor, or total lean mass vs. the natural muscle ceiling.'},

@@ -149,6 +149,16 @@ var HELP_TITLE="DexaFit Scottsdale Education Charts";var HELP_BODY="<p>A library
 
 /* ===================== thumbnails ===================== */
 const T = {
+  'arterial-health':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="tag" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1F9D55" stop-opacity=".85"/><stop offset="1" stop-color="#C7E9D4"/></linearGradient>
+      <linearGradient id="tar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F1C9C2"/><stop offset="1" stop-color="#C0392B" stop-opacity=".9"/></linearGradient>
+    </defs>
+    <rect x="18" y="22" width="119" height="16" fill="url(#tag)"/><rect x="137" y="22" width="61" height="16" fill="#EDF2F6"/><rect x="198" y="22" width="84" height="16" fill="url(#tar)"/><circle cx="229" cy="30" r="6" fill="#10151B" stroke="#fff" stroke-width="2"/>
+    <rect x="18" y="56" width="106" height="16" fill="url(#tag)"/><rect x="124" y="56" width="58" height="16" fill="#EDF2F6"/><rect x="182" y="56" width="100" height="16" fill="url(#tar)"/><circle cx="163" cy="64" r="6" fill="#10151B" stroke="#fff" stroke-width="2"/>
+    <rect x="18" y="90" width="92" height="16" fill="url(#tag)"/><rect x="110" y="90" width="61" height="16" fill="#EDF2F6"/><rect x="171" y="90" width="111" height="16" fill="url(#tar)"/><circle cx="97" cy="98" r="6" fill="#10151B" stroke="#fff" stroke-width="2"/>
+    <rect x="18" y="124" width="132" height="16" fill="url(#tag)"/><rect x="150" y="124" width="58" height="16" fill="#EDF2F6"/><rect x="208" y="124" width="74" height="16" fill="url(#tar)"/><circle cx="256" cy="132" r="6" fill="#10151B" stroke="#fff" stroke-width="2"/>
+  </svg>`,
   'weekly-plan':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
     <rect x="14" y="70" width="28" height="70" fill="#0A6F9E"/>
     <rect x="54" y="85" width="28" height="55" fill="#1F9D55"/>
@@ -319,6 +329,9 @@ const LIVE = [
   {id:'energy-systems', file:'energy-systems.html', cat:'Cardiorespiratory', sa:false,
    title:'Your three energy systems',
    blurb:'Which engine powers the work as effort climbs — oxidative, glycolytic, phosphagen — and exactly where your VT1 and VT2 lines fall. The companion to the VT chart.'},
+  {id:'arterial-health', file:'arterial-health.html', cat:'Heart', sa:false,
+   title:'Healthy arteries by age',
+   blurb:'Your central pressure and arterial-stiffness markers against the healthy range for your age and sex — plot a client’s four report numbers and see where they land.'},
   {id:'almi', file:'almi-percentile.html', cat:'Muscle', sa:true, amin:20, amax:80,
    title:'Lean mass percentiles',
    blurb:'Appendicular lean mass vs. the sarcopenia floor, or total lean mass vs. the natural muscle ceiling.'},
@@ -364,7 +377,6 @@ const LIVE = [
 ];
 const SOON = [
   {id:'soon', title:'Biological age — capstone', blurb:'How old your body really measures, tying the whole panel into one number.'},
-  {id:'soon', title:'Arterial health', blurb:'Vascular age and stiffness, from the advanced arterial assessment.'},
 ];
 
 /* ===================== state ===================== */

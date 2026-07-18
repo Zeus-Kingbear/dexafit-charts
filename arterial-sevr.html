@@ -5,14 +5,13 @@
 <meta charset="utf-8">
 <!-- © 2026 DexaFit Scottsdale -->
 <meta name="copyright" content="© 2026 DexaFit Scottsdale">
-<!-- Google Tag Manager (embed-aware) -->
-<script>(function(){if(new URLSearchParams(location.search).get('embed'))return;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MGC5F4HG');})();</script>
-<!-- End Google Tag Manager -->
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SEVR — DexaFit Scottsdale Education Charts</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/chrome.css?v=1">
 <style>
   :root{
     --ink:#10151B; --ink-soft:#3A4753;
@@ -20,26 +19,6 @@
     --brand:#0E9BD6; --brand-deep:#0A6F9E; --supply:#1F9D55; --demand:#E8862E; --risk:#C0392B;
     font-synthesis:none;
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;height:100%;}
-  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
-  .app{display:flex;flex-direction:column;height:100dvh;}
-  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
-  .brand{display:flex;align-items:baseline;gap:0;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
-  .brand .x{color:var(--brand);}
-  .brand .loc{color:var(--ink);margin-left:8px;}
-  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-left:10px;align-self:center;}
-  .spacer{flex:1 1 auto;}
-  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
-  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
-  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
-  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
-  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
-  .plot{flex:1;min-height:0;}
-  .plot svg{width:100%;height:100%;display:block;}
-  .controls{display:flex;flex-wrap:wrap;gap:12px 24px;padding:10px 6px 8px;align-items:center;}
-  .gctl{display:flex;align-items:center;gap:11px;}
-  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
   .gctl input[type=range]{-webkit-appearance:none;appearance:none;width:230px;height:8px;border-radius:999px;background:var(--surface-3);outline:none;}
   .gctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand-deep);box-shadow:0 2px 7px rgba(0,0,0,.2);cursor:pointer;}
   .gctl input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand-deep);cursor:pointer;}
@@ -54,35 +33,21 @@
   .vinput label{font-size:12px;font-weight:800;color:var(--ink-soft);}
   .vinput input{width:70px;border:0;background:#fff;border-radius:7px;padding:6px 8px;font-family:"Inter";font-weight:700;font-size:14px;color:var(--ink);text-align:center;}
   .vinput small{font-size:11px;color:#9aa7b2;}
-  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:98ch;line-height:1.5;flex-basis:100%;}
-  .ctl-note strong{color:var(--ink);}
-  body.embed .topbar{display:none;}
-  .helpBtn{position:fixed;top:14px;right:16px;z-index:40;width:40px;height:40px;border-radius:50%;border:2px solid var(--brand);background:#fff;color:var(--brand-deep);font-family:"Archivo";font-weight:900;font-size:20px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;}
-  .helpBtn:hover{background:var(--brand);color:#fff;}
-  .helpModal{position:fixed;inset:0;z-index:50;background:rgba(16,21,27,.55);display:flex;align-items:center;justify-content:center;padding:24px;}
-  .helpModal[hidden]{display:none;}
-  .helpCard{background:#fff;border-radius:18px;max-width:560px;width:100%;padding:30px 32px 22px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:88vh;overflow:auto;}
-  .helpClose{position:absolute;top:14px;right:16px;border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;color:var(--ink-soft);}
-  .helpCard h2{font-family:"Archivo";font-weight:900;font-size:24px;margin:0 0 14px;letter-spacing:-.02em;}
-  .helpCard p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 12px;}
-  .helpCard strong{color:var(--ink);}
-  .helpFoot{margin-top:16px;padding-top:14px;border-top:1px solid var(--surface-3);font-size:11.5px;color:#90a0ac;}
-  .copyr{position:fixed;bottom:8px;right:14px;z-index:30;font-size:10.5px;font-weight:600;color:#9aa7b2;opacity:.8;pointer-events:none;user-select:none;}
 </style>
+<script src="/assets/chrome.js?v=1"></script>
 </head>
 <body>
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MGC5F4HG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="app">
   <div class="topbar">
-    <div class="brand"><span>DEXA</span><span class="x">FIT</span><span class="loc">Scottsdale</span><small>Education Charts</small></div>
+    <div class="brand"></div>
     <div class="spacer"></div>
     <div class="ctl-note" style="max-width:44ch">One heartbeat, two areas: what feeds the heart (diastole) vs what the heart spends (systole). SEVR is their ratio.</div>
   </div>
 
   <div class="chart">
     <div class="chead">
-      <div class="ctitle">Your heart\u2019s supply &amp; demand</div>
-      <div class="ccontext">SEVR \u2014 does blood supply keep up with the heart\u2019s workload?</div>
+      <div class="ctitle">Your heart’s supply &amp; demand</div>
+      <div class="ccontext">SEVR — does blood supply keep up with the heart’s workload?</div>
     </div>
     <div class="stage">
       <div class="plot" id="plot"></div>
@@ -106,20 +71,10 @@
   </div>
 </div>
 
-<button id="helpBtn" class="helpBtn" aria-label="What is this and how do I use it?">?</button>
-<div id="helpModal" class="helpModal" hidden>
-  <div class="helpCard">
-    <button id="helpClose" class="helpClose" aria-label="Close">\u00d7</button>
-    <h2 id="helpTitle"></h2>
-    <div id="helpBody"></div>
-    <div class="helpFoot">\u00a9 2026 DexaFit Scottsdale \u00b7 An education tool for your consultation \u2014 not medical advice. SEVR (Buckberg index) illustrated conceptually; values calibrated to reported reference ranges.</div>
-  </div>
-</div>
-<div class="copyr">\u00a9 2026 DexaFit Scottsdale</div>
+
 
 <script>
-/* DexaFit Scottsdale — domain lock (recommended level) */
-(function(){var ALLOW=['charts.kingbear.co','localhost','127.0.0.1'],REDIRECT='https://www.dexafit.com';var h=(location.hostname||'').toLowerCase();var ok=h===''||h.endsWith('.vercel.app')||ALLOW.some(function(d){return h===d||h.endsWith('.'+d);});if(!ok){document.documentElement.innerHTML='<div style="font:600 18px/1.5 system-ui;padding:48px;color:#10151B;max-width:620px">This interactive content is \u00a9 DexaFit Scottsdale and is licensed for use only on its official site. <a href="'+REDIRECT+'" style="color:#0A6F9E">Visit DexaFit Scottsdale \u2192</a></div>';throw new Error('DexaFit Scottsdale: unlicensed host');}})();
+
 
 /* ============================================================================
    SEVR — Subendocardial Viability Ratio (Buckberg index) = DPTI / SPTI.
@@ -230,15 +185,12 @@ function render(){
 }
 
 /* ============================ controls + help ============================ */
-const HELP_TITLE='Your heart\u2019s supply & demand (SEVR)';
-const HELP_BODY=`
+window.HELP_FOOT="\u00a9 2026 DexaFit Scottsdale \u00b7 An education tool for your consultation \u2014 not medical advice. SEVR (Buckberg index) illustrated conceptually; values calibrated to reported reference ranges.";window.HELP_TITLE='Your heart\u2019s supply & demand (SEVR)';
+window.HELP_BODY=`
   <p>Your heart muscle is fed by its own arteries \u2014 but only during <strong>diastole</strong>, the resting phase between beats (during the squeeze of systole those vessels are pinched shut). So each heartbeat has a <strong>supply</strong> side (the diastole area, green) and a <strong>demand</strong> side (the systole area, orange). <strong>SEVR is supply \u00f7 demand.</strong></p>
   <p>The biggest lever is <strong>heart rate</strong>. As it rises, the beat gets shorter \u2014 and almost all of that shortening comes out of diastole, closing the feeding window. Drag the heart-rate slider and watch the green area (and SEVR) shrink. <strong>Stiff arteries</strong> hurt too: they raise the systolic workload. Higher SEVR is better \u2014 a comfortable margin between what the heart is fed and what it spends.</p>
   <p><strong>How to use it:</strong> set a client's resting heart rate and artery stiffness to show what drives their number, then tap <em>Plot client's SEVR</em> to mark their actual value on the scale. A low value is often about a high resting heart rate \u2014 which aerobic fitness brings down.</p>`;
-function openHelp(){ document.getElementById('helpTitle').textContent=HELP_TITLE; document.getElementById('helpBody').innerHTML=HELP_BODY; document.getElementById('helpModal').hidden=false; }
-document.getElementById('helpBtn').addEventListener('click',openHelp);
-document.getElementById('helpClose').addEventListener('click',()=>document.getElementById('helpModal').hidden=true);
-document.getElementById('helpModal').addEventListener('click',e=>{ if(e.target.id==='helpModal') document.getElementById('helpModal').hidden=true; });
+
 
 function setNote(){
   const wf=waveform();
@@ -255,8 +207,6 @@ document.getElementById('plotToggle').addEventListener('click',e=>{ state.plot=!
 document.getElementById('in_sevr').addEventListener('input',e=>{ const v=e.target.value.trim(); state.sevrIn= v===''?null:parseFloat(v); render(); });
 window.addEventListener('resize',render);
 
-/* gallery embed */
-(function(){ if(new URLSearchParams(location.search).get('embed')) document.body.classList.add('embed'); })();
 refresh();
 </script>
 </body>

@@ -4,14 +4,13 @@
 <meta charset="utf-8">
 <!-- © 2026 DexaFit Scottsdale -->
 <meta name="copyright" content="© 2026 DexaFit Scottsdale">
-<!-- Google Tag Manager (embed-aware) -->
-<script>(function(){if(new URLSearchParams(location.search).get('embed'))return;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MGC5F4HG');})();</script>
-<!-- End Google Tag Manager -->
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>VT1 / VT2 — DexaFit Scottsdale Education Charts</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/chrome.css?v=1">
 <style>
   :root{
     --ink:#10151B; --ink-soft:#3A4753;
@@ -20,55 +19,23 @@
     --easy:#2E9E5B; --thr:#E8A13A; --sev:#C0392B;
     font-synthesis:none;
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;height:100%;}
-  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
-    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
-  .app{display:flex;flex-direction:column;height:100dvh;}
-  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
-  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
-  .brand .x{color:var(--brand);}
-  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-left:8px;align-self:center;}
-  .spacer{flex:1 1 auto;}
-  .gctl{display:flex;align-items:center;gap:10px;}
-  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
   .fitwrap{display:flex;align-items:center;gap:12px;min-width:320px;}
   .fitwrap input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;
     background:linear-gradient(90deg,var(--surface-3),var(--brand));outline:none;}
   .fitwrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
   .fitwrap input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
+  .chip{border:1.5px solid var(--surface-3);background:#fff;border-radius:999px;padding:9px 15px;font-family:"Inter";font-weight:700;font-size:13px;color:var(--ink-soft);cursor:pointer;min-height:42px;}
+  .chip:active{background:var(--surface-2);}
+  .chip.on{background:var(--brand-deep);border-color:var(--brand-deep);color:#fff;}
   .fitval{font-family:"Archivo";font-weight:800;font-size:16px;min-width:104px;text-align:left;color:var(--brand-deep);}
-  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
-  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
-  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
-  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
-  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
-  .plot{flex:1;min-height:0;}
-  .plot svg{width:100%;height:100%;display:block;touch-action:none;}
-  .controls{display:flex;flex-wrap:wrap;gap:16px;padding:10px 4px 16px;align-items:center;}
-  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:80ch;line-height:1.45;}
-  .ctl-note strong{color:var(--ink);}
-  body.embed .topbar{display:none;}
   @media (max-width:860px){ .topbar{gap:12px;padding:12px 14px;} .fitwrap{min-width:230px;} }
-  .brand .loc{color:var(--ink);margin-left:8px;}
-  .helpBtn{position:fixed;top:14px;right:16px;z-index:40;width:40px;height:40px;border-radius:50%;border:2px solid var(--brand);background:#fff;color:var(--brand-deep);font-family:"Archivo";font-weight:900;font-size:20px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;}
-  .helpBtn:hover{background:var(--brand);color:#fff;}
-  .helpModal{position:fixed;inset:0;z-index:50;background:rgba(16,21,27,.55);display:flex;align-items:center;justify-content:center;padding:24px;}
-  .helpModal[hidden]{display:none;}
-  .helpCard{background:#fff;border-radius:18px;max-width:560px;width:100%;padding:30px 32px 22px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:88vh;overflow:auto;}
-  .helpClose{position:absolute;top:14px;right:16px;border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;color:var(--ink-soft);}
-  .helpCard h2{font-family:"Archivo";font-weight:900;font-size:24px;margin:0 0 14px;letter-spacing:-.02em;}
-  .helpCard p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 12px;}
-  .helpCard strong{color:var(--ink);}
-  .helpFoot{margin-top:16px;padding-top:14px;border-top:1px solid var(--surface-3);font-size:11.5px;color:#90a0ac;}
-  .copyr{position:fixed;bottom:8px;right:14px;z-index:30;font-size:10.5px;font-weight:600;color:#9aa7b2;opacity:.8;pointer-events:none;user-select:none;}
 </style>
+<script src="/assets/chrome.js?v=1"></script>
 </head>
 <body>
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MGC5F4HG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="app">
   <div class="topbar">
-    <div class="brand"><span>DEXA</span><span class="x">FIT</span><span class="loc">Scottsdale</span><small>Education Charts</small></div>
+    <div class="brand"></div>
     <div class="spacer"></div>
     <div class="ctl-note" style="max-width:46ch">Drag across the chart to set your effort. Typical values — your test finds your exact thresholds.</div>
   </div>
@@ -86,6 +53,18 @@
           <input id="fitRange" type="range" min="0" max="100" value="40" step="1">
           <span class="fitval" id="fitVal">Recreational</span>
         </div>
+        <div class="gctl fitwrap">
+          <span class="lbl" style="white-space:nowrap">Effort</span>
+          <input id="effRange" type="range" min="2" max="100" value="70" step="1">
+          <span class="fitval" id="effVal">70%</span>
+        </div>
+        <div class="gctl" style="gap:6px;flex-wrap:wrap">
+          <button class="chip" data-jump="easy">Easy</button>
+          <button class="chip" data-jump="vt1">VT1</button>
+          <button class="chip" data-jump="gray">Gray zone</button>
+          <button class="chip" data-jump="vt2">VT2</button>
+          <button class="chip" data-jump="severe">Severe</button>
+        </div>
         <span class="ctl-note" id="note"></span>
       </div>
     </div>
@@ -93,22 +72,11 @@
 </div>
 
 
-<button id="helpBtn" class="helpBtn" aria-label="What is this and how do I use it?">?</button>
-<div id="helpModal" class="helpModal" hidden>
-  <div class="helpCard">
-    <button id="helpClose" class="helpClose" aria-label="Close">×</button>
-    <h2 id="helpTitle"></h2>
-    <div id="helpBody"></div>
-    <div class="helpFoot">© 2026 DexaFit Scottsdale · An education tool for your consultation — not medical advice.</div>
-  </div>
-</div>
-<div class="copyr">© 2026 DexaFit Scottsdale</div>
+
 <script>
-/* DexaFit Scottsdale — domain lock (recommended level) */
-(function(){var ALLOW=['charts.kingbear.co','localhost','127.0.0.1'],REDIRECT='https://www.dexafit.com';var h=(location.hostname||'').toLowerCase();var ok=h===''||h.endsWith('.vercel.app')||ALLOW.some(function(d){return h===d||h.endsWith('.'+d);});if(!ok){document.documentElement.innerHTML='<div style="font:600 18px/1.5 system-ui;padding:48px;color:#10151B;max-width:620px">This interactive content is © DexaFit Scottsdale and is licensed for use only on its official site. <a href="'+REDIRECT+'" style="color:#0A6F9E">Visit DexaFit Scottsdale →</a></div>';throw new Error('DexaFit Scottsdale: unlicensed host');}})();
-/* DexaFit Scottsdale — help */
-var HELP_TITLE="Your VT1 / VT2 training zones";var HELP_BODY="<p>Your two ventilatory thresholds split effort into three zones: easy (below VT1), threshold (VT1\u2013VT2), and severe (above VT2). They mark where fuel shifts from fat to carbs and where the work pays off.</p><p><strong>How to use it:</strong> drag the effort marker and the fitness slider to see how training pushes both thresholds higher. Pairs with the Energy Systems chart.</p>";
-(function(){var hb=document.getElementById('helpBtn'),hm=document.getElementById('helpModal');if(!hb||!hm)return;document.getElementById('helpTitle').textContent=HELP_TITLE;document.getElementById('helpBody').innerHTML=HELP_BODY;hb.addEventListener('click',function(){hm.hidden=false;});document.getElementById('helpClose').addEventListener('click',function(){hm.hidden=true;});hm.addEventListener('click',function(e){if(e.target.id==='helpModal')hm.hidden=true;});})();
+
+window.HELP_TITLE="Your VT1 / VT2 training zones";window.HELP_BODY="<p>Your two ventilatory thresholds split effort into three zones: easy (below VT1), threshold (VT1\u2013VT2), and severe (above VT2). They mark where fuel shifts from fat to carbs and where the work pays off.</p><p><strong>How to use it:</strong> set the Effort slider (or tap Easy / VT1 / VT2 / Severe), then drag the Fitness slider to watch both thresholds shift. Pairs with the Energy Systems chart.</p>";
+
 
 /* ============================================================================
    VENTILATORY THRESHOLDS — VT1 (aerobic threshold) and VT2 (respiratory
@@ -150,10 +118,20 @@ const ZMETA=[
   {name:'SEVERE · above VT2', col:'#C0392B', feel:'A few words, then nothing', use:'VO₂max intervals — potent in small, well-spaced doses.'}
 ];
 
+const CW=1040, CH=600, CM={l:64,r:48,t:60,b:118}, CIW=CW-CM.l-CM.r;
+function jumpTargets(){ const {vt1,vt2}=thresholds(state.fit);
+  return { easy:Math.max(2,vt1-12), vt1:vt1, gray:(vt1+vt2)/2, vt2:vt2, severe:Math.min(100,vt2+10) }; }
+function updateChips(){ const t=jumpTargets(), e=state.effort;
+  document.querySelectorAll('.chip[data-jump]').forEach(b=>b.classList.toggle('on', Math.abs(e-t[b.dataset.jump])<1.5)); }
+function setEffort(v){ state.effort=Math.max(2,Math.min(100,Math.round(v)));
+  const er=document.getElementById('effRange'); if(er) er.value=state.effort;
+  const ev=document.getElementById('effVal'); if(ev) ev.textContent=state.effort+'%';
+  setNote(); render(); updateChips(); }
+
 /* ============================ render ============================ */
 function render(){
   const host=document.getElementById('plot');
-  const W=1040,H=600,m={l:64,r:48,t:60,b:118};
+  const W=CW,H=CH,m=CM;
   const iw=W-m.l-m.r, ih=H-m.t-m.b;
   const VEMAX=140;
   const X=p=>m.l+(p/100)*iw;
@@ -202,7 +180,7 @@ function render(){
   /* effort marker */
   const e=state.effort, ex=X(e), z=zoneOf(e,vt1,vt2), zc=ZMETA[z].col;
   svg+=`<line x1="${ex}" y1="${m.t-6}" x2="${ex}" y2="${baseY}" stroke="#10151B" stroke-width="2.5"/>`;
-  svg+=`<circle cx="${ex}" cy="${Y(VEat(e))}" r="9" fill="#fff" stroke="#10151B" stroke-width="4"/>`;
+  svg+=`<circle cx="${ex}" cy="${Y(VEat(e))}" r="12" fill="#fff" stroke="#10151B" stroke-width="4"/>`;
   svg+=`<rect x="${ex-2}" y="${fy}" width="4" height="${fh}" fill="#10151B"/>`;
 
   /* readout (upper-left empty corner) */
@@ -220,14 +198,6 @@ function render(){
   svg+=`</svg>`;
   host.innerHTML=svg;
 
-  /* drag / click to set effort */
-  const el=host.querySelector('svg');
-  const setFromX=cx=>{ const r=el.getBoundingClientRect(); const px=(cx-r.left)/r.width*W;
-    state.effort=Math.max(2,Math.min(100, Math.round((px-m.l)/iw*100))); document.getElementById('note')&&setNote(); render(); };
-  let drag=false;
-  el.addEventListener('pointerdown',ev=>{ drag=true; el.setPointerCapture(ev.pointerId); setFromX(ev.clientX); });
-  el.addEventListener('pointermove',ev=>{ if(drag) setFromX(ev.clientX); });
-  el.addEventListener('pointerup',()=>{ drag=false; });
 }
 
 /* ============================ controls ============================ */
@@ -236,13 +206,21 @@ function setNote(){
   document.getElementById('note').innerHTML =
     `Your VO₂ test doesn\u2019t just give a ceiling \u2014 it finds the two <strong>breakpoints in your breathing</strong>. <strong>VT1</strong> is where easy ends: below it you can talk and go for hours on mostly fat. <strong>VT2</strong> is where it becomes unsustainable: above it you\u2019re on borrowed time, running on carbohydrate and lactate. The gap between them is the <strong>\u201cgray zone\u201d</strong> \u2014 it feels like good work but returns little fitness for the fatigue, which is why polarized training puts ~80% of volume <em>below VT1</em> and ~20% <em>above VT2</em>. Here\u2019s the part people miss: <strong>training moves the thresholds, not just the ceiling.</strong> An untrained person hits VT1 near 52% of VO₂max; a well-trained one holds ~70%+ before easy turns hard. Raising your thresholds is how you get faster at the paces you can actually hold.`;
 }
-function refresh(){ setNote(); render(); }
+function refresh(){ setNote(); render(); updateChips(); }
 const fr=document.getElementById('fitRange');
 fr.addEventListener('input',()=>{ state.fit=+fr.value/100; document.getElementById('fitVal').textContent=fitnessLabel(state.fit); refresh(); });
+document.getElementById('effRange').addEventListener('input',e=>setEffort(+e.target.value));
+document.querySelectorAll('.chip[data-jump]').forEach(b=>b.addEventListener('click',()=>setEffort(jumpTargets()[b.dataset.jump])));
+(function(){ const host=document.getElementById('plot');
+  const fromX=cx=>{ const r=host.getBoundingClientRect(); let p=((cx-r.left)/r.width*CW-CM.l)/CIW*100;
+    const {vt1,vt2}=thresholds(state.fit); if(Math.abs(p-vt1)<2.5)p=vt1; else if(Math.abs(p-vt2)<2.5)p=vt2; setEffort(p); };
+  let drag=false;
+  host.addEventListener('pointerdown',ev=>{ drag=true; try{host.setPointerCapture(ev.pointerId);}catch(_){} fromX(ev.clientX); });
+  host.addEventListener('pointermove',ev=>{ if(drag) fromX(ev.clientX); });
+  host.addEventListener('pointerup',()=>{ drag=false; }); host.addEventListener('pointercancel',()=>{ drag=false; });
+})();
 window.addEventListener('resize', render);
 
-/* gallery embed */
-(function(){ const q=new URLSearchParams(location.search); if(q.get('embed')) document.body.classList.add('embed'); })();
 
 document.getElementById('fitVal').textContent=fitnessLabel(state.fit);
 refresh();

@@ -4,14 +4,13 @@
 <meta charset="utf-8">
 <!-- © 2026 DexaFit Scottsdale -->
 <meta name="copyright" content="© 2026 DexaFit Scottsdale">
-<!-- Google Tag Manager (embed-aware) -->
-<script>(function(){if(new URLSearchParams(location.search).get('embed'))return;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MGC5F4HG');})();</script>
-<!-- End Google Tag Manager -->
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>VO₂ Max Percentiles — DexaFit Scottsdale Education Charts</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/chrome.css?v=1">
 <style>
   :root{
     --ink:#10151B; --ink-soft:#3A4753;
@@ -22,23 +21,9 @@
     --sup:#1A9850; --exc:#86CB66; --good:#F4D24C; --fair:#F0A24A; --poor:#E05942;
     font-synthesis:none;
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;height:100%;}
-  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
-    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
-  .app{display:flex;flex-direction:column;height:100dvh;}
-
   /* top bar */
   .topbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:14px 22px;
     border-bottom:1px solid var(--surface-3);background:var(--surface);}
-  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;
-    letter-spacing:-.02em;user-select:none;}
-  .brand .x{color:var(--brand);}
-  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-    color:var(--ink-soft);margin-left:8px;align-self:center;}
-  .spacer{flex:1 1 auto;}
-  .gctl{display:flex;align-items:center;gap:10px;}
-  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
   .seg{display:inline-flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;}
   .seg button{border:0;background:transparent;font:inherit;font-weight:700;padding:12px 18px;border-radius:10px;
     color:var(--ink-soft);cursor:pointer;min-height:48px;}
@@ -50,16 +35,8 @@
     background:#fff;border:4px solid var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
   .agewrap input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
   .ageval{font-family:"Archivo";font-weight:800;font-size:24px;min-width:42px;text-align:center;}
-
   /* chart shell */
   .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
-  .chead{display:flex;align-items:baseline;gap:16px;padding:14px 22px 4px;}
-  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.6vw,30px);letter-spacing:-.02em;}
-  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
-  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
-  .plot{flex:1;min-height:0;}
-  .plot svg{width:100%;height:100%;display:block;}
-  .controls{display:flex;flex-wrap:wrap;gap:10px;padding:12px 4px 18px;align-items:center;}
   .chip{border:2px solid var(--surface-3);background:var(--surface);font:inherit;font-weight:700;padding:13px 18px;
     border-radius:14px;cursor:pointer;min-height:52px;display:flex;align-items:center;gap:10px;color:var(--ink-soft);}
   .chip .dot{width:14px;height:14px;border-radius:4px;background:var(--surface-3);}
@@ -67,8 +44,6 @@
   .chip[data-k="hold"][aria-pressed="true"] .dot{background:var(--ink);}
   .chip[data-k="optimal"][aria-pressed="true"] .dot{background:#117A8B;}
   .seg.small button{padding:13px 16px;min-height:52px;}
-  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:52ch;line-height:1.4;margin-left:auto;}
-
   /* values table */
   .tablewrap{flex:1;min-height:0;overflow:auto;padding:4px 2px 8px;}
   table.vo2{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;}
@@ -82,31 +57,17 @@
   table.vo2 tr[aria-current="true"] td{outline:3px solid var(--ink);outline-offset:-3px;}
   .tnote{margin:16px 2px 0;font-size:13.5px;color:var(--ink-soft);line-height:1.5;max-width:88ch;}
   .tnote strong{color:var(--ink);}
-
   .ax{font:600 14px Inter;fill:var(--ink-soft);}
   .axbold{font:800 16px Archivo;fill:var(--ink);}
   @media (max-width:720px){ .ctl-note{display:none;} .topbar{gap:12px;padding:12px 14px;} .agewrap{min-width:180px;} }
-  body.embed .topbar{display:none;}
-  .brand .loc{color:var(--ink);margin-left:8px;}
-  .helpBtn{position:fixed;top:14px;right:16px;z-index:40;width:40px;height:40px;border-radius:50%;border:2px solid var(--brand);background:#fff;color:var(--brand-deep);font-family:"Archivo";font-weight:900;font-size:20px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;}
-  .helpBtn:hover{background:var(--brand);color:#fff;}
-  .helpModal{position:fixed;inset:0;z-index:50;background:rgba(16,21,27,.55);display:flex;align-items:center;justify-content:center;padding:24px;}
-  .helpModal[hidden]{display:none;}
-  .helpCard{background:#fff;border-radius:18px;max-width:560px;width:100%;padding:30px 32px 22px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:88vh;overflow:auto;}
-  .helpClose{position:absolute;top:14px;right:16px;border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;color:var(--ink-soft);}
-  .helpCard h2{font-family:"Archivo";font-weight:900;font-size:24px;margin:0 0 14px;letter-spacing:-.02em;}
-  .helpCard p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 12px;}
-  .helpCard strong{color:var(--ink);}
-  .helpFoot{margin-top:16px;padding-top:14px;border-top:1px solid var(--surface-3);font-size:11.5px;color:#90a0ac;}
-  .copyr{position:fixed;bottom:8px;right:14px;z-index:30;font-size:10.5px;font-weight:600;color:#9aa7b2;opacity:.8;pointer-events:none;user-select:none;}
 </style>
+<script src="/assets/chrome.js?v=1"></script>
 </head>
 <body>
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MGC5F4HG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="app">
 
   <div class="topbar">
-    <div class="brand"><span>DEXA</span><span class="x">FIT</span><span class="loc">Scottsdale</span><small>Education Charts</small></div>
+    <div class="brand"></div>
     <div class="spacer"></div>
     <div class="gctl">
       <span class="lbl">Sex</span>
@@ -144,22 +105,11 @@
 </div>
 
 
-<button id="helpBtn" class="helpBtn" aria-label="What is this and how do I use it?">?</button>
-<div id="helpModal" class="helpModal" hidden>
-  <div class="helpCard">
-    <button id="helpClose" class="helpClose" aria-label="Close">×</button>
-    <h2 id="helpTitle"></h2>
-    <div id="helpBody"></div>
-    <div class="helpFoot">© 2026 DexaFit Scottsdale · An education tool for your consultation — not medical advice.</div>
-  </div>
-</div>
-<div class="copyr">© 2026 DexaFit Scottsdale</div>
+
 <script>
-/* DexaFit Scottsdale — domain lock (recommended level) */
-(function(){var ALLOW=['charts.kingbear.co','localhost','127.0.0.1'],REDIRECT='https://www.dexafit.com';var h=(location.hostname||'').toLowerCase();var ok=h===''||h.endsWith('.vercel.app')||ALLOW.some(function(d){return h===d||h.endsWith('.'+d);});if(!ok){document.documentElement.innerHTML='<div style="font:600 18px/1.5 system-ui;padding:48px;color:#10151B;max-width:620px">This interactive content is © DexaFit Scottsdale and is licensed for use only on its official site. <a href="'+REDIRECT+'" style="color:#0A6F9E">Visit DexaFit Scottsdale →</a></div>';throw new Error('DexaFit Scottsdale: unlicensed host');}})();
-/* DexaFit Scottsdale — help */
-var HELP_TITLE="Where your VO\u2082max ranks";var HELP_BODY="<p>VO\u2082max is one of the strongest predictors of how long you\u2019ll live. This ranks any score against people of the same age and sex, with the elite \u201clongevity\u201d band at the top.</p><p><strong>How to use it:</strong> set your sex and age, then read across. Moving up even one category is linked to meaningfully lower mortality.</p>";
-(function(){var hb=document.getElementById('helpBtn'),hm=document.getElementById('helpModal');if(!hb||!hm)return;document.getElementById('helpTitle').textContent=HELP_TITLE;document.getElementById('helpBody').innerHTML=HELP_BODY;hb.addEventListener('click',function(){hm.hidden=false;});document.getElementById('helpClose').addEventListener('click',function(){hm.hidden=true;});hm.addEventListener('click',function(e){if(e.target.id==='helpModal')hm.hidden=true;});})();
+
+window.HELP_TITLE="Where your VO\u2082max ranks";window.HELP_BODY="<p>VO\u2082max is one of the strongest predictors of how long you\u2019ll live. This ranks any score against people of the same age and sex, with the elite \u201clongevity\u201d band at the top.</p><p><strong>How to use it:</strong> set your sex and age, then read across. Moving up even one category is linked to meaningfully lower mortality.</p>";
+
 
 /* ===================== state ===================== */
 const state = { sex:'male', age:50, hold:false, view:'chart', optimal:false };

@@ -84,5 +84,25 @@
       minus.addEventListener('click',function(){ nudge(-1); });
       plus.addEventListener('click',function(){ nudge(1); });
     });
+
+    /* collapsible supporting-text slide-over (KIN-435) */
+    var controls=document.querySelector('.controls'), note=document.getElementById('note');
+    if(controls && note && note.textContent.replace(/\s+/g,' ').trim().length>60){
+      var title=(document.querySelector('.ctitle')||{}).textContent||'About these numbers';
+      var drawer=document.createElement('div'); drawer.id='dfDrawer'; drawer.className='df-drawer'; drawer.setAttribute('aria-hidden','true');
+      drawer.innerHTML='<div class="df-scrim"></div><div class="df-panel"><div class="df-panel-head"><span></span>'+
+        '<button class="df-panel-close" aria-label="Close">\u00d7</button></div><div class="df-panel-body"></div></div>';
+      drawer.querySelector('.df-panel-head span').textContent=title;
+      document.body.appendChild(drawer);
+      drawer.querySelector('.df-panel-body').appendChild(note);            // move the LIVE note (chart's setNote keeps updating it)
+      var openBtn=document.createElement('button'); openBtn.type='button'; openBtn.className='df-learn';
+      openBtn.innerHTML='Why this matters <span aria-hidden="true">\u203a</span>';
+      controls.appendChild(openBtn);
+      var setOpen=function(o){ drawer.classList.toggle('open',o); drawer.setAttribute('aria-hidden',o?'false':'true'); };
+      openBtn.addEventListener('click',function(){ setOpen(true); });
+      drawer.querySelector('.df-panel-close').addEventListener('click',function(){ setOpen(false); });
+      drawer.querySelector('.df-scrim').addEventListener('click',function(){ setOpen(false); });
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape') setOpen(false); });
+    }
   });
 })();

@@ -5,14 +5,13 @@
 <meta charset="utf-8">
 <!-- © 2026 DexaFit Scottsdale -->
 <meta name="copyright" content="© 2026 DexaFit Scottsdale">
-<!-- Google Tag Manager (embed-aware) -->
-<script>(function(){if(new URLSearchParams(location.search).get('embed'))return;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MGC5F4HG');})();</script>
-<!-- End Google Tag Manager -->
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Arterial health — DexaFit Scottsdale Education Charts</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/chrome.css?v=1">
 <style>
   :root{
     --ink:#10151B; --ink-soft:#3A4753;
@@ -20,26 +19,6 @@
     --brand:#0E9BD6; --brand-deep:#0A6F9E; --good:#1F9D55; --risk:#C0392B; --warn:#E8862E;
     font-synthesis:none;
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;height:100%;}
-  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
-  .app{display:flex;flex-direction:column;height:100dvh;}
-  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
-  .brand{display:flex;align-items:baseline;gap:0;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
-  .brand .x{color:var(--brand);}
-  .brand .loc{color:var(--ink);margin-left:8px;}
-  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-left:10px;align-self:center;}
-  .spacer{flex:1 1 auto;}
-  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
-  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
-  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
-  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
-  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
-  .plot{flex:1;min-height:0;}
-  .plot svg{width:100%;height:100%;display:block;}
-  .controls{display:flex;flex-wrap:wrap;gap:12px 24px;padding:10px 6px 8px;align-items:center;}
-  .gctl{display:flex;align-items:center;gap:11px;}
-  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
   .gctl input[type=range]{-webkit-appearance:none;appearance:none;width:250px;height:8px;border-radius:999px;background:var(--surface-3);outline:none;}
   .gctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand-deep);box-shadow:0 2px 7px rgba(0,0,0,.2);cursor:pointer;}
   .gctl input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:4px solid var(--brand-deep);cursor:pointer;}
@@ -55,27 +34,14 @@
   .vinput label{font-size:12px;font-weight:800;color:var(--ink-soft);}
   .vinput input{width:64px;border:0;background:#fff;border-radius:7px;padding:6px 8px;font-family:"Inter";font-weight:700;font-size:14px;color:var(--ink);text-align:center;}
   .vinput small{font-size:11px;color:#9aa7b2;}
-  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:98ch;line-height:1.5;flex-basis:100%;}
-  .ctl-note strong{color:var(--ink);}
-  body.embed .topbar{display:none;}
-  .helpBtn{position:fixed;top:14px;right:16px;z-index:40;width:40px;height:40px;border-radius:50%;border:2px solid var(--brand);background:#fff;color:var(--brand-deep);font-family:"Archivo";font-weight:900;font-size:20px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;}
-  .helpBtn:hover{background:var(--brand);color:#fff;}
-  .helpModal{position:fixed;inset:0;z-index:50;background:rgba(16,21,27,.55);display:flex;align-items:center;justify-content:center;padding:24px;}
-  .helpModal[hidden]{display:none;}
-  .helpCard{background:#fff;border-radius:18px;max-width:560px;width:100%;padding:30px 32px 22px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:88vh;overflow:auto;}
-  .helpClose{position:absolute;top:14px;right:16px;border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;color:var(--ink-soft);}
-  .helpCard h2{font-family:"Archivo";font-weight:900;font-size:24px;margin:0 0 14px;letter-spacing:-.02em;}
-  .helpCard p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 12px;}
-  .helpCard strong{color:var(--ink);}
-  .helpFoot{margin-top:16px;padding-top:14px;border-top:1px solid var(--surface-3);font-size:11.5px;color:#90a0ac;}
-  .copyr{position:fixed;bottom:8px;right:14px;z-index:30;font-size:10.5px;font-weight:600;color:#9aa7b2;opacity:.8;pointer-events:none;user-select:none;}
+  .chip.hidden{display:none;}
 </style>
+<script src="/assets/chrome.js?v=1"></script>
 </head>
 <body>
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MGC5F4HG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="app">
   <div class="topbar">
-    <div class="brand"><span>DEXA</span><span class="x">FIT</span><span class="loc">Scottsdale</span><small>Education Charts</small></div>
+    <div class="brand"></div>
     <div class="spacer"></div>
     <div class="ctl-note" style="max-width:44ch">Where your arteries sit next to others your age — the whole point is "elevated <em>for your age</em>," not a diagnosis.</div>
   </div>
@@ -105,26 +71,25 @@
           <div class="vinput"><label>AP</label><input id="in_ap" type="number" inputmode="decimal" placeholder="—"><small>mmHg</small></div>
           <div class="vinput"><label>AIx</label><input id="in_aix" type="number" inputmode="decimal" placeholder="—"><small>%</small></div>
         </div>
+        <button class="chip hidden" id="guideBtn">What should I do about it? →</button>
         <span class="ctl-note" id="note"></span>
       </div>
     </div>
   </div>
 </div>
 
-<button id="helpBtn" class="helpBtn" aria-label="What is this and how do I use it?">?</button>
-<div id="helpModal" class="helpModal" hidden>
+
+<div id="guidanceModal" class="helpModal" hidden>
   <div class="helpCard">
-    <button id="helpClose" class="helpClose" aria-label="Close">\u00d7</button>
-    <h2 id="helpTitle"></h2>
-    <div id="helpBody"></div>
-    <div class="helpFoot">\u00a9 2026 DexaFit Scottsdale \u00b7 An education tool for your consultation \u2014 not medical advice. Ranges based on the Anglo-Cardiff Collaborative Trial (ACCT).</div>
+    <button id="guidanceClose" class="helpClose" aria-label="Close">×</button>
+    <h2>What can I do about it?</h2>
+    <div id="guidanceBody"></div>
+    <div class="helpFoot">General, evidence-based lifestyle guidance — <strong>not a diagnosis and not medical advice</strong>. Changes to exercise, diet, or medication should be made with your physician. © 2026 DexaFit Scottsdale.</div>
   </div>
 </div>
-<div class="copyr">\u00a9 2026 DexaFit Scottsdale</div>
 
 <script>
-/* DexaFit Scottsdale — domain lock (recommended level) */
-(function(){var ALLOW=['charts.kingbear.co','localhost','127.0.0.1'],REDIRECT='https://www.dexafit.com';var h=(location.hostname||'').toLowerCase();var ok=h===''||h.endsWith('.vercel.app')||ALLOW.some(function(d){return h===d||h.endsWith('.'+d);});if(!ok){document.documentElement.innerHTML='<div style="font:600 18px/1.5 system-ui;padding:48px;color:#10151B;max-width:620px">This interactive content is \u00a9 DexaFit Scottsdale and is licensed for use only on its official site. <a href="'+REDIRECT+'" style="color:#0A6F9E">Visit DexaFit Scottsdale \u2192</a></div>';throw new Error('DexaFit Scottsdale: unlicensed host');}})();
+
 
 /* ============================================================================
    ARTERIAL HEALTH — "Healthy Arteries by Age"
@@ -247,15 +212,12 @@ function render(){
 }
 
 /* ============================ controls + help ============================ */
-const HELP_TITLE='Healthy arteries by age';
-const HELP_BODY=`
+window.HELP_FOOT="\u00a9 2026 DexaFit Scottsdale \u00b7 An education tool for your consultation \u2014 not medical advice. Ranges based on the Anglo-Cardiff Collaborative Trial (ACCT).";window.HELP_TITLE='Healthy arteries by age';
+window.HELP_BODY=`
   <p>Your arterial test gives four numbers. <strong>cBP</strong> and <strong>PP</strong> are pressures deep in your circulation (what your heart and organs really feel); <strong>AP</strong> and <strong>AIx</strong> are stiffness markers (how much rigid arteries add to the load on your heart).</p>
   <p>The key idea: healthy ranges <strong>rise with age</strong>, because arteries naturally stiffen over time. So a green bar isn't an absolute cutoff \u2014 it's "typical for someone your age and sex." A value in the <strong>red</strong> means <strong>elevated for your age</strong>, which is worth a conversation, not a diagnosis.</p>
   <p><strong>How to use it:</strong> pick <em>Sex</em> and slide <em>Age</em> to your client's band (watch the bands move). Tap <em>Plot a client's results</em> and type the four values from their report \u2014 each marker drops onto its bar and shows whether it's within or above range for that age.</p>`;
-function openHelp(){ document.getElementById('helpTitle').textContent=HELP_TITLE; document.getElementById('helpBody').innerHTML=HELP_BODY; document.getElementById('helpModal').hidden=false; }
-document.getElementById('helpBtn').addEventListener('click',openHelp);
-document.getElementById('helpClose').addEventListener('click',()=>document.getElementById('helpModal').hidden=true);
-document.getElementById('helpModal').addEventListener('click',e=>{ if(e.target.id==='helpModal') document.getElementById('helpModal').hidden=true; });
+
 
 function setNote(){
   document.getElementById('note').innerHTML =
@@ -266,15 +228,58 @@ function refresh(){ document.getElementById('ageLbl').textContent = BANDS[state.
 document.getElementById('ageR').addEventListener('input',e=>{ state.age=+e.target.value; refresh(); });
 document.getElementById('sexSeg').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b)return;
   state.sex=b.dataset.s; document.querySelectorAll('#sexSeg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.s===b.dataset.s)); refresh(); });
+/* ---- result-specific guidance (KIN-445) ---- */
+function buildGuidance(){
+  const sx=DATA[state.sex], ai=state.age, V=state.vals;
+  let entered=0; const up={};
+  METRICS.forEach(m=>{ const v=V[m.key]; if(v!==null&&!isNaN(v)){ entered++; up[m.key]= v>sx[m.key].hi[ai]; } });
+  if(!entered) return `<p>Enter the client's four report values first — then this shows lifestyle guidance targeted to whichever markers are elevated for their age.</p>`;
+  const pElev = up.cbp||up.pp, sElev = up.ap||up.aix;
+  const pressBlock = `<h3>Pressure — what tends to help</h3>
+    <ul>
+      <li>A <strong>DASH or Mediterranean</strong> eating pattern — plenty of vegetables, fruit, legumes and whole grains, less processed food. On its own this rivals a single blood-pressure medication.</li>
+      <li><strong>Less sodium, more potassium</strong> — go easy on salt (sensitivity rises with age) and lean on produce for potassium.</li>
+      <li><strong>Regular aerobic exercise</strong>, most days of the week.</li>
+      <li>Reaching or holding a <strong>healthy weight</strong> — even a 3–9% loss moves the number.</li>
+      <li>Keeping <strong>alcohol modest</strong>.</li>
+    </ul>
+    <p style="font-size:13.5px"><strong>With their doctor:</strong> confirm with home or clinic blood-pressure readings, and treat it as a blood-pressure conversation.</p>`;
+  const stiffBlock = `<h3>Stiffness — what tends to help</h3>
+    <ul>
+      <li><strong>Aerobic exercise is the biggest lever</strong> for artery flexibility — a steady Zone 2 base plus some higher-intensity work.</li>
+      <li><strong>Metabolic health</strong> — keeping blood sugar, insulin and cholesterol in good ranges; stiffness tracks closely with metabolic risk.</li>
+      <li>The same <strong>DASH/Mediterranean pattern and lower sodium</strong> help here too.</li>
+      <li><strong>Nitrate-rich foods</strong> — leafy greens and beets support vessel flexibility.</li>
+      <li><strong>Not smoking</strong> — smoking stiffens arteries.</li>
+      <li>One nuance: very <strong>heavy, near-maximal lifting</strong> can briefly stiffen large arteries — balancing strength work with plenty of aerobic training keeps things supple.</li>
+    </ul>
+    <p style="font-size:13.5px"><strong>With their doctor:</strong> look at metabolic and cholesterol markers — lipids, and glucose/insulin.</p>`;
+  let h='';
+  if(!pElev && !sElev){
+    return `<p><strong>Everything sits in the healthy band for this age.</strong> The move here is to <em>keep it up</em> — the habits that hold these numbers steady (regular aerobic exercise, a produce-rich diet, a healthy weight, not smoking) are what keep arteries young. Re-test in 6–12 months to watch the trend.</p>`;
+  }
+  if(pElev && sElev) h+=`<p><strong>Both pressure and stiffness markers are running high for this age.</strong> The good news: the core habits overlap, so a few changes move both.</p>`;
+  else if(pElev) h+=`<p><strong>The pressure markers are higher than typical for this age</strong> — the heart is working against more resistance than it should. This leans toward a blood-pressure conversation.</p>`;
+  else h+=`<p><strong>The stiffness markers are higher than typical for this age</strong> — the artery walls are reflecting more of the pressure wave than expected. That's an early vascular-aging pattern, and it leans toward metabolic follow-up.</p>`;
+  if(up.pp && !up.cbp) h+=`<p>A wide <strong>pulse pressure</strong> with normal central blood pressure usually points to stiffer arteries — so the stiffness levers below apply, and a blood-pressure check is still worthwhile.</p>`;
+  if(pElev) h+=pressBlock;
+  if(sElev) h+=stiffBlock;
+  if(pElev && sElev) h+=`<p><strong>Where to start:</strong> aerobic exercise, a DASH/Mediterranean pattern, less sodium, and a healthy weight move <em>both</em> pressure and stiffness — begin there.</p>`;
+  return h;
+}
+const gModal=document.getElementById('guidanceModal');
+document.getElementById('guideBtn').addEventListener('click',()=>{ document.getElementById('guidanceBody').innerHTML=buildGuidance(); gModal.hidden=false; });
+document.getElementById('guidanceClose').addEventListener('click',()=>gModal.hidden=true);
+gModal.addEventListener('click',e=>{ if(e.target.id==='guidanceModal') gModal.hidden=true; });
+
 document.getElementById('plotToggle').addEventListener('click',e=>{ state.plot=!state.plot;
-  e.target.setAttribute('aria-pressed',state.plot); document.getElementById('vals').classList.toggle('hidden',!state.plot); render(); });
+  e.target.setAttribute('aria-pressed',state.plot); document.getElementById('vals').classList.toggle('hidden',!state.plot);
+  document.getElementById('guideBtn').classList.toggle('hidden',!state.plot); render(); });
 [['in_cbp','cbp'],['in_pp','pp'],['in_ap','ap'],['in_aix','aix']].forEach(([id,key])=>{
   document.getElementById(id).addEventListener('input',e=>{ const v=e.target.value.trim(); state.vals[key]= v===''?null:parseFloat(v); render(); });
 });
 window.addEventListener('resize',render);
 
-/* gallery embed */
-(function(){ if(new URLSearchParams(location.search).get('embed')) document.body.classList.add('embed'); })();
 refresh();
 </script>
 </body>

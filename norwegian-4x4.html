@@ -4,14 +4,13 @@
 <meta charset="utf-8">
 <!-- © 2026 DexaFit Scottsdale -->
 <meta name="copyright" content="© 2026 DexaFit Scottsdale">
-<!-- Google Tag Manager (embed-aware) -->
-<script>(function(){if(new URLSearchParams(location.search).get('embed'))return;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MGC5F4HG');})();</script>
-<!-- End Google Tag Manager -->
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Norwegian 4×4 — DexaFit Scottsdale Education Charts</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/chrome.css?v=1">
 <style>
   :root{
     --ink:#10151B; --ink-soft:#3A4753;
@@ -19,18 +18,6 @@
     --brand:#0E9BD6; --brand-deep:#0A6F9E; --hot:#C0392B; --good:#1F9D55; --warn:#E8862E;
     font-synthesis:none;
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;height:100%;}
-  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);
-    background:var(--surface);-webkit-font-smoothing:antialiased;overflow:hidden;}
-  .app{display:flex;flex-direction:column;height:100dvh;}
-  .topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:13px 22px;border-bottom:1px solid var(--surface-3);background:var(--surface);}
-  .brand{display:flex;align-items:baseline;gap:2px;font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:-.02em;user-select:none;}
-  .brand .x{color:var(--brand);}
-  .brand small{font-family:"Inter";font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-left:8px;align-self:center;}
-  .spacer{flex:1 1 auto;}
-  .gctl{display:flex;align-items:center;gap:11px;}
-  .gctl .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap;}
   .gctl input[type=range]{-webkit-appearance:none;appearance:none;width:150px;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--surface-3),var(--brand));outline:none;}
   .gctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:#fff;border:4px solid var(--brand);box-shadow:0 2px 7px rgba(0,0,0,.18);cursor:pointer;}
   .gctl input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:#fff;border:4px solid var(--brand);cursor:pointer;}
@@ -38,36 +25,13 @@
   .seg{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:4px;gap:2px;}
   .seg button{border:0;background:transparent;font-family:"Inter";font-weight:700;font-size:14px;color:var(--ink-soft);padding:7px 16px;border-radius:999px;cursor:pointer;}
   .seg button[aria-pressed=true]{background:var(--brand);color:#fff;}
-  .chart{flex:1;display:flex;flex-direction:column;min-height:0;}
-  .chead{display:flex;align-items:baseline;gap:16px;padding:12px 22px 2px;flex-wrap:wrap;}
-  .ctitle{font-family:"Archivo";font-weight:900;font-size:clamp(20px,2.5vw,29px);letter-spacing:-.02em;}
-  .ccontext{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase;}
-  .stage{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 18px;}
-  .plot{flex:1;min-height:0;}
-  .plot svg{width:100%;height:100%;display:block;}
-  .controls{display:flex;flex-wrap:wrap;gap:14px 24px;padding:10px 6px 16px;align-items:center;}
-  .ctl-note{font-size:12.5px;color:var(--ink-soft);max-width:82ch;line-height:1.45;flex-basis:100%;}
-  .ctl-note strong{color:var(--ink);}
-  body.embed .topbar{display:none;}
-  .brand .loc{color:var(--ink);margin-left:8px;}
-  .helpBtn{position:fixed;top:14px;right:16px;z-index:40;width:40px;height:40px;border-radius:50%;border:2px solid var(--brand);background:#fff;color:var(--brand-deep);font-family:"Archivo";font-weight:900;font-size:20px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;}
-  .helpBtn:hover{background:var(--brand);color:#fff;}
-  .helpModal{position:fixed;inset:0;z-index:50;background:rgba(16,21,27,.55);display:flex;align-items:center;justify-content:center;padding:24px;}
-  .helpModal[hidden]{display:none;}
-  .helpCard{background:#fff;border-radius:18px;max-width:560px;width:100%;padding:30px 32px 22px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:88vh;overflow:auto;}
-  .helpClose{position:absolute;top:14px;right:16px;border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;color:var(--ink-soft);}
-  .helpCard h2{font-family:"Archivo";font-weight:900;font-size:24px;margin:0 0 14px;letter-spacing:-.02em;}
-  .helpCard p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 12px;}
-  .helpCard strong{color:var(--ink);}
-  .helpFoot{margin-top:16px;padding-top:14px;border-top:1px solid var(--surface-3);font-size:11.5px;color:#90a0ac;}
-  .copyr{position:fixed;bottom:8px;right:14px;z-index:30;font-size:10.5px;font-weight:600;color:#9aa7b2;opacity:.8;pointer-events:none;user-select:none;}
 </style>
+<script src="/assets/chrome.js?v=1"></script>
 </head>
 <body>
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MGC5F4HG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="app">
   <div class="topbar">
-    <div class="brand"><span>DEXA</span><span class="x">FIT</span><span class="loc">Scottsdale</span><small>Education Charts</small></div>
+    <div class="brand"></div>
     <div class="spacer"></div>
     <div class="ctl-note" style="max-width:44ch">Power shown in watts as an example — your numbers come from your VO₂ test.</div>
   </div>
@@ -96,22 +60,11 @@
 </div>
 
 
-<button id="helpBtn" class="helpBtn" aria-label="What is this and how do I use it?">?</button>
-<div id="helpModal" class="helpModal" hidden>
-  <div class="helpCard">
-    <button id="helpClose" class="helpClose" aria-label="Close">×</button>
-    <h2 id="helpTitle"></h2>
-    <div id="helpBody"></div>
-    <div class="helpFoot">© 2026 DexaFit Scottsdale · An education tool for your consultation — not medical advice.</div>
-  </div>
-</div>
-<div class="copyr">© 2026 DexaFit Scottsdale</div>
+
 <script>
-/* DexaFit Scottsdale — domain lock (recommended level) */
-(function(){var ALLOW=['charts.kingbear.co','localhost','127.0.0.1'],REDIRECT='https://www.dexafit.com';var h=(location.hostname||'').toLowerCase();var ok=h===''||h.endsWith('.vercel.app')||ALLOW.some(function(d){return h===d||h.endsWith('.'+d);});if(!ok){document.documentElement.innerHTML='<div style="font:600 18px/1.5 system-ui;padding:48px;color:#10151B;max-width:620px">This interactive content is © DexaFit Scottsdale and is licensed for use only on its official site. <a href="'+REDIRECT+'" style="color:#0A6F9E">Visit DexaFit Scottsdale →</a></div>';throw new Error('DexaFit Scottsdale: unlicensed host');}})();
-/* DexaFit Scottsdale — help */
-var HELP_TITLE="The Norwegian 4\u00d74";var HELP_BODY="<p>A visual of the classic interval session \u2014 and why four minutes isn\u2019t magic. What drives the gain is total <strong>time near your VO\u2082max</strong>, and 3\u20138 minute intervals all get you there. Watch the watts fall rep to rep while heart rate stays pinned near max.</p><p><strong>How to use it:</strong> change interval length, number of intervals, and sessions per week to find the effective dose.</p>";
-(function(){var hb=document.getElementById('helpBtn'),hm=document.getElementById('helpModal');if(!hb||!hm)return;document.getElementById('helpTitle').textContent=HELP_TITLE;document.getElementById('helpBody').innerHTML=HELP_BODY;hb.addEventListener('click',function(){hm.hidden=false;});document.getElementById('helpClose').addEventListener('click',function(){hm.hidden=true;});hm.addEventListener('click',function(e){if(e.target.id==='helpModal')hm.hidden=true;});})();
+
+window.HELP_TITLE="The Norwegian 4\u00d74";window.HELP_BODY="<p>A visual of the classic interval session \u2014 and why four minutes isn\u2019t magic. What drives the gain is total <strong>time near your VO\u2082max</strong>, and 3\u20138 minute intervals all get you there. Watch the watts fall rep to rep while heart rate stays pinned near max.</p><p><strong>How to use it:</strong> change interval length, number of intervals, and sessions per week to find the effective dose.</p>";
+
 
 /* ============================================================================
    Norwegian 4×4 as a session profile. The teaching points, all research-grounded:
@@ -176,6 +129,19 @@ function render(){
   // wrap sub
   (function(){ const words=f.sub.split(' '); let line='',ly=98; words.forEach(w=>{ if((line+w).length>50){ svg+=`<text x="${rcx+22}" y="${ly}" fill="#3A4753" style="font:600 12.5px Inter">${line.trim()}</text>`; line=w+' '; ly+=18;} else line+=w+' '; }); if(line.trim()) svg+=`<text x="${rcx+22}" y="${ly}" fill="#3A4753" style="font:600 12.5px Inter">${line.trim()}</text>`; })();
 
+  /* ---- middle card: relative gain by frequency (makes 3× diminishing returns visible) ---- */
+  (function(){
+    const gap=rcx-(m.l+372); if(gap<140) return;
+    const GAIN={1:64,2:100,3:105}, C={1:'#0A6F9E',2:'#1F9D55',3:'#E8862E'};
+    const Wm=Math.min(176,gap-20), gx=m.l+372+(gap-Wm)/2, gy=14, gh=124;
+    svg+=`<rect x="${gx.toFixed(1)}" y="${gy}" width="${Wm.toFixed(1)}" height="${gh}" rx="14" fill="#F4F8FB" stroke="#DCE7EE" stroke-width="1.5"/>`;
+    svg+=`<text x="${(gx+Wm/2).toFixed(1)}" y="${gy+24}" text-anchor="middle" fill="#7A8893" style="font:700 10px Inter" letter-spacing=".6">RELATIVE VO₂MAX GAIN</text>`;
+    const base=gy+94, top=gy+40, slot=Wm/3, bw=Math.min(32,slot-14);
+    [1,2,3].forEach((fq,i)=>{ const cx=gx+slot*(i+0.5), h=(GAIN[fq]/105)*(base-top), on=state.freq===fq;
+      svg+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${(base-h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${C[fq]}" opacity="${on?1:0.26}"/>`;
+      svg+=`<text x="${cx.toFixed(1)}" y="${base+20}" text-anchor="middle" style="font:${on?900:600} 13px Archivo" fill="${on?C[fq]:'#9aa7b2'}">${fq}×</text>`; });
+  })();
+
   /* ---- axes ---- */
   for(let p=0;p<=280;p+=70){ svg+=`<line x1="${m.l}" y1="${Y(p)}" x2="${m.l+iw}" y2="${Y(p)}" stroke="#10151B" stroke-width="1" opacity=".06"/>`;
     svg+=`<text x="${m.l-10}" y="${Y(p)+4}" text-anchor="end" style="font:600 11px Inter" fill="#7A8893">${p}</text>`; }
@@ -218,8 +184,6 @@ document.getElementById('freqSeg').addEventListener('click',e=>{ const b=e.targe
   state.freq=+b.dataset.f; document.querySelectorAll('#freqSeg button').forEach(x=>x.setAttribute('aria-pressed', x.dataset.f===b.dataset.f)); render(); });
 window.addEventListener('resize', render);
 
-/* gallery embed */
-(function(){ const q=new URLSearchParams(location.search); if(q.get('embed')) document.body.classList.add('embed'); })();
 
 refresh();
 </script>

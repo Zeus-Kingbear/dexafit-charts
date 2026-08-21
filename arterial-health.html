@@ -122,7 +122,7 @@ const METRICS = [
   {key:'ap',  abbr:'AP',  name:'Augmentation Pressure', unit:'mmHg', min:-8, max:30, tick:5,
    d1:'How much stiff arteries add to the',          d2:'pressure wave \u2014 a stiffness marker.'},
   {key:'aix', abbr:'AIx', name:'Augmentation Index',   unit:'%',    min:-14, max:50, tick:10,
-   d1:'Share of pressure from reflected waves',       d2:'\u2014 the load stiff arteries put on the heart.'}
+   d1:'Share of pressure from reflected waves',       d2:'\u2014 Stiffer arteries increase the magnitude.'}
 ];
 const BANDS = ['Under 20','20\u201329','30\u201339','40\u201349','50\u201359','60\u201369','70\u201379','80\u201389'];
 const state = { sex:'male', age:4, plot:false, vals:{cbp:null,pp:null,ap:null,aix:null} };
@@ -221,7 +221,7 @@ window.HELP_BODY=`
 
 function setNote(){
   document.getElementById('note').innerHTML =
-    `These four markers come from your arterial (pulse-wave) assessment. The <strong>green</strong> zone is healthy for your age, the light band is the <strong>age-normal range</strong>, and <strong>red</strong> is elevated <em>for your age</em>. Because arteries stiffen with age, the whole band slides right as you get older \u2014 the test is catching whether you're <strong>ahead of or behind your years</strong>, which is exactly what makes it useful early. Plot a client's four report values to see where they land; anything in the red is a prompt to look at metabolic or blood-pressure follow-up with their doctor.`;
+    `These four markers come from your arterial (pulse-wave) assessment. The <strong>green</strong> zone is healthy for your age, the light band is the <strong>age-normal range</strong>, and <strong>red</strong> is elevated <em>for your age</em>. Because arteries stiffen with age, the whole band slides right as you get older \u2014 the test shows your client's arteries in comparison to healthy individuals of the same age, helping place the results in context. Plot a client's four report values to see where they land; anything in the red is a prompt to look at metabolic or blood-pressure follow-up with their doctor.`;
 }
 function refresh(){ document.getElementById('ageLbl').textContent = BANDS[state.age]; setNote(); render(); }
 

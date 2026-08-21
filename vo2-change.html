@@ -1,0 +1,297 @@
+<!doctype html>
+<!-- © 2026 DexaFit Scottsdale. All rights reserved. Licensed for use on DexaFit Scottsdale properties only. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- © 2026 DexaFit Scottsdale -->
+<meta name="copyright" content="© 2026 DexaFit Scottsdale">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Why your VO₂ changed — DexaFit Scottsdale Education Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/chrome.css?v=1">
+<style>
+  .mrow{display:flex;flex-direction:column;gap:6px;}
+  .mrow .mlbl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);}
+  .mpair{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .vinput{display:flex;align-items:center;gap:6px;background:var(--surface-2);border-radius:10px;padding:5px 8px;}
+  .vinput label{font-size:11px;font-weight:800;color:var(--ink-soft);}
+  .vinput input{width:64px;border:0;background:#fff;border-radius:7px;padding:6px 8px;font-family:"Inter";font-weight:700;font-size:14px;color:var(--ink);text-align:center;}
+  .vinput small{font-size:11px;color:#9aa7b2;}
+  .optnote{font-size:11px;color:#9aa7b2;line-height:1.4;}
+  .chip{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--surface-3);background:#fff;border-radius:999px;padding:9px 14px;font-family:"Inter";font-weight:700;font-size:12.5px;color:var(--ink-soft);cursor:pointer;}
+  .chip[aria-pressed="true"]{border-color:var(--brand);color:var(--brand-deep);background:#F2FAFE;}
+  .chip .dot{width:9px;height:9px;border-radius:50%;background:var(--surface-3);}
+  .chip[aria-pressed="true"] .dot{background:var(--brand);}
+</style>
+<script src="/assets/chrome.js?v=1"></script>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"></div>
+    <div class="spacer"></div>
+  </div>
+
+  <div class="chart">
+    <div class="chead">
+      <div class="ctitle">Why your VO₂ changed</div>
+      <div class="ccontext">Real fitness gains vs body-composition change</div>
+    </div>
+
+    <div class="stage">
+      <div class="plot" id="plot"></div>
+
+      <div class="controls">
+        <div class="mrow">
+          <span class="mlbl">VO₂ max (mL/kg/min)</span>
+          <div class="mpair">
+            <div class="vinput"><label>Prev</label><input id="v0" type="number" inputmode="decimal" value="50"></div>
+            <div class="vinput"><label>Now</label><input id="v1" type="number" inputmode="decimal" value="54"></div>
+          </div>
+        </div>
+
+        <div class="mrow">
+          <span class="mlbl">Lean Mass VO₂ (mL/lm kg/min)</span>
+          <div class="mpair">
+            <div class="vinput"><label>Prev</label><input id="l0" type="number" inputmode="decimal" value="68"></div>
+            <div class="vinput"><label>Now</label><input id="l1" type="number" inputmode="decimal" value="72"></div>
+          </div>
+        </div>
+
+        <div class="mrow">
+          <span class="mlbl">Leg Lean VO₂ — optional</span>
+          <div class="mpair">
+            <div class="vinput"><label>Prev</label><input id="g0" type="number" inputmode="decimal" placeholder="—"></div>
+            <div class="vinput"><label>Now</label><input id="g1" type="number" inputmode="decimal" placeholder="—"></div>
+          </div>
+          <span class="optnote">A second opinion using the legs — the muscles actually doing the work in the test.</span>
+        </div>
+
+        <button class="chip" id="dexaChip" aria-pressed="false"><span class="dot"></span>Add DEXA body comp</button>
+
+        <div class="mrow" id="dexaRow" hidden>
+          <span class="mlbl">Fat mass (lb)</span>
+          <div class="mpair">
+            <div class="vinput"><label>Prev</label><input id="f0" type="number" inputmode="decimal" placeholder="—"></div>
+            <div class="vinput"><label>Now</label><input id="f1" type="number" inputmode="decimal" placeholder="—"></div>
+          </div>
+          <span class="mlbl" style="margin-top:6px">Lean mass (lb)</span>
+          <div class="mpair">
+            <div class="vinput"><label>Prev</label><input id="m0" type="number" inputmode="decimal" placeholder="—"></div>
+            <div class="vinput"><label>Now</label><input id="m1" type="number" inputmode="decimal" placeholder="—"></div>
+          </div>
+        </div>
+
+        <span class="ctl-note" id="note"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.HELP_TITLE = 'Why your VO₂ changed';
+window.HELP_BODY =
+  `<p>Your VO₂ max is reported <strong>per kilogram of body weight</strong>. That means it can move for two very different reasons: your aerobic engine actually got better, or your body weight changed underneath it. This chart separates the two.</p>
+   <p>It rests on a simple identity. Your relative VO₂ equals your <strong>Lean Mass VO₂</strong> multiplied by your <strong>lean fraction</strong> (how much of your body is lean tissue):</p>
+   <p style="text-align:center"><strong>VO₂ ÷ weight = (VO₂ ÷ lean) × (lean ÷ weight)</strong></p>
+   <p>The first term is the number already on your report — oxygen used per unit of lean tissue, which is the engine's quality. The second is body composition. So any change in your headline VO₂ splits cleanly into a <strong>fitness</strong> piece and a <strong>body-composition</strong> piece.</p>
+   <h3>What each label means</h3>
+   <ul>
+     <li><strong>Fitness</strong> — your Lean Mass VO₂ rose: the same muscle is moving more oxygen. Heart, lungs and muscle mitochondria genuinely improved.</li>
+     <li><strong>Body composition</strong> — your lean fraction rose: you carried less fat per unit of lean, so the same engine scores higher per kilogram.</li>
+   </ul>
+   <p>Both are real progress — but only the first means the engine itself got stronger, and that's the one that keeps paying off.</p>
+   <h3>Reading it honestly</h3>
+   <ul>
+     <li>If the two pieces pull in <strong>opposite</strong> directions, the chart shows them as opposing arrows instead of a percentage split — a share of a small number would be misleading.</li>
+     <li>VO₂ test-retest varies by roughly <strong>±3–5%</strong>, and reported values are often rounded to whole numbers. Small changes should be read as noise until a trend appears.</li>
+     <li>The <strong>Leg Lean VO₂</strong> lens repeats the split using leg lean mass. On a bike or treadmill test the legs are the engine, so when both lenses agree the fitness story is solid.</li>
+   </ul>`;
+
+(function(){
+  const $ = id => document.getElementById(id);
+  const num = id => { const v = parseFloat($(id).value); return (isFinite(v) && v > 0) ? v : null; };
+
+  const W=1040, H=600, m={l:92, r:44, t:64, b:170};
+  const iw = W-m.l-m.r, ih = H-m.t-m.b;
+  const F = n => (Math.round(n*10)/10).toFixed(1);
+  const sgn = n => (n>=0?'+':'−') + F(Math.abs(n));
+
+  function calc(){
+    const v0=num('v0'), v1=num('v1'), l0=num('l0'), l1=num('l1');
+    if(v0===null||v1===null||l0===null||l1===null) return {ok:false};
+    const total = Math.log(v1/v0), fit = Math.log(l1/l0), bc = total - fit;
+    const dV = v1-v0, pct = (v1/v0-1)*100;
+    const flat = Math.abs(total) < 1e-6;
+    const shareFit = flat ? null : fit/total;
+    const fitU = flat ? 0 : shareFit*dV, bcU = dV - fitU;
+    const opposed = !flat && (shareFit < 0 || shareFit > 1);
+    const g0=num('g0'), g1=num('g1');
+    const legShare = (!flat && g0!==null && g1!==null) ? Math.log(g1/g0)/total : null;
+    return {ok:true, v0,v1,l0,l1, total,fit,bc, dV,pct, flat, shareFit, fitU,bcU, opposed,
+            lf0:v0/l0, lf1:v1/l1, legShare, noisy:Math.abs(pct)<5 && !flat};
+  }
+
+  function bodyCompLine(){
+    const f0=num('f0'), f1=num('f1'), m0=num('m0'), m1=num('m1');
+    if($('dexaRow').hidden) return '';
+    const bits=[];
+    if(f0!==null&&f1!==null){ const d=f1-f0; bits.push(`${d<=0?'dropped':'gained'} <strong>${F(Math.abs(d))} lb of fat</strong>`); }
+    if(m0!==null&&m1!==null){ const d=m1-m0; bits.push(`${d>=0?'gained':'lost'} <strong>${F(Math.abs(d))} lb of lean</strong>`); }
+    return bits.length ? ` Over the same period you ${bits.join(' and ')} — that's the body-composition half in physical terms.` : '';
+  }
+
+  function render(){
+    const d = calc();
+    let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Decomposition of VO2 max change into fitness and body composition">`;
+
+    if(!d.ok){
+      s += `<text x="${W/2}" y="${H/2-10}" text-anchor="middle" font-family="Archivo" font-weight="800" font-size="26" fill="#9aa7b2">Enter the previous and current values</text>
+            <text x="${W/2}" y="${H/2+24}" text-anchor="middle" font-family="Inter" font-size="16" fill="#9aa7b2">VO₂ max and Lean Mass VO₂, from the client's two reports.</text></svg>`;
+      $('plot').innerHTML = s; setNote(d); return;
+    }
+
+    // zoomed y-axis so small changes stay legible
+    const lo=Math.min(d.v0,d.v1), hi=Math.max(d.v0,d.v1), span=hi-lo;
+    const pad = Math.max(span*1.25, hi*0.05, 1.2);
+    const yMin = lo - pad, yMax = hi + pad*0.75;
+    const Y = v => m.t + (yMax - v)/(yMax - yMin)*ih;
+    const baseY = m.t + ih;
+
+    // gridlines
+    for(let i=0;i<=4;i++){
+      const val = yMin + (yMax-yMin)*i/4, y = Y(val);
+      s += `<line x1="${m.l}" y1="${y}" x2="${W-m.r}" y2="${y}" stroke="#EEF3F7" stroke-width="1"/>
+            <text x="${m.l-12}" y="${y+5}" text-anchor="end" font-family="Inter" font-weight="600" font-size="13" fill="#9aa7b2">${F(val)}</text>`;
+    }
+    s += `<text x="${m.l-12}" y="${m.t-26}" text-anchor="end" font-family="Inter" font-weight="700" font-size="12" fill="#9aa7b2">mL/kg/min</text>`;
+
+    const cols = [
+      {lab:'Previous',   sub:'VO₂ max'},
+      {lab:'Fitness',    sub:'engine quality'},
+      {lab:'Body comp',  sub:'lean fraction'},
+      {lab:'Now',        sub:'VO₂ max'}
+    ];
+    const cx = i => m.l + iw*(i+0.5)/4;
+    const bw = 118;
+
+    const mid = d.v0 + d.fitU;   // level after the fitness step
+    const BLUE='#0E9BD6', DEEP='#0A6F9E', AMB='#E8862E', GREY='#C6D2DC';
+
+    // solid before/after columns (axis is zoomed, so mark the break)
+    [[0,d.v0],[3,d.v1]].forEach(([i,v])=>{
+      const y=Y(v);
+      s += `<rect x="${cx(i)-bw/2}" y="${y}" width="${bw}" height="${baseY-y}" rx="4" fill="${i===0?'#B9C7D2':DEEP}"/>
+            <text x="${cx(i)}" y="${y-14}" text-anchor="middle" font-family="Archivo" font-weight="900" font-size="30" fill="${i===0?'#5D6E7C':DEEP}">${F(v)}</text>`;
+      // axis-break zigzag
+      let zz=`M ${cx(i)-bw/2} ${baseY-9}`;
+      for(let k=0;k<6;k++) zz += ` l ${bw/12} -6 l ${bw/12} 6`;
+      s += `<path d="${zz}" fill="none" stroke="#fff" stroke-width="3"/>`;
+    });
+
+    // floating step bars
+    function step(i, from, to, color, label){
+      const yTop=Y(Math.max(from,to)), yBot=Y(Math.min(from,to)), h=Math.max(yBot-yTop,3);
+      s += `<rect x="${cx(i)-bw/2}" y="${yTop}" width="${bw}" height="${h}" rx="4" fill="${color}" opacity=".92"/>`;
+      const amt = to-from;
+      s += `<text x="${cx(i)}" y="${yTop-14}" text-anchor="middle" font-family="Archivo" font-weight="900" font-size="24" fill="${color}">${sgn(amt)}</text>`;
+      if(label) s += `<text x="${cx(i)}" y="${yBot+22}" text-anchor="middle" font-family="Inter" font-weight="700" font-size="13" fill="${color}">${label}</text>`;
+    }
+    step(1, d.v0, mid, BLUE, null);
+    step(2, mid, d.v1, AMB, null);
+
+    // connectors
+    const conn=(x1,y,x2)=>`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#C6D2DC" stroke-width="2" stroke-dasharray="4 4"/>`;
+    s += conn(cx(0)+bw/2, Y(d.v0), cx(1)-bw/2);
+    s += conn(cx(1)+bw/2, Y(mid),  cx(2)-bw/2);
+    s += conn(cx(2)+bw/2, Y(d.v1), cx(3)-bw/2);
+
+    // column labels
+    cols.forEach((c,i)=>{
+      s += `<text x="${cx(i)}" y="${baseY+26}" text-anchor="middle" font-family="Archivo" font-weight="800" font-size="16" fill="#3A4753">${c.lab}</text>
+            <text x="${cx(i)}" y="${baseY+46}" text-anchor="middle" font-family="Inter" font-weight="600" font-size="12.5" fill="#9aa7b2">${c.sub}</text>`;
+    });
+
+    // headline
+    const dirWord = d.dV>0 ? 'up' : (d.dV<0 ? 'down' : 'unchanged');
+    s += `<text x="${m.l}" y="${m.t-30}" font-family="Archivo" font-weight="900" font-size="22" fill="#10151B">VO₂ max ${dirWord} ${sgn(d.dV)} mL/kg/min <tspan fill="#9aa7b2">(${d.pct>=0?'+':'−'}${F(Math.abs(d.pct))}%)</tspan></text>`;
+
+    // ---- share bar ----
+    const sy = H-92, sh = 34, sx0 = m.l, sw = iw;
+    if(d.flat){
+      s += `<rect x="${sx0}" y="${sy}" width="${sw}" height="${sh}" rx="8" fill="#EEF3F7"/>
+            <text x="${W/2}" y="${sy+23}" text-anchor="middle" font-family="Inter" font-weight="700" font-size="14.5" fill="#5D6E7C">VO₂ max held steady — but look at the two steps above: they may be offsetting each other.</text>`;
+    } else if(d.opposed){
+      const fitPos = d.fitU>0;
+      s += `<text x="${sx0}" y="${sy-8}" font-family="Inter" font-weight="700" font-size="12.5" fill="#9aa7b2">These pulled in opposite directions, so a percentage split would mislead:</text>`;
+      const half=sw/2-8;
+      s += `<rect x="${sx0}" y="${sy}" width="${half}" height="${sh}" rx="8" fill="${fitPos?BLUE:'#C6D2DC'}"/>
+            <text x="${sx0+half/2}" y="${sy+23}" text-anchor="middle" font-family="Inter" font-weight="800" font-size="14" fill="${fitPos?'#fff':'#5D6E7C'}">Fitness ${sgn(d.fitU)}</text>
+            <rect x="${sx0+half+16}" y="${sy}" width="${half}" height="${sh}" rx="8" fill="${!fitPos?AMB:'#C6D2DC'}"/>
+            <text x="${sx0+half+16+half/2}" y="${sy+23}" text-anchor="middle" font-family="Inter" font-weight="800" font-size="14" fill="${!fitPos?'#fff':'#5D6E7C'}">Body comp ${sgn(d.bcU)}</text>`;
+    } else {
+      const pf = Math.round(d.shareFit*100), pb = 100-pf;
+      const wf = sw*pf/100;
+      s += `<rect x="${sx0}" y="${sy}" width="${sw}" height="${sh}" rx="8" fill="#EEF3F7"/>
+            <clipPath id="cbar"><rect x="${sx0}" y="${sy}" width="${sw}" height="${sh}" rx="8"/></clipPath>
+            <g clip-path="url(#cbar)">
+              <rect x="${sx0}" y="${sy}" width="${wf}" height="${sh}" fill="${BLUE}"/>
+              <rect x="${sx0+wf}" y="${sy}" width="${sw-wf}" height="${sh}" fill="${AMB}"/>
+            </g>`;
+      if(pf>=14) s += `<text x="${sx0+wf/2}" y="${sy+23}" text-anchor="middle" font-family="Archivo" font-weight="900" font-size="16" fill="#fff">${pf}% fitness</text>`;
+      if(pb>=14) s += `<text x="${sx0+wf+(sw-wf)/2}" y="${sy+23}" text-anchor="middle" font-family="Archivo" font-weight="900" font-size="16" fill="#fff">${pb}% body comp</text>`;
+      s += `<text x="${sx0}" y="${sy-8}" font-family="Inter" font-weight="700" font-size="12.5" fill="#9aa7b2">Share of the change</text>`;
+    }
+
+    // leg-lean second opinion
+    if(d.legShare!==null && !d.flat){
+      const lp = Math.round(d.legShare*100);
+      s += `<text x="${W-m.r}" y="${sy-8}" text-anchor="end" font-family="Inter" font-weight="700" font-size="12.5" fill="#5D6E7C">Leg-lean lens: ${lp}% fitness</text>`;
+    }
+    if(d.noisy){
+      s += `<text x="${W/2}" y="${H-34}" text-anchor="middle" font-family="Inter" font-weight="600" font-size="12.5" fill="#C0392B">Change is within typical test-retest variation (±3–5%) — read it as a trend, not a verdict.</text>`;
+    }
+
+    s += `</svg>`;
+    $('plot').innerHTML = s;
+    setNote(d);
+  }
+
+  function setNote(d){
+    if(!d.ok){ $('note').innerHTML = `Enter the client's <strong>VO₂ max</strong> and <strong>Lean Mass VO₂</strong> from their previous and current reports. Because relative VO₂ equals Lean Mass VO₂ times lean fraction, those four numbers are enough to split the change into a genuine fitness gain and a body-composition effect — no extra measurements required.`; return; }
+    let t='';
+    if(d.flat){
+      t = `Their VO₂ max is essentially unchanged, but that doesn't mean nothing happened: the engine step is <strong>${sgn(d.fitU)}</strong> and the body-composition step is <strong>${sgn(d.bcU)}</strong>. When those offset, real training progress can hide behind a flat headline number.`;
+    } else if(d.opposed){
+      const helped = d.fitU>0 ? 'fitness' : 'body composition';
+      const hurt   = d.fitU>0 ? 'body composition' : 'fitness';
+      t = `VO₂ max moved ${sgn(d.dV)} mL/kg/min, but the two drivers pulled against each other — ${helped} pushed it one way (<strong>${sgn(d.fitU>0?d.fitU:d.bcU)}</strong>) while ${hurt} pulled the other (<strong>${sgn(d.fitU>0?d.bcU:d.fitU)}</strong>). A percentage split isn't meaningful here; the useful read is that one lever is working and the other is masking it.`;
+    } else {
+      const pf=Math.round(d.shareFit*100);
+      t = `Their VO₂ max went from <strong>${F(d.v0)}</strong> to <strong>${F(d.v1)}</strong>, and Lean Mass VO₂ from <strong>${F(d.l0)}</strong> to <strong>${F(d.l1)}</strong>. That means about <strong>${pf}% of the change is real fitness</strong> — the same lean tissue moving more oxygen — and <strong>${100-pf}% comes from body composition</strong>, as lean fraction shifted from ${(d.lf0*100).toFixed(1)}% to ${(d.lf1*100).toFixed(1)}%.`;
+      t += bodyCompLine();
+      if(d.legShare!==null){
+        const lp=Math.round(d.legShare*100);
+        t += ` Using leg lean mass instead — the muscles actually working in the test — the fitness share reads <strong>${lp}%</strong>${Math.abs(lp-pf)<=15?', which agrees closely and makes the fitness story solid.':'. The two lenses disagree, which usually means the change is concentrated outside the legs (or the numbers are rounded tightly).'}`;
+      }
+    }
+    if(d.noisy) t += ` One caution: a change this small sits inside normal VO₂ test-retest variation (±3–5%), so treat it as a data point in a trend rather than a verdict.`;
+    $('note').innerHTML = t;
+  }
+
+  ['v0','v1','l0','l1','g0','g1','f0','f1','m0','m1'].forEach(id => $(id).addEventListener('input', render));
+  $('dexaChip').addEventListener('click', e => {
+    const on = $('dexaChip').getAttribute('aria-pressed')==='true';
+    $('dexaChip').setAttribute('aria-pressed', String(!on));
+    $('dexaRow').hidden = on;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

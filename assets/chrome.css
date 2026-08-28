@@ -58,11 +58,17 @@ body.embed .topbar{display:none;}
 @media (min-width:820px){
   .stage{flex-direction:row;align-items:stretch;padding:0 18px 14px;gap:0;}
   .plot{flex:1 1 auto;min-width:0;}
-  .controls{flex:0 0 296px;width:296px;flex-direction:column;align-items:stretch;gap:16px;overflow-y:auto;margin-left:16px;padding:16px 2px 8px 18px;border-left:1px solid var(--surface-3);}
+  .controls{flex:0 0 296px;width:296px;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:16px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;margin-left:16px;padding:16px 2px 8px 18px;border-left:1px solid var(--surface-3);}
   .controls > *{width:100%;}
   .controls > div{flex-direction:column;align-items:stretch;gap:8px;min-width:0 !important;}
   .controls .df-stepper{flex:0 0 auto;width:100%;}
   .controls .ctl-note{max-width:none;font-size:12px;}
+}
+
+
+/* ---- KIN: tall control stacks on narrow screens scroll instead of clipping ---- */
+@media (max-width:819.98px){
+  .controls{max-height:44dvh;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;}
 }
 
 /* ---- Phase 3 (KIN-435): supporting-text slide-over drawer ---- */

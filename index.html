@@ -313,6 +313,12 @@ const T = {
     <rect x="204" y="48" width="26" height="102" rx="3" fill="#5E94B4"/>
     <rect x="240" y="52" width="26" height="98" rx="3" fill="#5E94B4"/>
   </svg>`,
+  'optimal-score':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
+    <path d="M60,130 A95,95 0 1 1 240,130" fill="none" stroke="#E4EBF1" stroke-width="16" stroke-linecap="round"/>
+    <path d="M60,130 A95,95 0 0 1 208,52" fill="none" stroke="#1F9D55" stroke-width="16" stroke-linecap="round"/>
+    <text x="150" y="112" text-anchor="middle" font-family="Archivo,system-ui" font-weight="900" font-size="52" fill="#10151B">86</text>
+    <circle cx="258" cy="44" r="4" fill="#0A6F9E"/><circle cx="270" cy="60" r="3" fill="#C2CDD6"/>
+  </svg>`,
   'soon':`<svg viewBox="0 0 300 158" preserveAspectRatio="xMidYMid slice">
     <line x1="20" y1="120" x2="280" y2="120" stroke="#CDD8E0" stroke-width="2"/>
     <path d="M30,108 C120,96 190,60 270,44" fill="none" stroke="#C2CDD6" stroke-width="6" stroke-linecap="round" stroke-dasharray="3 10"/>
@@ -375,6 +381,9 @@ const LIVE = [
   {id:'protein-diversity', file:'protein-diversity.html', cat:'Nutrition', sa:false,
    title:'Protein diversity',
    blurb:'A protein is only as usable as its weakest amino acid. See why grains and legumes leave gaps — and how pairing them fills the plate.'},
+  {id:'optimal-score', file:'optimal-score.html', cat:'Longevity', sa:true,
+   title:'DexaFit Optimal Score',
+   blurb:'One evidence-weighted 0–100 score across 26 Tier 1 and Tier 2 markers — how close you are to optimal, and the fastest ways to raise it.'},
   {id:'medicine-3', file:'medicine-3.html', cat:'Longevity', sa:false,
    title:'Medicine 3.0 — healthspan',
    blurb:'Healthspan vs. lifespan: medicine alone just stretches the tail, but investing in reserve squares the curve and shrinks the years in decline.'},
@@ -388,9 +397,7 @@ const LIVE = [
    title:'Standard deviations & T-scores',
    blurb:'The bell curve behind every percentile — with rarity framing and a bone-density T-score mode.'},
 ];
-const SOON = [
-  {id:'soon', title:'Biological age — capstone', blurb:'How old your body really measures, tying the whole panel into one number.'},
-];
+const SOON = [];
 
 /* ===================== state ===================== */
 const state = { sex:'male', age:50, chart:null };

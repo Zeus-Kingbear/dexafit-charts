@@ -59,7 +59,7 @@ body.embed .topbar{display:none;}
   .stage{flex-direction:row;align-items:stretch;padding:0 18px 14px;gap:0;position:relative;}
   .plot{flex:1 1 auto;min-width:0;margin-right:312px;}
   .controls{position:absolute;top:0;right:18px;bottom:14px;width:296px;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:16px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:16px 2px 8px 18px;border-left:1px solid var(--surface-3);}
-  .controls > *{width:100%;}
+  .controls > *{width:100%;flex:0 0 auto;}
   .controls > div{flex-direction:column;align-items:stretch;gap:8px;min-width:0 !important;}
   .controls .df-stepper{flex:0 0 auto;width:100%;}
   .controls .ctl-note{max-width:none;font-size:12px;}

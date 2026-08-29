@@ -57,13 +57,29 @@
   .home h1{font-family:"Archivo";font-weight:900;font-size:clamp(28px,3.6vw,46px);
     letter-spacing:-.025em;margin:4px 0 8px;max-width:18ch;line-height:1.04;}
   .home .sub{color:var(--ink-soft);font-size:16px;max-width:64ch;margin:0 0 30px;line-height:1.5;}
-  .seclbl{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
-    margin:34px 0 14px;}
+  .seclbl{font-family:"Archivo";font-size:21px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);
+    margin:40px 0 16px;padding-left:14px;border-left:6px solid var(--brand);line-height:1.1;}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;}
   .grid-feat{grid-template-columns:minmax(300px,460px);}
-  .guides-cta{display:inline-flex;align-items:center;gap:8px;margin:2px 0 18px;padding:12px 18px;border-radius:14px;
-    background:var(--ink);color:#fff;font-weight:800;text-decoration:none;font-size:15px;}
-  .guides-cta:active{transform:scale(.98);}
+  .filters{display:flex;flex-wrap:wrap;gap:10px;margin:-4px 0 18px;}
+  .fchip{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;border:2px solid var(--surface-3);
+    background:var(--surface);font-weight:700;font-size:14px;color:var(--ink-soft);cursor:pointer;user-select:none;}
+  .fchip input{position:absolute;opacity:0;pointer-events:none;}
+  .fchip .fdot{width:12px;height:12px;border-radius:4px;background:var(--surface-3);}
+  .fchip.on{border-color:var(--ink);color:var(--ink);}
+  .fchip.on .fdot{background:var(--good);}
+  .featrow{display:flex;gap:20px;flex-wrap:wrap;align-items:stretch;}
+  .featrow .grid-feat{flex:0 1 460px;margin:0;}
+  .tiles{display:flex;flex-direction:column;gap:20px;flex:1 0 230px;max-width:300px;}
+  .tile{flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:14px;padding:22px;border-radius:20px;
+    text-decoration:none;color:#fff;min-height:148px;}
+  .tile-guides{background:var(--ink);}
+  .tile-book{background:var(--brand);}
+  .tile:active{transform:scale(.985);}
+  .tglyph{font-family:"Archivo";font-weight:900;font-size:30px;line-height:1;}
+  .tbig{display:block;font-family:"Archivo";font-weight:900;font-size:22px;line-height:1.12;}
+  .tsub{display:block;margin-top:7px;font-size:13px;font-weight:600;opacity:.82;}
+  @media (max-width:820px){ .tiles{flex-direction:row;max-width:none;} .tile{min-height:120px;} }
   .card{text-align:left;border:1px solid var(--surface-3);background:var(--surface);border-radius:18px;padding:0;
     overflow:hidden;cursor:pointer;font:inherit;color:inherit;display:flex;flex-direction:column;
     transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;}
@@ -123,14 +139,27 @@
   <div class="home" id="home">
     <h1>Explain it on the screen, not the whiteboard.</h1>
     <p class="sub">Interactive charts for client and staff consultations. Set sex and age once — it carries into every chart. Tap a chart to open the full interactive version on the screen.</p>
-    <a class="guides-cta" href="https://www.scottsdale.dexafit.com/guides" target="_blank" rel="noopener">↗ The Honest Guides — read the evidence behind every chart</a>
+
     <div class="seclbl">Start here</div>
-    <div class="grid grid-feat" id="gridFeat"></div>
+    <div class="featrow">
+      <div class="grid grid-feat" id="gridFeat"></div>
+      <div class="tiles">
+        <a class="tile tile-guides" href="https://www.scottsdale.dexafit.com/guides" target="_blank" rel="noopener">
+          <span class="tglyph">↗</span>
+          <span><span class="tbig">The Honest<br>Guides</span><span class="tsub">The evidence behind every chart</span></span>
+        </a>
+        <a class="tile tile-book" href="https://www.scottsdale.dexafit.com/appointments" target="_blank" rel="noopener">
+          <span class="tglyph">→</span>
+          <span><span class="tbig">Book an<br>appointment</span><span class="tsub">Scan, test, retest</span></span>
+        </a>
+      </div>
+    </div>
     <div class="seclbl">Deep dives</div>
+    <div class="filters" id="filters"></div>
     <div class="grid" id="gridLive"></div>
     <div class="seclbl" id="soonLbl">In the works</div>
     <div class="grid" id="gridSoon"></div>
-    <div class="buildstamp" id="buildstamp">Updated Aug 28, 2026 · build 17</div>
+    <div class="buildstamp" id="buildstamp">Updated Aug 28, 2026 · build 18</div>
   </div>
 
   <div class="viewer" id="viewer" hidden>
@@ -336,71 +365,71 @@ const T = {
 
 /* ===================== catalog ===================== */
 const LIVE = [
-  {id:'muscle-decline', file:'muscle-decline.html', cat:'Muscle', sa:true, amin:30, amax:90,
+  {id:'muscle-decline', cats:['muscle'], file:'muscle-decline.html', cat:'Muscle', sa:true, amin:30, amax:90,
    title:'Muscle decline with age',
    blurb:'Mass, strength and power across a lifetime — and the age power crosses the functional floor. Trained vs. untrained.'},
-  {id:'vo2', file:'vo2-percentile.html', cat:'Cardiorespiratory', sa:true, amin:20, amax:80,
+  {id:'vo2', cats:['cardio'], file:'vo2-percentile.html', cat:'Cardiorespiratory', sa:true, amin:20, amax:80,
    title:'VO₂ max percentiles',
    blurb:'Where a cardio number ranks by age and sex, and how simply holding it climbs you up the field over time.'},
-  {id:'vo2-change', file:'vo2-change.html', cat:'Cardiorespiratory', sa:false,
+  {id:'vo2-change', cats:['cardio'], file:'vo2-change.html', cat:'Cardiorespiratory', sa:false,
    title:'Why your VO₂ changed',
    blurb:'Your VO₂ can move because the engine improved or because the scale did — this splits a change into real fitness gains versus body composition.'},
-  {id:'vt-thresholds', file:'vt-thresholds.html', cat:'Cardiorespiratory', sa:false,
+  {id:'vt-thresholds', cats:['cardio'], file:'vt-thresholds.html', cat:'Cardiorespiratory', sa:false,
    title:'VT1 / VT2 — your gears',
    blurb:'The two ventilatory thresholds inside your VO₂ test set your real training zones — and training moves them, not just your ceiling.'},
-  {id:'vo2-decomposition', file:'vo2-decomposition.html', cat:'Cardiorespiratory', sa:false,
+  {id:'vo2-decomposition', cats:['cardio'], file:'vo2-decomposition.html', cat:'Cardiorespiratory', sa:false,
    title:'What moves your VO₂max',
    blurb:'VO₂max is engine ÷ body mass — so losing fat raises it without raising fitness. We divide by lean mass to tell real gains from weight changes.'},
-  {id:'energy-systems', file:'energy-systems.html', cat:'Cardiorespiratory', sa:false,
+  {id:'energy-systems', cats:['cardio'], file:'energy-systems.html', cat:'Cardiorespiratory', sa:false,
    title:'Your three energy systems',
    blurb:'Which engine powers the work as effort climbs — oxidative, glycolytic, phosphagen — and exactly where your VT1 and VT2 lines fall. The companion to the VT chart.'},
-  {id:'arterial-health', file:'arterial-health.html', cat:'Heart', sa:false,
+  {id:'arterial-health', cats:['heart'], file:'arterial-health.html', cat:'Heart', sa:false,
    title:'Healthy arteries by age',
    blurb:'Your central pressure and arterial-stiffness markers against the healthy range for your age and sex — plot a client’s four report numbers and see where they land.'},
-  {id:'arterial-sevr', file:'arterial-sevr.html', cat:'Heart', sa:false,
+  {id:'arterial-sevr', cats:['heart'], file:'arterial-sevr.html', cat:'Heart', sa:false,
    title:'Your heart’s supply & demand',
    blurb:'SEVR made visual — one heartbeat split into the blood that feeds the heart (diastole) and the work it does (systole), and why a lower resting heart rate lifts the ratio.'},
-  {id:'almi', file:'almi-percentile.html', cat:'Muscle', sa:true, amin:20, amax:80,
+  {id:'almi', cats:['muscle'], file:'almi-percentile.html', cat:'Muscle', sa:true, amin:20, amax:80,
    title:'Muscle mass — you vs. the elite',
    blurb:'Your ALMI ranked by age and sex with the sarcopenia floor — and your FFMI on a ladder against NFL positions, drug-free elites, and the natural ceiling. Both straight off your DEXA report.'},
-  {id:'bone-density', file:'bone-density.html', cat:'Bone', sa:true, amin:20, amax:90,
+  {id:'bone-density', cats:['muscle'], file:'bone-density.html', cat:'Bone', sa:true, amin:20, amax:90,
    title:'Bone density (T-score)',
    blurb:'The classic DEXA bone chart, made live — total body, spine, hip or femoral neck. Plot a T-score by age; read the category, the Z-score vs. peers, and the trajectory ahead.'},
-  {id:'body-fat', file:'body-fat.html', cat:'Body composition', sa:true, amin:20, amax:79,
+  {id:'body-fat', cats:['body'], file:'body-fat.html', cat:'Body composition', sa:true, amin:20, amax:79,
    title:'Healthy body fat %',
    blurb:'Two myths, one chart: nobody walks around at 12%, and the healthy band rises with age. DXA-accurate zones with the real population overlaid.'},
-  {id:'visceral-fat', file:'visceral-fat.html', cat:'Body composition', sa:true, amin:20, amax:79,
+  {id:'visceral-fat', cats:['body'], file:'visceral-fat.html', cat:'Body composition', sa:true, amin:20, amax:79,
    title:'Visceral fat (lbs)',
    blurb:'The fat around your organs, on a risk ladder in pounds — what the number means, where you rank, and how fast it falls when you train.'},
-  {id:'ag-ratio', file:'ag-ratio.html', cat:'Body composition', title:'Fat pattern — apple vs. pear', sub:'Android ÷ gynoid: where fat lives, with US context', sa:true},
-  {id:'cardio-pyramid', file:'cardio-pyramid.html', cat:'Cardiorespiratory', sa:false,
+  {id:'ag-ratio', cats:['body'], file:'ag-ratio.html', cat:'Body composition', title:'Fat pattern — apple vs. pear', sub:'Android ÷ gynoid: where fat lives, with US context', sa:true},
+  {id:'cardio-pyramid', cats:['cardio','training'], file:'cardio-pyramid.html', cat:'Cardiorespiratory', sa:false,
    title:'Cardio fitness pyramid',
    blurb:'Build total cardio fitness block by block: 4×4 intervals raise the VO₂max peak, Zone 2 widens the endurance base — and balance wins.'},
-  {id:'weekly-plan', file:'weekly-plan.html', cat:'Training', sa:false,
+  {id:'weekly-plan', cats:['training'], file:'weekly-plan.html', cat:'Training', sa:false,
    title:'The ideal training week',
    blurb:'How much exercise you actually need across cardio, strength, balance and mobility — and what to keep first when you only have 1, 3 or 5 hours. Rest built in.'},
-  {id:'progressive-overload', file:'progressive-overload.html', cat:'Training', sa:false,
+  {id:'progressive-overload', cats:['muscle','training'], file:'progressive-overload.html', cat:'Training', sa:false,
    title:'Progressive overload',
    blurb:'Why the same workout flattens out while adding a little each week keeps climbing — drag the weekly nudge to zero and watch them merge.'},
-  {id:'norwegian-4x4', file:'norwegian-4x4.html', cat:'Training', sa:false,
+  {id:'norwegian-4x4', cats:['cardio','training'], file:'norwegian-4x4.html', cat:'Training', sa:false,
    title:'The Norwegian 4×4',
    blurb:'Why 4 minutes isn\u2019t magic — anything from 3 to 8 drives VO₂max. Watch the watts fall rep to rep while your heart rate stays pinned near max.'},
-  {id:'protein-per-meal', file:'protein-per-meal.html', cat:'Nutrition', sa:false,
+  {id:'protein-per-meal', cats:['muscle'], file:'protein-per-meal.html', cat:'Nutrition', sa:false,
    title:'Protein per meal',
    blurb:'Two ways to set your daily target — body weight vs. lean mass — split across 3 to 6 meals so every plate lands in the muscle-building sweet spot.'},
-  {id:'protein-diversity', file:'protein-diversity.html', cat:'Nutrition', sa:false,
+  {id:'protein-diversity', cats:['muscle'], file:'protein-diversity.html', cat:'Nutrition', sa:false,
    title:'Protein diversity',
    blurb:'A protein is only as usable as its weakest amino acid. See why grains and legumes leave gaps — and how pairing them fills the plate.'},
-  {id:'medicine-3', file:'medicine-3.html', cat:'Longevity', sa:false,
+  {id:'medicine-3', cats:['longevity'], file:'medicine-3.html', cat:'Longevity', sa:false,
    title:'Medicine 3.0 — healthspan',
    blurb:'Healthspan vs. lifespan: medicine alone just stretches the tail, but investing in reserve squares the curve and shrinks the years in decline.'},
-  {id:'mobility', file:'mobility.html', cat:'Mobility', sa:false,
+  {id:'mobility', cats:['longevity'], file:'mobility.html', cat:'Mobility', sa:false,
    title:'Mobility (sit-rise test)',
    blurb:'Getting off the floor without your hands is a 30-second longevity test — score 8 carries triple the 12-year mortality of a perfect 10.'},
-  {id:'precision', file:'precision-accuracy.html', cat:'Reading results', sa:false,
+  {id:'precision', cats:['reading'], file:'precision-accuracy.html', cat:'Reading results', sa:false,
    title:'Precision vs. accuracy',
    blurb:'Why a DEXA scan detects a real 1–2 point change that a bathroom scale can only guess at.'},
-  {id:'stddev', file:'standard-deviations.html', cat:'Reading results', sa:false,
+  {id:'stddev', cats:['reading'], file:'standard-deviations.html', cat:'Reading results', sa:false,
    title:'Standard deviations & T-scores',
    blurb:'The bell curve behind every percentile — with rarity framing and a bone-density T-score mode.'},
 ];
@@ -426,7 +455,23 @@ function cardHTML(c, soon){
     <div class="meta"><h3>${c.title}</h3><p>${c.blurb}</p>${tag}</div></button>`;
 }
 $('gridFeat').innerHTML = FEATURED.map(c=>cardHTML(c,false)).join('');
-$('gridLive').innerHTML = LIVE.map(c=>cardHTML(c,false)).join('');
+const FILTERS=[
+  {k:'cardio',lbl:'Cardio fitness'},{k:'heart',lbl:'Heart & arteries'},{k:'body',lbl:'Body composition'},
+  {k:'muscle',lbl:'Muscle & bone'},{k:'training',lbl:'Training plans'},{k:'longevity',lbl:'Longevity & movement'},
+  {k:'reading',lbl:'Reading your results'}];
+const activeF=new Set();
+$('filters').innerHTML=FILTERS.map(f=>`<label class="fchip" data-k="${f.k}"><input type="checkbox"><span class="fdot"></span>${f.lbl}</label>`).join('');
+$('filters').addEventListener('change',e=>{
+  const lab=e.target.closest('.fchip'); if(!lab) return;
+  const k=lab.dataset.k;
+  if(e.target.checked){activeF.add(k);lab.classList.add('on');} else {activeF.delete(k);lab.classList.remove('on');}
+  renderLive();
+});
+function renderLive(){
+  const list=activeF.size? LIVE.filter(c=>(c.cats||[]).some(k=>activeF.has(k))) : LIVE;
+  $('gridLive').innerHTML=list.map(c=>cardHTML(c,false)).join('');
+}
+renderLive();
 $('gridSoon').innerHTML = SOON.map(c=>cardHTML(c,true)).join('');
 if(!SOON.length){ $('gridSoon').hidden = true; $('soonLbl').hidden = true; }
 

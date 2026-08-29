@@ -8,7 +8,7 @@
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MGC5F4HG');</script>
 <!-- End Google Tag Manager -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>DexaFit Scottsdale Education Charts</title>
+<title>See where you stand — DexaFit Scottsdale</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -61,6 +61,9 @@
     margin:40px 0 16px;padding-left:14px;border-left:6px solid var(--brand);line-height:1.1;}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;}
   .grid-feat{grid-template-columns:minmax(300px,460px);}
+  .entrybar{display:flex;align-items:center;gap:8px;width:100%;margin:20px 0 4px;padding:16px 20px;border-radius:16px;
+    border:2px dashed var(--ink-soft);background:var(--surface);font:600 15px Inter;color:var(--ink);cursor:pointer;text-align:left;}
+  .entrybar:active{transform:scale(.995);}
   .filters{display:flex;flex-wrap:wrap;gap:10px;margin:-4px 0 18px;}
   .fchip{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;border:2px solid var(--surface-3);
     background:var(--surface);font-weight:700;font-size:14px;color:var(--ink-soft);cursor:pointer;user-select:none;}
@@ -137,8 +140,8 @@
   </div>
 
   <div class="home" id="home">
-    <h1>Explain it on the screen, not the whiteboard.</h1>
-    <p class="sub">Interactive charts for client and staff consultations. Set sex and age once — it carries into every chart. Tap a chart to open the full interactive version on the screen.</p>
+    <h1>See where you stand.</h1>
+    <p class="sub">Interactive charts built on published evidence. Set your sex and age once, enter numbers straight from your DexaFit report, and see them in honest context — percentiles, targets, and your next move. Nothing you enter is stored or leaves your screen.</p>
 
     <div class="seclbl">Start here</div>
     <div class="featrow">
@@ -154,12 +157,13 @@
         </a>
       </div>
     </div>
+    <button class="entrybar" id="entryBar" type="button">✎&nbsp; <strong>Enter all your numbers once</strong>&nbsp;— they carry into every chart, and vanish when you close the tab.</button>
     <div class="seclbl">Deep dives</div>
     <div class="filters" id="filters"></div>
     <div class="grid" id="gridLive"></div>
     <div class="seclbl" id="soonLbl">In the works</div>
     <div class="grid" id="gridSoon"></div>
-    <div class="buildstamp" id="buildstamp">Updated Aug 28, 2026 · build 18</div>
+    <div class="buildstamp" id="buildstamp">Updated Aug 28, 2026 · build 20</div>
   </div>
 
   <div class="viewer" id="viewer" hidden>
@@ -455,6 +459,7 @@ function cardHTML(c, soon){
     <div class="meta"><h3>${c.title}</h3><p>${c.blurb}</p>${tag}</div></button>`;
 }
 $('gridFeat').innerHTML = FEATURED.map(c=>cardHTML(c,false)).join('');
+const UTIL=[{id:'enter-data', file:'enter-data.html', title:'Enter your numbers', sa:true, cats:[]}];
 const FILTERS=[
   {k:'cardio',lbl:'Cardio fitness'},{k:'heart',lbl:'Heart & arteries'},{k:'body',lbl:'Body composition'},
   {k:'muscle',lbl:'Muscle & bone'},{k:'training',lbl:'Training plans'},{k:'longevity',lbl:'Longevity & movement'},
@@ -466,6 +471,7 @@ $('filters').addEventListener('change',e=>{
   const k=lab.dataset.k;
   if(e.target.checked){activeF.add(k);lab.classList.add('on');} else {activeF.delete(k);lab.classList.remove('on');}
   renderLive();
+$('entryBar').addEventListener('click',()=>openChart('enter-data'));
 });
 function renderLive(){
   const list=activeF.size? LIVE.filter(c=>(c.cats||[]).some(k=>activeF.has(k))) : LIVE;
@@ -486,9 +492,10 @@ function pushSA(){
 const MEAS={};
 function pushVals(){ if(frame.contentWindow) frame.contentWindow.postMessage({type:'vals', vals:MEAS}, '*'); }
 window.addEventListener('message',e=>{ const d=e.data||{};
-  if(d.type==='val' && typeof d.id==='string'){ if(d.v===null) delete MEAS[d.id]; else MEAS[d.id]=d.v; } });
+  if(d.type==='val' && typeof d.id==='string'){ if(d.v===null) delete MEAS[d.id]; else MEAS[d.id]=d.v; }
+  if(d.type==='nav' && typeof d.id==='string'){ openChart(d.id); } });
 function openChart(id){
-  const c = FEATURED.find(x=>x.id===id) || LIVE.find(x=>x.id===id); if(!c) return;
+  const c = FEATURED.find(x=>x.id===id) || LIVE.find(x=>x.id===id) || UTIL.find(x=>x.id===id); if(!c) return;
   state.chart = c;
   window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'chart_view',chart_id:c.id,chart_title:c.title});
   // global controls visibility + age range

@@ -64,6 +64,11 @@
       document.body.appendChild(modal);
       document.getElementById('helpTitle').textContent = window.HELP_TITLE || 'About this chart';
       document.getElementById('helpBody').innerHTML   = window.HELP_BODY  || '';
+      if(window.GUIDE_LINK && window.GUIDE_LINK.u){
+        var gl=document.createElement('p');
+        gl.innerHTML='<a href="'+window.GUIDE_LINK.u+'" target="_blank" rel="noopener" style="font-weight:800;color:#0A6F9E;text-decoration:none">\u2197 Read '+window.GUIDE_LINK.t+'</a> \u2014 the evidence behind this chart.';
+        document.getElementById('helpBody').appendChild(gl);
+      }
       btn.addEventListener('click', function(){ modal.hidden=false; });
       document.getElementById('helpClose').addEventListener('click', function(){ modal.hidden=true; });
       modal.addEventListener('click', function(e){ if(e.target.id==='helpModal') modal.hidden=true; });
@@ -95,6 +100,12 @@
       drawer.querySelector('.df-panel-head span').textContent=title;
       document.body.appendChild(drawer);
       drawer.querySelector('.df-panel-body').appendChild(note);            // move the LIVE note (chart's setNote keeps updating it)
+      if(window.GUIDE_LINK && window.GUIDE_LINK.u){
+        var ga=document.createElement('a'); ga.href=window.GUIDE_LINK.u; ga.target='_blank'; ga.rel='noopener';
+        ga.style.cssText='display:block;margin-top:14px;font-weight:800;color:#0A6F9E;text-decoration:none;font-size:14px';
+        ga.innerHTML='\u2197 Read '+window.GUIDE_LINK.t;
+        drawer.querySelector('.df-panel-body').appendChild(ga);
+      }
       var openBtn=document.createElement('button'); openBtn.type='button'; openBtn.className='df-learn';
       openBtn.innerHTML='Why this matters <span aria-hidden="true">\u203a</span>';
       controls.appendChild(openBtn);

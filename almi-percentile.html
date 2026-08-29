@@ -43,7 +43,7 @@
   .axbold{font:800 16px Archivo;fill:var(--ink);}
   @media (max-width:760px){ .ctl-note{display:none;} .topbar{gap:12px;padding:12px 14px;} .agewrap{min-width:170px;} }
 </style>
-<script src="/assets/chrome.js?v=1"></script>
+<script src="/assets/chrome.js?v=2"></script>
 </head>
 <body>
 <div class="app">
@@ -95,6 +95,7 @@
 
 <script>
 
+window.GUIDE_LINK={t:'The Honest Guide to Strength & Power',u:'https://www.scottsdale.dexafit.com/s/The-Honest-Guide-to-Strength-Power-DexaFit-Scottsdale-s9a4.pdf'};
 window.HELP_TITLE="Muscle mass — you vs. the elite";
 window.HELP_BODY=`<p>Two lenses on the same DEXA report. <strong>ALMI</strong> (arms + legs ÷ height²) guards your <strong>floor</strong> — it's the sarcopenia standard, ranked against age and sex percentiles. <strong>FFMI</strong> (fat-free mass ÷ height²) measures your <strong>ceiling</strong> — how far your total muscle sits from the most muscular humans on record. Both numbers print directly on your DexaFit report.</p>
 <h3>Where the reference lines come from</h3>
@@ -114,7 +115,7 @@ window.HELP_BODY=`<p>Two lenses on the same DEXA report. <strong>ALMI</strong> (
 
 
 /* ===================== state ===================== */
-const state = { sex:'male', age:50, metric:'almi', buffer:false };
+const state = { sex:'male', age:50, metric:'almi', buffer:false, vals:{almi:null, ffmi:null} };
 
 /* ===================== data: GE-Lunar DXA percentiles (kg/m²) =====================
    Imboden, Swartz, Finch, Harber & Kaminsky, PLOS ONE 2017 (n=3,327).
@@ -175,7 +176,9 @@ function interp(arr, age){
     const t=(age-AGES[i])/(AGES[i+1]-AGES[i]); return arr[i]+t*(arr[i+1]-arr[i]); } }
 }
 const val=(p,age)=>interp(ALMI[state.sex][p],age);
-const userVal=()=>{ const v=parseFloat(document.getElementById('in_val').value); return isFinite(v)?v:null; };
+const userVal=()=>state.vals[state.metric];
+function readValInput(){ const v=parseFloat(document.getElementById('in_val').value);
+  state.vals[state.metric]=isFinite(v)?v:null; }
 const userHtM=()=>{ const v=parseFloat(document.getElementById('in_ht').value); return (isFinite(v)&&v>40&&v<90)?v*0.0254:null; };
 
 function almiPct(v,age){
@@ -324,6 +327,7 @@ function renderFFMI(host){
   // population median
   svg+=`<line x1="${m.l}" y1="${Y(med)}" x2="${m.l+iw}" y2="${Y(med)}" stroke="#0A6F9E" stroke-width="3" stroke-dasharray="1 7" stroke-linecap="round"/>`;
   svg+=`<text x="${m.l+14}" y="${Y(med)-8}" fill="#0A4A66" style="font:800 13px Inter">GENERAL POPULATION MEDIAN ${med.toFixed(1)} (Schutz 2002)</text>`;
+  svg+=`<text x="${m.l+iw-8}" y="${m.t+ih+26}" text-anchor="end" fill="#9aa7b2" style="font:600 12px Inter">FFMI barely changes with age — the age slider matters on the ALMI lens.</text>`;
 
   // NFL / elite ticks in right gutter (male)
   if(male){
@@ -348,6 +352,17 @@ function renderFFMI(host){
         <text x="88" y="-2" text-anchor="middle" fill="#fff" style="font:800 12px Inter">headroom to ceiling</text>
         <text x="88" y="13" text-anchor="middle" fill="#fff" style="font:900 13px Archivo">${(ceil-uv).toFixed(1)} kg/m²</text></g>`;
     }
+  }
+
+  if(state.buffer && male && uv===null){
+    svg+=`<rect x="${m.l+iw*0.30}" y="${Y(ceil)}" width="26" height="${Y(med)-Y(ceil)}" rx="6" fill="#1A9850" opacity=".30"/>`;
+    svg+=`<g transform="translate(${m.l+iw*0.30+36},${(Y(med)+Y(ceil))/2})">
+      <rect x="0" y="-17" width="196" height="34" rx="9" fill="#1A7F45"/>
+      <text x="98" y="-2" text-anchor="middle" fill="#fff" style="font:800 12px Inter">median headroom to ceiling</text>
+      <text x="98" y="13" text-anchor="middle" fill="#fff" style="font:900 13px Archivo">${(ceil-med).toFixed(1)} kg/m²</text></g>`;
+  }
+  if(state.buffer && !male){
+    svg+=`<text x="${m.l+14}" y="${m.t+ih-10}" fill="#9aa7b2" style="font:600 12px Inter">Headroom needs the natural ceiling — male-only data.</text>`;
   }
 
   // callout
@@ -396,6 +411,7 @@ document.getElementById('metricSeg').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   state.metric=b.dataset.metric;
   [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+  const iv=document.getElementById('in_val'); iv.value=state.vals[state.metric]??'';
   setMeta(); render();
 });
 document.getElementById('sexSeg').addEventListener('click',e=>{
@@ -406,7 +422,7 @@ document.getElementById('sexSeg').addEventListener('click',e=>{
 });
 const ageR=document.getElementById('ageRange'), ageV=document.getElementById('ageVal');
 ageR.addEventListener('input',()=>{ state.age=+ageR.value; ageV.textContent=ageR.value; setMeta(); render(); });
-document.getElementById('in_val').addEventListener('input',render);
+document.getElementById('in_val').addEventListener('input',()=>{ readValInput(); busReportVal(); render(); });
 document.getElementById('in_ht').addEventListener('input',render);
 document.getElementById('controls').addEventListener('click',e=>{
   const chip=e.target.closest('.chip'); if(!chip) return;
@@ -415,6 +431,21 @@ document.getElementById('controls').addEventListener('click',e=>{
 window.addEventListener('resize', render);
 
 setMeta(); render();
+
+/* ---- value bus (gallery session sync) ---- */
+let busMute=false;
+function busReportVal(){ if(busMute||window.parent===window) return;
+  window.parent.postMessage({type:'val', id:state.metric, v:state.vals[state.metric]}, '*'); }
+document.getElementById('in_ht').addEventListener('input',()=>{ if(busMute||window.parent===window) return;
+  const v=parseFloat(document.getElementById('in_ht').value);
+  window.parent.postMessage({type:'val', id:'height', v:isFinite(v)?v:null}, '*'); });
+window.addEventListener('message',e=>{ const d=e.data||{};
+  if(d.type==='vals'&&d.vals){ busMute=true;
+    if(d.vals.almi!==undefined) state.vals.almi=d.vals.almi;
+    if(d.vals.ffmi!==undefined) state.vals.ffmi=d.vals.ffmi;
+    if(d.vals.height!==undefined && d.vals.height!==null) document.getElementById('in_ht').value=d.vals.height;
+    const iv=document.getElementById('in_val'); iv.value=state.vals[state.metric]??'';
+    busMute=false; render(); } });
 
 /* ---- gallery embed ---- */
 (function(){

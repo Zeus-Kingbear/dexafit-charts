@@ -6,7 +6,7 @@
 <meta name="copyright" content="© 2026 DexaFit Scottsdale">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Muscle Mass Percentiles — DexaFit Scottsdale Education Charts</title>
+<title>Muscle Mass — You vs. the Elite — DexaFit Scottsdale Education Charts</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
     --brand:#0E9BD6; --brand-deep:#0A6F9E; --good:#1A9850; --risk:#D64530;
     font-synthesis:none;
   }
-  .seg{display:inline-flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;}
+  .seg{display:inline-flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:4px;flex-wrap:wrap;}
   .seg button{border:0;background:transparent;font:inherit;font-weight:700;padding:12px 16px;border-radius:10px;
     color:var(--ink-soft);cursor:pointer;min-height:48px;}
   .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;}
@@ -34,6 +34,11 @@
   .chip .dot{width:14px;height:14px;border-radius:4px;background:var(--surface-3);}
   .chip[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);}
   .chip[aria-pressed="true"] .dot{background:var(--good);}
+  .mrow{display:flex;flex-direction:column;gap:5px;}
+  .mlbl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);}
+  .vinput{display:flex;align-items:center;gap:6px;background:var(--surface-2);border-radius:10px;padding:5px 8px;}
+  .vinput input{width:84px;border:0;background:#fff;border-radius:7px;padding:8px 8px;font-family:"Inter";font-weight:700;font-size:15px;color:var(--ink);text-align:center;}
+  .vinput small{font-size:11px;color:#9aa7b2;}
   .ax{font:600 14px Inter;fill:var(--ink-soft);}
   .axbold{font:800 16px Archivo;fill:var(--ink);}
   @media (max-width:760px){ .ctl-note{display:none;} .topbar{gap:12px;padding:12px 14px;} .agewrap{min-width:170px;} }
@@ -45,13 +50,6 @@
   <div class="topbar">
     <div class="brand"></div>
     <div class="spacer"></div>
-    <div class="gctl">
-      <span class="lbl">Metric</span>
-      <div class="seg" id="metricSeg">
-        <button data-metric="almi" aria-pressed="true">Appendicular (ALMI)</button>
-        <button data-metric="lmi" aria-pressed="false">Total muscle (LMI)</button>
-      </div>
-    </div>
     <div class="gctl">
       <span class="lbl">Sex</span>
       <div class="seg" id="sexSeg">
@@ -74,6 +72,18 @@
     <div class="stage">
       <div class="plot" id="plot"></div>
       <div class="controls" id="controls">
+        <div class="mrow"><span class="mlbl">Lens</span>
+          <div class="seg" id="metricSeg">
+            <button data-metric="almi" aria-pressed="true">ALMI · floor</button>
+            <button data-metric="ffmi" aria-pressed="false">FFMI · ceiling</button>
+          </div>
+        </div>
+        <div class="mrow"><span class="mlbl">Your value <em id="unitLbl" style="font-style:normal;text-transform:none;letter-spacing:0;color:#9aa7b2">· ALMI kg/m²</em></span>
+          <div class="vinput"><input id="in_val" type="number" inputmode="decimal" step="0.1" placeholder="—"><small>kg/m²</small></div>
+        </div>
+        <div class="mrow" id="htRow" hidden><span class="mlbl">Height <em style="font-style:normal;text-transform:none;letter-spacing:0;color:#9aa7b2">· adjusts the ceiling</em></span>
+          <div class="vinput"><input id="in_ht" type="number" inputmode="decimal" step="0.5" placeholder="—"><small>inches</small></div>
+        </div>
         <button class="chip" data-k="buffer" aria-pressed="false"><span class="dot"></span><span id="chipLbl">Show muscle buffer</span></button>
         <span class="ctl-note" id="note"></span>
       </div>
@@ -85,7 +95,22 @@
 
 <script>
 
-window.HELP_TITLE="Your muscle-mass percentile (ALMI)";window.HELP_BODY="<p>ALMI is the lean mass in your arms and legs, scaled for height \u2014 the cleanest measure of how muscular you are. This ranks it against your age and sex, with the sarcopenia floor marked.</p><p><strong>How to use it:</strong> set your sex and age to see where a value lands and the runway above the threshold.</p>";
+window.HELP_TITLE="Muscle mass — you vs. the elite";
+window.HELP_BODY=`<p>Two lenses on the same DEXA report. <strong>ALMI</strong> (arms + legs ÷ height²) guards your <strong>floor</strong> — it's the sarcopenia standard, ranked against age and sex percentiles. <strong>FFMI</strong> (fat-free mass ÷ height²) measures your <strong>ceiling</strong> — how far your total muscle sits from the most muscular humans on record. Both numbers print directly on your DexaFit report.</p>
+<h3>Where the reference lines come from</h3>
+<ul>
+<li><strong>ALMI percentile curves:</strong> 3,327 adults on GE-Lunar DXA (Imboden 2017, PLOS ONE). Sarcopenia cutoffs: men 7.0, women 5.5 kg/m².</li>
+<li><strong>Pro soccer marker (9.2):</strong> mean ALMI of 20 professional footballers, standard DXA method (2025 pilot; small sample).</li>
+<li><strong>Natural ceiling (FFMI 25):</strong> Kouri 1995 — among 74 drug-free athletes, none exceeded a height-normalized FFMI of 25.0 (mean 21.8 ± 1.8); steroid users ran 25–32. Pre-steroid-era Mr. America winners averaged an <em>estimated</em> 25.4. The ceiling is normalized to 5'11" (1.80 m) — enter your height and the line adjusts by Kouri's own correction (6.3 per meter).</li>
+<li><strong>NFL ticks:</strong> derived from Dengel 2013 (411 NFL players, DXA) — fat-free mass ÷ height² from published position means.</li>
+<li><strong>Population medians (FFMI):</strong> men 18.9, women 15.4 (Schutz 2002, n=5,635, ages 18–98; BIA cross-validated against DXA; roughly stable with age in men).</li>
+</ul>
+<h3>Reading it honestly</h3>
+<ul>
+<li><strong>NFL means sit above the "natural ceiling." What gives?</strong> Three things, none of them a doping verdict: NFL players are a one-in-a-million genetic selection; Kouri's ceiling came from skinfold estimates while NFL values are DXA; and group <em>means</em> aren't individual maxima. The ceiling is a statistical boundary from one 1995 sample — a landmark, not a law.</li>
+<li><strong>The elite references are male datasets.</strong> Kouri's sample, the NFL, and the soccer pilot are all men. The female view shows population data and states this plainly rather than inventing a female ceiling.</li>
+<li><strong>Limbs age first.</strong> ALMI declines visibly with age while FFMI stays much flatter (Schutz) — organs and trunk hold on while arms and legs drift. That's exactly why the appendicular number is the one worth defending.</li>
+</ul>`;
 
 
 /* ===================== state ===================== */
@@ -93,7 +118,7 @@ const state = { sex:'male', age:50, metric:'almi', buffer:false };
 
 /* ===================== data: GE-Lunar DXA percentiles (kg/m²) =====================
    Imboden, Swartz, Finch, Harber & Kaminsky, PLOS ONE 2017 (n=3,327).
-   ALMI = Table 5 (appendicular: arms+legs / ht²). LMI = Table 3 (total lean / ht²).
+   ALMI = Table 5 (appendicular: arms+legs / ht²).
    p25/p75 interpolated from the published 20/30 & 70/80 columns. Decade midpoints 25..75. */
 const AGES=[25,35,45,55,65,75];
 const ALMI = {
@@ -102,26 +127,44 @@ const ALMI = {
   female:{ p10:[5.8,5.7,5.7,5.5,5.6,5.3], p25:[6.25,6.25,6.0,5.95,6.0,5.8],
            p50:[6.9,6.8,6.7,6.6,6.5,6.3], p75:[7.6,7.6,7.4,7.25,7.25,6.9], p90:[8.3,8.4,8.2,8.0,8.1,7.5] }
 };
-const LMI = {
-  male:{ p10:[16.9,16.8,16.7,16.3,16.8,16.2], p25:[18.05,17.8,17.65,17.5,17.55,16.95],
-         p50:[19.5,19.3,19.2,18.8,18.9,17.7], p75:[21.85,20.7,20.65,20.45,20.1,18.7], p90:[23.8,22.2,22.1,21.6,21.3,19.9] },
-  female:{ p10:[13.4,13.3,13.2,13.2,13.3,13.2], p25:[14.25,14.35,14.1,14.15,14.15,14.0],
-           p50:[15.3,15.4,15.3,15.5,15.3,14.9], p75:[16.6,17.15,16.9,16.95,16.7,16.25], p90:[18.0,18.8,19.0,18.7,18.2,17.7] }
-};
+
+
+/* ===================== elite references (verified sources) =====================
+   KOURI 1995 (Clin J Sport Med): 74 drug-free athletes, normalized FFMI mean 21.8 ± 1.8,
+     none >25.0; steroid users 25–32; Mr. America 1939–59 estimated mean 25.4.
+     Normalization: FFMI + 6.3 × (1.80 − height m).
+   DENGEL 2013 (J Strength Cond Res, 411 NFL players, DXA): FFMI derived as
+     (body mass − fat mass) / height² from published position means:
+     OL 27.3 · DL 27.3 · RB 27.0 · LB 26.4 · TE 25.7 · WR 24.0 · DB 24.2 · QB 23.7 · P/K 22.8.
+   SCHUTZ 2002 (Int J Obes, n=5,635): median FFMI men 18.9 / women 15.4 (18–34 y; ~stable with age in men).
+   SOCCER: mean ALMI 9.2 kg/m² — 20 professional footballers, standard DXA method (2025 pilot). */
+const FFMI_REFS_M = [
+  {v:27.3, lbl:'NFL LINEMEN'},
+  {v:27.0, lbl:'NFL RB'},
+  {v:26.4, lbl:'NFL LB'},
+  {v:25.7, lbl:'NFL TE'},
+  {v:25.4, lbl:"MR. AMERICA '39–59 (est.)"},
+  {v:24.1, lbl:'NFL WR / DB'},
+  {v:23.7, lbl:'NFL QB'},
+  {v:22.8, lbl:'NFL P/K'}
+];
+const NATURAL={mean:21.8, sd:1.8, ceil:25.0, users:'25–32'};
+const MEDIAN_FFMI={male:18.9, female:15.4};
+const SOCCER_ALMI=9.2;
+const kouriCeil = hM => 25.0 - 6.3*(1.80 - hM);
 
 const METRICS = {
   almi:{ data:ALMI, unit:'ALMI · arms+legs (kg/m²)',
     yr:{male:[6.5,13], female:[4.5,9]},
-    ref:{kind:'floor', male:7.0, female:5.5},   // sarcopenia threshold
+    ref:{kind:'floor', male:7.0, female:5.5},
     title:'Your muscle mass vs. the danger line — by age and sex',
     chip:'Show muscle buffer',
-    note:'<strong>Appendicular</strong> lean mass (arms + legs) ÷ height² — straight off your DEXA scan. The blue band is the normal range for your age and sex; the red line is the <strong>sarcopenia threshold</strong> (clinically low muscle). Men lose appendicular muscle steadily with age while women stay flatter — which is why a baseline scan plus re-tests catch a downward drift years before it becomes a problem.' },
-  lmi:{ data:LMI, unit:'Total muscle · LMI (kg/m²)',
-    yr:{male:[15,26], female:[12,22]},
-    ref:{kind:'ceiling', male:24, female:21},   // FFMI≈25/22 placed at matching LMI (FFMI≈LMI+1 for bone)
-    title:'Total muscle vs. the natural ceiling — by age and sex',
+    note:'<strong>Appendicular</strong> lean mass (arms + legs) ÷ height² — straight off your DEXA report. The blue band is the normal range for your age and sex; the red line is the <strong>sarcopenia threshold</strong>. Type your ALMI to see your exact percentile — and how you compare to a professional soccer player (mean 9.2). This is the <strong>floor</strong> lens: the number to defend as you age.' },
+  ffmi:{ unit:'FFMI · total fat-free mass (kg/m²)',
+    yr:{male:[14,32], female:[11,26]},
+    title:'Total muscle vs. the natural ceiling — and the NFL',
     chip:'Show headroom to ceiling',
-    note:'<strong>Total</strong> lean mass ÷ height² — your whole-body muscle from the same scan. The green line is the <strong>natural-muscle ceiling</strong>: drug-free trained men top out near FFMI ≈ 25 (Kouri 1995); women lower (≈ 22, less established). FFMI counts bone, so FFMI ≈ LMI + ~1 — the line is drawn at the matching LMI. Most people sit well below it, with real room to build.' }
+    note:'<strong>FFMI</strong> — total fat-free mass ÷ height², straight off your DEXA report. The dashed line is the <strong>natural ceiling</strong>: in Kouri\u2019s landmark 1995 study, no drug-free athlete exceeded a normalized FFMI of 25 (enter your height and the line adjusts). Above it: values observed only with pharmacological enhancement. The right edge shows real NFL position averages measured on DXA — note that the bigs sit <em>above</em> the ceiling; the help button explains why that\u2019s selection and method, not a verdict. This is the <strong>ceiling</strong> lens: how much runway you have.' }
 };
 
 function interp(arr, age){
@@ -131,18 +174,27 @@ function interp(arr, age){
   for(let i=0;i<n-1;i++){ if(age>=AGES[i]&&age<=AGES[i+1]){
     const t=(age-AGES[i])/(AGES[i+1]-AGES[i]); return arr[i]+t*(arr[i+1]-arr[i]); } }
 }
-const val=(p,age)=>interp(METRICS[state.metric].data[state.sex][p],age);
+const val=(p,age)=>interp(ALMI[state.sex][p],age);
+const userVal=()=>{ const v=parseFloat(document.getElementById('in_val').value); return isFinite(v)?v:null; };
+const userHtM=()=>{ const v=parseFloat(document.getElementById('in_ht').value); return (isFinite(v)&&v>40&&v<90)?v*0.0254:null; };
 
-/* ===================== render ===================== */
-function render(){
-  const host=document.getElementById('plot');
-  const M=METRICS[state.metric];
+function almiPct(v,age){
+  const pts=[[val('p10',age),10],[val('p25',age),25],[val('p50',age),50],[val('p75',age),75],[val('p90',age),90]];
+  if(v<=pts[0][0]) return {t:'<10th',n:8};
+  if(v>=pts[4][0]) return {t:'>90th',n:93};
+  for(let i=0;i<4;i++){ const [x0,p0]=pts[i],[x1,p1]=pts[i+1];
+    if(v<=x1){ const p=p0+(v-x0)/(x1-x0)*(p1-p0); return {t:Math.round(p)+'th',n:p}; } }
+}
+
+/* ===================== render: ALMI (age curves) ===================== */
+function renderALMI(host){
+  const M=METRICS.almi;
   const W=1000,H=560,m={l:74,r:124,t:30,b:64};
   const iw=W-m.l-m.r, ih=H-m.t-m.b;
   const A0=20,A1=80, [YMIN,YMAX]=M.yr[state.sex];
   const X=a=>m.l+((a-A0)/(A1-A0))*iw;
   const Y=v=>m.t+(1-(v-YMIN)/(YMAX-YMIN))*ih;
-  const refVal=M.ref[state.sex], isFloor=M.ref.kind==='floor';
+  const refVal=M.ref[state.sex];
 
   const band=(loP,hiP,fill,op)=>{
     let top=[],bot=[];
@@ -154,15 +206,12 @@ function render(){
     return `<path d="M${pts.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' L')}" fill="none" stroke="${stroke}" stroke-width="${w}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
   };
 
-  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Lean mass index by age and sex">`;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="ALMI by age and sex">`;
+  svg+=band('p90',YMAX,'#1A9850',.14);
+  svg+=band('p10','p90','#0E9BD6',.12);
+  svg+=band('p25','p75','#0E9BD6',.20);
+  svg+=band(YMIN,refVal,'#D64530',.16);
 
-  // zones
-  svg+=band('p90',YMAX,'#1A9850',.14);    // athletic
-  svg+=band('p10','p90','#0E9BD6',.12);    // normal range
-  svg+=band('p25','p75','#0E9BD6',.20);    // middle 50%
-  if(isFloor) svg+=band(YMIN,refVal,'#D64530',.16);  // sarcopenia zone (ALMI only)
-
-  // gridlines + y labels
   for(let v=Math.ceil(YMIN);v<=Math.floor(YMAX);v++){
     svg+=`<line x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}" stroke="#FFFFFF" stroke-width="1" opacity=".5"/>`;
     svg+=`<text class="ax" x="${m.l-12}" y="${Y(v)+5}" text-anchor="end">${v}</text>`;
@@ -171,47 +220,54 @@ function render(){
   svg+=`<text class="axbold" x="${m.l+iw/2}" y="${H-6}" text-anchor="middle">Age</text>`;
   svg+=`<text class="axbold" transform="translate(18,${m.t+ih/2}) rotate(-90)" text-anchor="middle">${M.unit}</text>`;
 
-  // boundary + reference lines
   svg+=line('p90','#0E9BD6',2);
   svg+=line('p10','#0E9BD6',2);
-  svg+=line('p50','#0A6F9E',4);                                   // median
-  svg+=line(refVal, isFloor?'#D64530':'#1A7F45', 3.5, isFloor?'8 6':'10 0');
+  svg+=line('p50','#0A6F9E',4);
+  svg+=line(refVal,'#D64530',3.5,'8 6');
 
-  // zone labels (left) + right boundary tags
   svg+=`<text x="${X(22)}" y="${Y((val('p90',22)+YMAX)/2)+5}" fill="#14361F" style="font:900 18px Archivo">ATHLETIC</text>`;
   svg+=`<text x="${X(22)}" y="${Y((val('p25',22)+val('p75',22))/2)+6}" fill="#0A4A66" style="font:900 18px Archivo">NORMAL RANGE</text>`;
-  if(isFloor){
-    svg+=`<text x="${X(22)}" y="${Y((YMIN+refVal)/2)+5}" fill="#9A2E20" style="font:900 16px Archivo">LOW MUSCLE</text>`;
-  } else {
-    svg+=`<text x="${X(22)}" y="${Y(refVal)-10}" fill="#14361F" style="font:800 13.5px Inter">NATURAL CEILING · FFMI ≈ ${refVal+1}</text>`;
-  }
+  svg+=`<text x="${X(22)}" y="${Y((YMIN+refVal)/2)+5}" fill="#9A2E20" style="font:900 16px Archivo">LOW MUSCLE</text>`;
   [['p90','90th'],['p50','median'],['p10','10th']].forEach(([p,lbl])=>{
     const y=Y(val(p,A1)); svg+=`<text x="${m.l+iw+10}" y="${y+5}" fill="#3A4753" style="font:700 13px Inter">${lbl}</text>`; });
-  svg+=`<text x="${m.l+iw+10}" y="${Y(refVal)+5}" fill="${isFloor?'#9A2E20':'#14361F'}" style="font:800 13px Inter">${isFloor?'sarcopenia':'ceiling'}</text>`;
+  svg+=`<text x="${m.l+iw+10}" y="${Y(refVal)+5}" fill="#9A2E20" style="font:800 13px Inter">sarcopenia</text>`;
 
-  // age marker + dots
+  // pro soccer reference (male dataset)
+  if(state.sex==='male' && SOCCER_ALMI<=YMAX){
+    const ys=Y(SOCCER_ALMI);
+    svg+=`<line x1="${m.l}" y1="${ys}" x2="${m.l+iw}" y2="${ys}" stroke="#14361F" stroke-width="2" stroke-dasharray="2 6" opacity=".7"/>`;
+    svg+=`<text x="${m.l+iw+10}" y="${ys+5}" fill="#14361F" style="font:800 12px Inter">PRO SOCCER 9.2</text>`;
+  }
+
   const ax=X(state.age);
   svg+=`<line x1="${ax}" y1="${m.t}" x2="${ax}" y2="${m.t+ih}" stroke="#10151B" stroke-width="2.5" stroke-dasharray="3 5" opacity=".6"/>`;
   ['p90','p50','p10'].forEach(p=>{ svg+=`<circle cx="${ax}" cy="${Y(val(p,state.age))}" r="5.5" fill="#fff" stroke="#0A6F9E" stroke-width="2.5"/>`; });
 
-  // buffer / headroom: gap between median and the reference line at current age
-  if(state.buffer){
-    const yMed=Y(val('p50',state.age)), yRef=Y(refVal), gap=Math.abs(val('p50',state.age)-refVal);
-    svg+=`<line x1="${ax}" y1="${yMed}" x2="${ax}" y2="${yRef}" stroke="#1A9850" stroke-width="9" opacity=".35" stroke-linecap="round"/>`;
-    svg+=`<g transform="translate(${ax+14},${(yMed+yRef)/2})">
-      <rect x="0" y="-17" width="172" height="34" rx="9" fill="#1A7F45"/>
-      <text x="86" y="-2" text-anchor="middle" fill="#fff" style="font:800 12px Inter">${isFloor?'buffer to sarcopenia':'headroom to ceiling'}</text>
-      <text x="86" y="13" text-anchor="middle" fill="#fff" style="font:900 13px Archivo">${gap.toFixed(1)} kg/m²</text></g>`;
+  const uv=userVal(); let pct=null;
+  if(uv!==null && uv>=YMIN && uv<=YMAX){
+    pct=almiPct(uv,state.age);
+    const uy=Y(uv);
+    svg+=`<circle cx="${ax}" cy="${uy}" r="9" fill="#10151B"/><circle cx="${ax}" cy="${uy}" r="9" fill="none" stroke="#fff" stroke-width="2.5"/>`;
+    svg+=`<g transform="translate(${ax+16},${uy})"><rect x="0" y="-15" width="128" height="30" rx="8" fill="#10151B"/>
+      <text x="64" y="5" text-anchor="middle" fill="#fff" style="font:800 13px Archivo">YOU · ${uv.toFixed(1)} · ${pct.t}</text></g>`;
   }
 
-  // callout
+  if(state.buffer){
+    const yMed=Y(uv!==null?uv:val('p50',state.age)), yRef=Y(refVal), gap=Math.abs((uv!==null?uv:val('p50',state.age))-refVal);
+    svg+=`<line x1="${ax}" y1="${yMed}" x2="${ax}" y2="${yRef}" stroke="#1A9850" stroke-width="9" opacity=".35" stroke-linecap="round"/>`;
+    svg+=`<g transform="translate(${ax+14},${(yMed+yRef)/2+40})">
+      <rect x="0" y="-17" width="182" height="34" rx="9" fill="#1A7F45"/>
+      <text x="91" y="-2" text-anchor="middle" fill="#fff" style="font:800 12px Inter">${uv!==null?'your buffer to sarcopenia':'median buffer to sarcopenia'}</text>
+      <text x="91" y="13" text-anchor="middle" fill="#fff" style="font:900 13px Archivo">${gap.toFixed(1)} kg/m²</text></g>`;
+  }
+
   const boxW=252, boxX = ax>m.l+iw*0.55 ? ax-boxW-16 : ax+16, boxY=m.t+12;
   const t=[];
-  if(!isFloor) t.push(['CEILING', `≈ ${refVal.toFixed(0)} (FFMI ${refVal+1})`, '#1A9850']);
+  if(pct) t.push(['YOU', `${uv.toFixed(1)} · ${pct.t} %ile`, '#10151B']);
   t.push(['ATHLETIC', `≥ ${val('p90',state.age).toFixed(1)}`, '#1A9850']);
   t.push(['MEDIAN',   `${val('p50',state.age).toFixed(1)}`,    '#0A6F9E']);
   t.push(['NORMAL',   `${val('p10',state.age).toFixed(1)}–${val('p90',state.age).toFixed(1)}`, '#0E9BD6']);
-  if(isFloor) t.push(['SARCOPENIA', `< ${refVal.toFixed(1)}`, '#D64530']);
+  t.push(['SARCOPENIA', `< ${refVal.toFixed(1)}`, '#D64530']);
   const bh=36+t.length*28;
   svg+=`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${bh}" rx="12" fill="#10151B"/>`;
   svg+=`<text x="${boxX+16}" y="${boxY+25}" fill="#fff" style="font:800 15px Archivo">${state.sex==='male'?'Male':'Female'} · age ${state.age}</text>`;
@@ -225,12 +281,114 @@ function render(){
   host.innerHTML=svg;
 }
 
+/* ===================== render: FFMI (elite ladder) ===================== */
+function renderFFMI(host){
+  const M=METRICS.ffmi;
+  const W=1000,H=560,m={l:74,r:236,t:30,b:44};
+  const iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const [YMIN,YMAX]=M.yr[state.sex];
+  const Y=v=>m.t+(1-(v-YMIN)/(YMAX-YMIN))*ih;
+  const male=state.sex==='male';
+  const hM=userHtM();
+  const ceil=male ? kouriCeil(hM!==null?hM:1.80) : null;
+  const med=MEDIAN_FFMI[state.sex];
+  const uv=userVal();
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="FFMI vs elite references">`;
+  svg+=`<defs><pattern id="hatch" width="9" height="9" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+    <line x1="0" y1="0" x2="0" y2="9" stroke="#D64530" stroke-width="2.5" opacity=".5"/></pattern></defs>`;
+
+  // gridlines + y labels
+  for(let v=Math.ceil(YMIN);v<=Math.floor(YMAX);v+=1){
+    svg+=`<line x1="${m.l}" y1="${Y(v)}" x2="${m.l+iw}" y2="${Y(v)}" stroke="#EEF3F7" stroke-width="${v%2?1:1.6}"/>`;
+    if(v%2===0) svg+=`<text class="ax" x="${m.l-12}" y="${Y(v)+5}" text-anchor="end">${v}</text>`;
+  }
+  svg+=`<text class="axbold" transform="translate(18,${m.t+ih/2}) rotate(-90)" text-anchor="middle">${M.unit}</text>`;
+
+  if(male){
+    // enhancement zone above ceiling
+    svg+=`<rect x="${m.l}" y="${m.t}" width="${iw}" height="${Y(ceil)-m.t}" fill="url(#hatch)"/>`;
+    svg+=`<rect x="${m.l}" y="${m.t}" width="${iw}" height="${Y(ceil)-m.t}" fill="#D64530" opacity=".05"/>`;
+    svg+=`<text x="${m.l+14}" y="${m.t+24}" fill="#9A2E20" style="font:800 13px Inter">OBSERVED ONLY WITH PHARMACOLOGICAL ENHANCEMENT · steroid users 25–32 (Kouri 1995)</text>`;
+    // natural elite band mean±sd
+    svg+=`<rect x="${m.l}" y="${Y(NATURAL.mean+NATURAL.sd)}" width="${iw}" height="${Y(NATURAL.mean-NATURAL.sd)-Y(NATURAL.mean+NATURAL.sd)}" fill="#1A9850" opacity=".12"/>`;
+    svg+=`<line x1="${m.l}" y1="${Y(NATURAL.mean)}" x2="${m.l+iw}" y2="${Y(NATURAL.mean)}" stroke="#1A7F45" stroke-width="2.5" stroke-dasharray="2 6"/>`;
+    svg+=`<text x="${m.l+14}" y="${Y(NATURAL.mean)-8}" fill="#14361F" style="font:800 13px Inter">DRUG-FREE ELITE ATHLETES · mean 21.8 ± 1.8 (Kouri 1995)</text>`;
+    // ceiling
+    svg+=`<line x1="${m.l}" y1="${Y(ceil)}" x2="${m.l+iw}" y2="${Y(ceil)}" stroke="#1A7F45" stroke-width="4" stroke-dasharray="12 7"/>`;
+    svg+=`<text x="${m.l+14}" y="${Y(ceil)+22}" fill="#14361F" style="font:900 15px Archivo">NATURAL CEILING ${ceil.toFixed(1)}${hM!==null?' · adjusted to your height':' · at 5\u201911\u2033 (enter height to adjust)'}</text>`;
+  } else {
+    svg+=`<text x="${m.l+14}" y="${m.t+26}" fill="#3A4753" style="font:700 13.5px Inter">Elite references (NFL, natural ceiling) are male-only datasets \u2014 a female ceiling is not established.</text>`;
+  }
+
+  // population median
+  svg+=`<line x1="${m.l}" y1="${Y(med)}" x2="${m.l+iw}" y2="${Y(med)}" stroke="#0A6F9E" stroke-width="3" stroke-dasharray="1 7" stroke-linecap="round"/>`;
+  svg+=`<text x="${m.l+14}" y="${Y(med)-8}" fill="#0A4A66" style="font:800 13px Inter">GENERAL POPULATION MEDIAN ${med.toFixed(1)} (Schutz 2002)</text>`;
+
+  // NFL / elite ticks in right gutter (male)
+  if(male){
+    FFMI_REFS_M.forEach(r=>{
+      const y=Y(r.v);
+      svg+=`<line x1="${m.l+iw}" y1="${y}" x2="${m.l+iw+16}" y2="${y}" stroke="#3A4753" stroke-width="2.5"/>`;
+      svg+=`<text x="${m.l+iw+22}" y="${y+4}" fill="#3A4753" style="font:700 12px Inter">${r.lbl} <tspan style="font:800 12px Archivo" fill="#10151B">${r.v.toFixed(1)}</tspan></text>`;
+    });
+  }
+
+  // user marker
+  if(uv!==null && uv>=YMIN && uv<=YMAX){
+    const uy=Y(uv);
+    svg+=`<line x1="${m.l}" y1="${uy}" x2="${m.l+iw}" y2="${uy}" stroke="#10151B" stroke-width="4"/>`;
+    svg+=`<circle cx="${m.l+iw*0.62}" cy="${uy}" r="9" fill="#10151B"/><circle cx="${m.l+iw*0.62}" cy="${uy}" r="9" fill="none" stroke="#fff" stroke-width="2.5"/>`;
+    svg+=`<g transform="translate(${m.l+iw*0.62+16},${uy})"><rect x="0" y="-15" width="104" height="30" rx="8" fill="#10151B"/>
+      <text x="52" y="5" text-anchor="middle" fill="#fff" style="font:800 13px Archivo">YOU · ${uv.toFixed(1)}</text></g>`;
+    if(state.buffer && male && uv<ceil){
+      svg+=`<rect x="${m.l+iw*0.30}" y="${Y(ceil)}" width="26" height="${uy-Y(ceil)}" rx="6" fill="#1A9850" opacity=".35"/>`;
+      svg+=`<g transform="translate(${m.l+iw*0.30+36},${(uy+Y(ceil))/2})">
+        <rect x="0" y="-17" width="176" height="34" rx="9" fill="#1A7F45"/>
+        <text x="88" y="-2" text-anchor="middle" fill="#fff" style="font:800 12px Inter">headroom to ceiling</text>
+        <text x="88" y="13" text-anchor="middle" fill="#fff" style="font:900 13px Archivo">${(ceil-uv).toFixed(1)} kg/m²</text></g>`;
+    }
+  }
+
+  // callout
+  const boxW=258, boxX=m.l+12, boxY=H-m.b-((uv!==null&&male)?160:120)-12;
+  const t=[];
+  if(uv!==null){
+    t.push(['YOU', uv.toFixed(1), '#10151B']);
+    if(male){ t.push(['OF NATURAL CEILING', Math.round(uv/ceil*100)+'%', '#1A9850']);
+      const near=[...FFMI_REFS_M].sort((a,b)=>Math.abs(a.v-uv)-Math.abs(b.v-uv))[0];
+      t.push(['CLOSEST NFL COMP', `${near.lbl.replace('NFL ','')} ${near.v.toFixed(1)}`, '#3A4753']); }
+    t.push(['VS POPULATION MEDIAN', (uv>=med?'+':'')+(uv-med).toFixed(1), '#0A6F9E']);
+  } else {
+    t.push(['MEDIAN', med.toFixed(1), '#0A6F9E']);
+    if(male){ t.push(['NATURAL CEILING', ceil.toFixed(1), '#1A9850']); t.push(['NFL LINEMEN', '27.3', '#3A4753']); }
+  }
+  const bh=36+t.length*28;
+  svg+=`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${bh}" rx="12" fill="#10151B"/>`;
+  svg+=`<text x="${boxX+16}" y="${boxY+25}" fill="#fff" style="font:800 15px Archivo">${state.sex==='male'?'Male':'Female'} · FFMI</text>`;
+  t.forEach((r,i)=>{ const yy=boxY+36+i*28+14;
+    svg+=`<rect x="${boxX+16}" y="${yy-13}" width="12" height="12" rx="3" fill="${r[2]}"/>`;
+    svg+=`<text x="${boxX+36}" y="${yy}" fill="#cfd8df" style="font:600 12px Inter">${r[0]}</text>`;
+    svg+=`<text x="${boxX+boxW-14}" y="${yy}" text-anchor="end" fill="#fff" style="font:800 14px Archivo">${r[1]}</text>`;
+  });
+
+  svg+=`</svg>`;
+  host.innerHTML=svg;
+}
+
+function render(){
+  const host=document.getElementById('plot');
+  if(state.metric==='almi') renderALMI(host); else renderFFMI(host);
+}
+
 /* ===================== controls ===================== */
 function setMeta(){
   const M=METRICS[state.metric];
   document.getElementById('ctitle').textContent=M.title;
   document.getElementById('note').innerHTML=M.note;
   document.getElementById('chipLbl').textContent=M.chip;
+  document.getElementById('unitLbl').textContent=state.metric==='almi'?'· ALMI kg/m²':'· FFMI kg/m²';
+  document.getElementById('htRow').hidden = state.metric!=='ffmi';
   document.getElementById('ctx').textContent=(state.sex==='male'?'Male':'Female')+' · age '+state.age;
 }
 
@@ -248,6 +406,8 @@ document.getElementById('sexSeg').addEventListener('click',e=>{
 });
 const ageR=document.getElementById('ageRange'), ageV=document.getElementById('ageVal');
 ageR.addEventListener('input',()=>{ state.age=+ageR.value; ageV.textContent=ageR.value; setMeta(); render(); });
+document.getElementById('in_val').addEventListener('input',render);
+document.getElementById('in_ht').addEventListener('input',render);
 document.getElementById('controls').addEventListener('click',e=>{
   const chip=e.target.closest('.chip'); if(!chip) return;
   state.buffer=!state.buffer; chip.setAttribute('aria-pressed',state.buffer); render();

@@ -60,6 +60,7 @@
   .seclbl{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
     margin:34px 0 14px;}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;}
+  .grid-feat{grid-template-columns:minmax(300px,460px);}
   .card{text-align:left;border:1px solid var(--surface-3);background:var(--surface);border-radius:18px;padding:0;
     overflow:hidden;cursor:pointer;font:inherit;color:inherit;display:flex;flex-direction:column;
     transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;}
@@ -119,11 +120,13 @@
   <div class="home" id="home">
     <h1>Explain it on the screen, not the whiteboard.</h1>
     <p class="sub">Interactive charts for client and staff consultations. Set sex and age once — it carries into every chart. Tap a chart to open the full interactive version on the screen.</p>
-    <div class="seclbl">Charts</div>
+    <div class="seclbl">Start here</div>
+    <div class="grid grid-feat" id="gridFeat"></div>
+    <div class="seclbl">Deep dives</div>
     <div class="grid" id="gridLive"></div>
     <div class="seclbl" id="soonLbl">In the works</div>
     <div class="grid" id="gridSoon"></div>
-    <div class="buildstamp" id="buildstamp">Updated Aug 28, 2026 · build 9</div>
+    <div class="buildstamp" id="buildstamp">Updated Aug 28, 2026 · build 14</div>
   </div>
 
   <div class="viewer" id="viewer" hidden>
@@ -354,8 +357,8 @@ const LIVE = [
    title:'Your heart’s supply & demand',
    blurb:'SEVR made visual — one heartbeat split into the blood that feeds the heart (diastole) and the work it does (systole), and why a lower resting heart rate lifts the ratio.'},
   {id:'almi', file:'almi-percentile.html', cat:'Muscle', sa:true, amin:20, amax:80,
-   title:'Lean mass percentiles',
-   blurb:'Appendicular lean mass vs. the sarcopenia floor, or total lean mass vs. the natural muscle ceiling.'},
+   title:'Muscle mass — you vs. the elite',
+   blurb:'Your ALMI ranked by age and sex with the sarcopenia floor — and your FFMI on a ladder against NFL positions, drug-free elites, and the natural ceiling. Both straight off your DEXA report.'},
   {id:'bone-density', file:'bone-density.html', cat:'Bone', sa:true, amin:20, amax:90,
    title:'Bone density (T-score)',
    blurb:'The classic DEXA bone chart, made live — total body, spine, hip or femoral neck. Plot a T-score by age; read the category, the Z-score vs. peers, and the trajectory ahead.'},
@@ -383,9 +386,6 @@ const LIVE = [
   {id:'protein-diversity', file:'protein-diversity.html', cat:'Nutrition', sa:false,
    title:'Protein diversity',
    blurb:'A protein is only as usable as its weakest amino acid. See why grains and legumes leave gaps — and how pairing them fills the plate.'},
-  {id:'optimal-score', file:'optimal-score.html', cat:'Longevity', sa:true,
-   title:'DexaFit Optimal Score',
-   blurb:'One evidence-weighted 0–100 score across 26 Tier 1 and Tier 2 markers — how close you are to optimal, and the fastest ways to raise it.'},
   {id:'medicine-3', file:'medicine-3.html', cat:'Longevity', sa:false,
    title:'Medicine 3.0 — healthspan',
    blurb:'Healthspan vs. lifespan: medicine alone just stretches the tail, but investing in reserve squares the curve and shrinks the years in decline.'},
@@ -398,6 +398,11 @@ const LIVE = [
   {id:'stddev', file:'standard-deviations.html', cat:'Reading results', sa:false,
    title:'Standard deviations & T-scores',
    blurb:'The bell curve behind every percentile — with rarity framing and a bone-density T-score mode.'},
+];
+const FEATURED = [
+  {id:'optimal-score', file:'optimal-score.html', cat:'Longevity', sa:true,
+   title:'DexaFit Optimal Score',
+   blurb:'One evidence-weighted 0–100 score across 26 Tier 1 and Tier 2 markers — how close you are to optimal, and the fastest ways to raise it.'},
 ];
 const SOON = [];
 
@@ -415,6 +420,7 @@ function cardHTML(c, soon){
   return `<button class="card" ${attr}><div class="thumb">${thumb}</div>
     <div class="meta"><h3>${c.title}</h3><p>${c.blurb}</p>${tag}</div></button>`;
 }
+$('gridFeat').innerHTML = FEATURED.map(c=>cardHTML(c,false)).join('');
 $('gridLive').innerHTML = LIVE.map(c=>cardHTML(c,false)).join('');
 $('gridSoon').innerHTML = SOON.map(c=>cardHTML(c,true)).join('');
 if(!SOON.length){ $('gridSoon').hidden = true; $('soonLbl').hidden = true; }
@@ -426,7 +432,7 @@ function pushSA(){
   }
 }
 function openChart(id){
-  const c = LIVE.find(x=>x.id===id); if(!c) return;
+  const c = FEATURED.find(x=>x.id===id) || LIVE.find(x=>x.id===id); if(!c) return;
   state.chart = c;
   window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'chart_view',chart_id:c.id,chart_title:c.title});
   // global controls visibility + age range

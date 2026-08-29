@@ -163,7 +163,7 @@
     <div class="grid" id="gridLive"></div>
     <div class="seclbl" id="soonLbl">In the works</div>
     <div class="grid" id="gridSoon"></div>
-    <div class="buildstamp" id="buildstamp">Updated Aug 28, 2026 · build 21</div>
+    <div class="buildstamp" id="buildstamp">Updated Aug 28, 2026 · build 22</div>
   </div>
 
   <div class="viewer" id="viewer" hidden>
@@ -493,7 +493,13 @@ const MEAS={};
 function pushVals(){ if(frame.contentWindow) frame.contentWindow.postMessage({type:'vals', vals:MEAS}, '*'); }
 window.addEventListener('message',e=>{ const d=e.data||{};
   if(d.type==='val' && typeof d.id==='string'){ if(d.v===null) delete MEAS[d.id]; else MEAS[d.id]=d.v; }
-  if(d.type==='nav' && typeof d.id==='string'){ openChart(d.id); } });
+  if(d.type==='nav' && typeof d.id==='string'){ openChart(d.id); }
+  if(d.type==='sa-set'){
+    if(d.sex==='male'||d.sex==='female'){ state.sex=d.sex;
+      [...$('shellSex').children].forEach(x=>x.setAttribute('aria-pressed', x.dataset.sex===d.sex)); }
+    if(+d.age>=20&&+d.age<=90){ state.age=+d.age; shellAge.value=state.age; shellAgeVal.textContent=state.age; }
+    pushSA();
+  } });
 function openChart(id){
   const c = FEATURED.find(x=>x.id===id) || LIVE.find(x=>x.id===id) || UTIL.find(x=>x.id===id); if(!c) return;
   state.chart = c;

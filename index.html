@@ -78,6 +78,7 @@
   .tag.soon{color:var(--ink-soft);}
 
   /* ---------- viewer ---------- */
+  .buildstamp{position:fixed;bottom:8px;left:14px;z-index:30;font-size:10.5px;font-weight:600;color:#9aa7b2;opacity:.85;pointer-events:none;user-select:none;}
   .viewer{flex:1;min-height:0;position:relative;}
   .viewer iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;}
   .brand .loc{color:var(--ink);margin-left:8px;}
@@ -120,8 +121,9 @@
     <p class="sub">Interactive charts for client and staff consultations. Set sex and age once — it carries into every chart. Tap a chart to open the full interactive version on the screen.</p>
     <div class="seclbl">Charts</div>
     <div class="grid" id="gridLive"></div>
-    <div class="seclbl">In the works</div>
+    <div class="seclbl" id="soonLbl">In the works</div>
     <div class="grid" id="gridSoon"></div>
+    <div class="buildstamp" id="buildstamp">Updated Aug 28, 2026 · build 8</div>
   </div>
 
   <div class="viewer" id="viewer" hidden>
@@ -415,6 +417,7 @@ function cardHTML(c, soon){
 }
 $('gridLive').innerHTML = LIVE.map(c=>cardHTML(c,false)).join('');
 $('gridSoon').innerHTML = SOON.map(c=>cardHTML(c,true)).join('');
+if(!SOON.length){ $('gridSoon').hidden = true; $('soonLbl').hidden = true; }
 
 /* ===================== navigation ===================== */
 function pushSA(){

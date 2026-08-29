@@ -1,0 +1,92 @@
+<!doctype html>
+<!-- © 2026 DexaFit Scottsdale. Internal diagnostic — not linked from the gallery. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Rail diagnostic</title>
+<link rel="stylesheet" href="/assets/chrome.css?v=3">
+<style>
+  .filler{background:var(--surface-2);border:1.5px solid var(--surface-3);border-radius:10px;padding:14px 12px;font:700 13px Inter,system-ui;color:var(--ink-soft);}
+  #diag{position:fixed;left:12px;bottom:12px;z-index:9999;background:#10151B;color:#fff;border-radius:14px;
+    padding:16px 18px;font:600 15px/1.5 ui-monospace,Menlo,monospace;max-width:min(560px,72vw);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+  #diag b{color:#7FD6FF;} #diag .ok{color:#5CE08A;font-weight:800;} #diag .bad{color:#FF7A6E;font-weight:800;}
+  #diag h1{font:900 16px Archivo,system-ui;margin:0 0 8px;color:#fff;}
+  #swipe{position:fixed;top:10px;left:12px;z-index:9999;background:#E8862E;color:#fff;border-radius:10px;padding:10px 14px;font:800 14px Inter;}
+  #swipe.ok{background:#1F9D55;}
+</style>
+<script src="/assets/chrome.js?v=1"></script>
+</head>
+<body>
+<div id="swipe">Now try to swipe the right-hand rail up and down…</div>
+<div class="app">
+  <div class="topbar"><div class="brand"></div><div class="spacer"></div></div>
+  <div class="chart">
+    <div class="chead"><div class="ctitle">Rail diagnostic</div><div class="ccontext">Screenshot the black panel and send it</div></div>
+    <div class="stage">
+      <div class="plot"><svg viewBox="0 0 1040 600"><text x="520" y="300" text-anchor="middle" font-family="Archivo" font-weight="900" font-size="30" fill="#C6D2DC">← chart area (ignore)</text></svg></div>
+      <div class="controls" id="rail"></div>
+    </div>
+  </div>
+</div>
+<div id="diag"><h1>measuring…</h1></div>
+<script>
+(function(){
+  var rail=document.getElementById('rail');
+  for(var i=1;i<=40;i++){var d=document.createElement('div');d.className='filler';d.textContent='Dummy control row '+i+' of 40';rail.appendChild(d);}
+
+  var inner = new URLSearchParams(location.search).get('inner')==='1';
+  var frameNote='(skipped in inner mode)';
+  var frameEl=null;
+  if(!inner){
+    frameEl=document.createElement('iframe');
+    frameEl.src='rail-diag.html?inner=1';
+    frameEl.style.cssText='position:fixed;right:12px;bottom:12px;width:240px;height:180px;border:3px solid #E8862E;border-radius:10px;z-index:9998;background:#fff;';
+    document.body.appendChild(frameEl);
+  }
+
+  var swipe=document.getElementById('swipe'), userScrolled=false;
+  rail.addEventListener('scroll',function(){ if(rail.scrollTop>4 && !userScrolled){userScrolled=true;
+    swipe.textContent='RAIL SCROLL WORKS ✓'; swipe.className='ok'; report();} },{passive:true});
+
+  function cssVersion(cs){
+    if(cs.position==='absolute') return 'v3 (absolute pane)';
+    if(cs.flexWrap==='nowrap')   return 'v2 (nowrap only)';
+    if(cs.flexWrap==='wrap')     return 'v1 (original — wraps!)';
+    return 'unknown ('+cs.position+'/'+cs.flexWrap+')';
+  }
+  function report(){
+    var cs=getComputedStyle(rail);
+    var probe=document.createElement('div');probe.style.cssText='position:fixed;height:100dvh;width:0;';document.body.appendChild(probe);
+    var dvh=probe.getBoundingClientRect().height; probe.remove();
+    var railMode=(window.matchMedia?window.matchMedia('(min-width:820px)').matches:innerWidth>=820);
+    var overflowAmt=rail.scrollHeight-rail.clientHeight;
+    rail.scrollTop=40; var prog=rail.scrollTop; rail.scrollTop=0;
+    var innerFrameLine=frameNote;
+    if(frameEl && frameEl.contentWindow){
+      try{
+        var fh=frameEl.clientHeight, fivh=frameEl.contentWindow.innerHeight;
+        innerFrameLine=fh+'px element vs '+fivh+'px inner viewport → '+
+          (fivh>fh+60?'<span class=bad>INFLATED</span>':'<span class=ok>OK</span>');
+      }catch(e){ innerFrameLine='(frame read failed: '+e.message+')'; }
+    }
+    document.getElementById('diag').innerHTML =
+      '<h1>Rail diagnostic '+(inner?'(inner frame)':'')+'</h1>'
+      +'<b>page:</b> '+(window===top?'standalone':'inside an iframe')+'<br>'
+      +'<b>viewport:</b> '+innerWidth+' × '+innerHeight+' · <b>100dvh:</b> '+Math.round(dvh)+'px<br>'
+      +'<b>layout:</b> '+(railMode?'RAIL MODE (≥820px)':'STACKED MODE (<820px)')+'<br>'
+      +'<b>css loaded:</b> '+cssVersion(cs)+'<br>'
+      +'<b>rail overflow-y:</b> '+cs.overflowY+' · <b>height:</b> '+rail.clientHeight+'px · <b>content:</b> '+rail.scrollHeight+'px<br>'
+      +'<b>has overflow to scroll:</b> '+(overflowAmt>0?'<span class=ok>yes ('+overflowAmt+'px)</span>':'<span class=bad>NO — pane thinks it fits</span>')+'<br>'
+      +'<b>programmatic scroll:</b> '+(prog>0?'<span class=ok>works</span>':'<span class=bad>DEAD</span>')
+      +' · <b>finger scroll:</b> '+(userScrolled?'<span class=ok>works</span>':'not yet — try swiping')+'<br>'
+      +'<b>iframe sub-test:</b> '+innerFrameLine;
+  }
+  if(document.readyState==='complete') setTimeout(report,400); else addEventListener('load',function(){setTimeout(report,400);});
+  addEventListener('resize',report);
+  setInterval(report,2500);
+})();
+</script>
+</body>
+</html>

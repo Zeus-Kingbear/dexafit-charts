@@ -163,7 +163,7 @@
     <div class="grid" id="gridLive"></div>
     <div class="seclbl" id="soonLbl">In the works</div>
     <div class="grid" id="gridSoon"></div>
-    <div class="buildstamp" id="buildstamp">Updated Aug 28, 2026 · build 20</div>
+    <div class="buildstamp" id="buildstamp">Updated Aug 28, 2026 · build 21</div>
   </div>
 
   <div class="viewer" id="viewer" hidden>
@@ -471,13 +471,13 @@ $('filters').addEventListener('change',e=>{
   const k=lab.dataset.k;
   if(e.target.checked){activeF.add(k);lab.classList.add('on');} else {activeF.delete(k);lab.classList.remove('on');}
   renderLive();
-$('entryBar').addEventListener('click',()=>openChart('enter-data'));
 });
 function renderLive(){
   const list=activeF.size? LIVE.filter(c=>(c.cats||[]).some(k=>activeF.has(k))) : LIVE;
   $('gridLive').innerHTML=list.map(c=>cardHTML(c,false)).join('');
 }
 renderLive();
+$('entryBar').addEventListener('click',()=>openChart('enter-data'));
 $('gridSoon').innerHTML = SOON.map(c=>cardHTML(c,true)).join('');
 if(!SOON.length){ $('gridSoon').hidden = true; $('soonLbl').hidden = true; }
 

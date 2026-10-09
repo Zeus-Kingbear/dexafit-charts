@@ -9,15 +9,70 @@
     body { font: 16px/1.6 -apple-system, system-ui, sans-serif;
            max-width: 40rem; margin: 4rem auto; padding: 0 1.5rem; color: #222; }
     code { background: #f4f4f4; padding: 0.1em 0.35em; border-radius: 3px; }
+    #status { padding: 0.75rem 1rem; border-radius: 6px; background: #f4f4f4; }
   </style>
 </head>
 <body>
+  <!--
+    ⚠️ WIRING RULE — read before giving this page a chatbot.
+
+    This page is public. It loads the Cover2 widget ONLY when opened with a signed test link
+    (#cover2-test=… minted in the Cover2 dashboard), so a visitor without one gets no widget and
+    starts nothing. A test link's conversations are marked as tests by the Cover2 server: no
+    brand notice is sent, and they are kept out of analytics and billing.
+
+    https://charts.kingbear.co may be added to the allowed origins of ONE kind of chatbot only:
+    an INTERNAL TEST chatbot, under a TEST brand, whose only notice recipient is a Cover2 staff
+    inbox (@cover2.ai). NEVER a real brand's chatbot — a test link that is refused or expires
+    offers "continue as a real chat", and a real chat emails that chatbot's brand.
+
+    The chatbot's public key comes from ?key= in the URL, not from this file, so nothing here
+    ever names a live chatbot. (Until 2026-10-09 this page hard-coded the key of a chatbot that
+    no longer exists.)
+  -->
   <h1>Cover2 cross-origin test harness</h1>
   <p>Internal testing page. This exists to load the Cover2 widget as a genuine
      third-party iframe on a non-cover2.ai origin — the only surface where storage
      partitioning, sandbox behavior, and cross-origin postMessage can be measured
      honestly.</p>
-  <p>Append <code>?c2probe=1</code> to this URL to enable the storage probe readout.</p>
-  <script src="https://www.cover2.ai/widget.js" data-key="pk_GhYDt2gDseZohr4b15EJBzj-" async></script>
+  <p id="status">No widget loaded. This page loads the Cover2 widget only from a signed test link.</p>
+  <p>To use it: in the Cover2 dashboard, open the internal test chatbot → Embed Code →
+     <em>Test on your live site</em> → create a link → <em>Or open a page of your site</em>, with
+     site <code>https://charts.kingbear.co</code> and page
+     <code>/cover2-widget-test.html?key=pk_…</code> (that chatbot's public key, from its embed code).</p>
+  <script>
+    (function () {
+      var status = document.getElementById("status");
+      var FLAG = "cover2-test-harness:linked";
+      // Same shape the loader accepts (client/public/widget.js in the Cover2 repo).
+      var hasTestLink = /(?:^#|&)cover2-test=[A-Za-z0-9_.-]{20,1024}(?:&|$)/.test(window.location.hash || "");
+      var key = "";
+      try { key = new URLSearchParams(window.location.search).get("key") || ""; } catch (e) {}
+      var keyOk = /^pk_[A-Za-z0-9_-]{24}$/.test(key);
+
+      // The loader removes the token from the address bar, so a reload has no fragment. The widget's
+      // iframe keeps the token for this tab and resumes the TEST (or says it expired), so the widget
+      // may load again on reloads — but only in a tab where a test link was actually opened.
+      var linkedThisTab = false;
+      try {
+        if (hasTestLink) window.sessionStorage.setItem(FLAG, "1");
+        linkedThisTab = window.sessionStorage.getItem(FLAG) === "1";
+      } catch (e) { linkedThisTab = hasTestLink; }
+
+      if (!linkedThisTab) return;
+      if (!keyOk) {
+        status.textContent = "A test link is present, but ?key= is missing or malformed — add the test chatbot's pk_ key to the page address.";
+        return;
+      }
+      var s = document.createElement("script");
+      s.src = "https://www.cover2.ai/widget.js";
+      s.async = true;
+      s.setAttribute("data-key", key);
+      document.body.appendChild(s);
+      status.textContent = hasTestLink
+        ? "Widget loaded from a test link. Conversations started here are tests."
+        : "Widget reloaded in a tab where a test link was opened; it resumes that test.";
+    })();
+  </script>
 </body>
 </html>
